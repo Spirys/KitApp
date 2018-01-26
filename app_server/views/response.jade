@@ -1,0 +1,21 @@
+extends layout
+
+block content
+    table(class="table")
+        thead(class="thead-default")
+            tr
+                th Email
+                th Password
+                th Remember
+        tbody
+            tr
+                td= email
+                td(id="password") #{password}
+                td= remember
+
+block extra
+    script(src="../javascripts/jquery.md5.js")
+    script(type="text/javascript")
+        | $(document).ready(function() {
+        |     $("#password").text($.md5('#{password}'));
+        | });
