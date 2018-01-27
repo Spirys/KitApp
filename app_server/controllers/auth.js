@@ -41,6 +41,21 @@ module.exports.login = function (req, res) {
     getUser(login);
 };
 
+module.exports.verifySession = function (sessionId, next, onError) {
+    // noinspection JSIgnoredPromiseFromCall
+    Session.findOne({_sessionId: sessionId})
+        .select('_sessionId userId')
+        .exec(function (err, session) {
+            if (err) {
+                onError();
+            } else if (!session || typeof session === "undefined" || session === null) {
+                onError();
+            } else {
+                return next({code: config.okCode, session: session._sessionId, userId: session.userId});
+            }
+        });
+};
+
 /*
     Private functions
  */
@@ -51,18 +66,29 @@ function sendData(data) {
 
 function verifyPassword(login) {
     if (login.password === password) {
-        if (remember) {
-            response.cookie('_sessionId', randomSession(), {
-                domain: '.kitapptatar.ru',
-                secure: config.cookieHttpsOnly,
-                expires: new Date(Date.now() + 604800 * 1000)
-            });
-        }
-        sendData({code: config.okCode, email: req.body.email, password: req.body.password});
+        let session = randomSession();
+        saveSession(session, login);
+        setCookie(remember, session);
     } else {
-        sendData({code: JSON.stringify(login.code)});
-        // res.send({code: config.wrongPassword})
+        sendData({code: config.wrongPassword});
     }
+}
+
+function saveSession(session, login) {
+    let newSession = {
+        userId: login.userId,
+        _sessionId: session,
+        expires: Date.now() + config.sessionExpires
+    };
+    Session.create(newSession, function (err, session) {
+        if (err) {
+            return {code: config.errorCode, message: err};
+        } else if (!session || typeof session === "undefined" || session === null) {
+            return {code: config.errorCode, message: config.invalidSession};
+        } else {
+            sendData({code: config.okCode, userId: login.userId, email: login.login});
+        }
+    });
 }
 
 function getUser(login) {
@@ -81,16 +107,16 @@ function getUser(login) {
         });
 }
 
-// noinspection JSUnusedLocalSymbols
-function getSession(sessionId) {
-    Session.findOne({ _sessionId: sessionId })
-        .select('_sessionId userId')
-        .exec(function (err, session) {
-            if (err) {
-                return {code: config.errorCode, error: err};
-            }
-            return {code: config.okCode, session: session._sessionId, userId: session.userId};
-        });
+function setCookie(remember, session) {
+    let cookie = {
+        domain: '.kitapptatar.ru',
+        secure: config.cookieHttpsOnly,
+    };
+    if (remember) {
+        cookie.expires = new Date(Date.now() + config.sessionExpires);
+    }
+    response.cookie('_sessionId', session, cookie);
+    return session;
 }
 
 function randomSession() {

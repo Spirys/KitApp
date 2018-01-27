@@ -1,12 +1,12 @@
 'use strict';
 const auth = require('./auth');
+const config = require('../config/config');
 
 module.exports.dashboard = function (req, res) {
     let session = req.cookies._sessionId;
-    let user = auth.verifySession(session);
-    if (session && user) {
-        res.render('index', {title: user});
-    } else {
-        res.render('auth', {title: 'Sign in'});
-    }
+    auth.verifySession(session, function (user) {
+        res.render('index', {title: "Success", debugInfo: JSON.stringify(user)});
+    }, function () {
+        res.render('auth', {title: config.signIn});
+    });
 };

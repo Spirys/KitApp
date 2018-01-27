@@ -1,10 +1,8 @@
-module.exports.index = function(req, res) {
-    if (req.cookies._sessionId) {
-        res.render('index', {title: req.cookies._sessionId});
-    } else {
-        res.render('auth', {title: 'Sign in'});
-    }
-};
+'use strict';
+const dashboard = require('./dashboard');
+const auth = require('./auth');
+
+module.exports.index = dashboard.dashboard;
 
 module.exports.auth = function (req, res) {
     res.render('auth', { title : 'Sign in' })
