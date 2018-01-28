@@ -25,3 +25,8 @@ module.exports.signIn = messages.signIn;
  */
 module.exports.cookieHttpsOnly = false;
 module.exports.sessionExpires = 1000 * 60 * 60 * 24 * 7; // 1 week
+
+/*
+    Database configuration
+ */
+module.exports.mongoURI = "mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp";
