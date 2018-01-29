@@ -1,12 +1,4 @@
 /*
-    Api codes
- */
-module.exports.errorCode = "error";
-
-// Not safe to change this variable. Must also change public/javascripts/login.js
-module.exports.okCode = "ok";
-
-/*
     Api messages
  */
 module.exports.userNotRegistered = "Login is invalid";
