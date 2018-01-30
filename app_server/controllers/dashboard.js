@@ -2,6 +2,10 @@
 const auth = require('./auth');
 const config = require('../config/config');
 
+function fetchBookInfo(id) {
+
+}
+
 module.exports.dashboard = function (req, res) {
     let session = req.cookies._sessionId;
     auth.verifySession(session, function (user) {
