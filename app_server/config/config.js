@@ -1,12 +1,12 @@
-const messages = require("./messages");
+const messages = require('./messages');
 
 /*
     Codes
  */
-module.exports.errorCode = "error";
+module.exports.errorCode = 'error';
 
 // Not safe to change this variable. Must also change public/javascripts/login.js
-module.exports.okCode = "ok";
+module.exports.okCode = 'ok';
 
 /*
     Error messages
@@ -44,4 +44,4 @@ module.exports.sessionExpires = 1000 * 60 * 60 * 24 * 7; // 1 week
 /*
     Database configuration
  */
-module.exports.mongoURI = "mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp";
+module.exports.mongoURI = 'mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp';

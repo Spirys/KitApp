@@ -4,10 +4,10 @@
 // TODO Generate session id and put it to the database
 // TODO Write documentation and decouple logic from controller
 
-const config = require("../config/config");
+const config = require('../config/config');
 
-const Login = require("../models/auth/Login");
-const Session = require("../models/auth/Session");
+const Login = require('../models/auth/Login');
+const Session = require('../models/auth/Session');
 const Patron = require('../models/users/Patron');
 const Librarian = require('../models/users/Librarian');
 
@@ -96,7 +96,7 @@ function saveSession(session, login) {
     Session.create(newSession, function (err, session) {
         if (err) {
             return {code: config.errorCode, message: err};
-        } else if (!session || typeof session === "undefined" || session === null) {
+        } else if (!session || typeof session === 'undefined' || session === null) {
             return {code: config.errorCode, message: config.invalidSession};
         } else {
             sendData({code: config.okCode, user: login.user, email: login.login});
@@ -111,7 +111,7 @@ function getUser(login) {
         .exec(function (err, login) {
             if (err) {
                 sendData({error: true, code: config.errorCode});
-            } else if (!login || typeof login === "undefined" || login === null) {
+            } else if (!login || typeof login === 'undefined' || login === null) {
                 // The user is absent in database
                 sendData({error: true, code: config.userNotRegistered});
             } else {

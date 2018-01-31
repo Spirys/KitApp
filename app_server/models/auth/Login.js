@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const loginSchema = new mongoose.Schema({
     user: {type: mongoose.Schema.ObjectId, ref: 'Patron'},
