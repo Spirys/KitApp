@@ -1,12 +1,12 @@
-const messages = require("./messages");
+const messages = require('./messages');
 
 /*
     Codes
  */
-module.exports.errorCode = "error";
+module.exports.errorCode = 'error';
 
 // Not safe to change this variable. Must also change public/javascripts/login.js
-module.exports.okCode = "ok";
+module.exports.okCode = 'ok';
 
 /*
     Error messages
@@ -16,11 +16,18 @@ module.exports.noLoginProvided      = messages.noLoginProvided;
 module.exports.noPassProvided       = messages.noPassProvided;
 module.exports.wrongPassword        = messages.wrongPassword;
 module.exports.invalidSession       = messages.invalidSession;
+module.exports.emptyDocument = messages.emptyDocument;
+module.exports.unknownDocument = messages.unknownDocument;
 
 /*
     UI messages (possible localization)
  */
 module.exports.signIn = messages.signIn;
+
+/*
+    Images
+ */
+module.exports.noImage = '/images/no_image.png';
 
 /*
     Document statuses (possible localization)
@@ -31,9 +38,10 @@ module.exports.statusLoaned         = 'Loaned';
 module.exports.statusReserved       = 'Reserved';
 
 /*
-    Patron types
+    Types
  */
 module.exports.patronTypes          = ['Student', 'Faculty member'];
+module.exports.documentTypes = ['book', 'journal', 'media'];
 
 /*
     Security configuration
@@ -44,4 +52,4 @@ module.exports.sessionExpires = 1000 * 60 * 60 * 24 * 7; // 1 week
 /*
     Database configuration
  */
-module.exports.mongoURI = "mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp";
+module.exports.mongoURI = 'mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp';

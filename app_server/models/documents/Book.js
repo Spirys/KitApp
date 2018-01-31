@@ -1,6 +1,7 @@
 'use strict';
 const mongoose = require('mongoose');
 const beautifier = require('../util/beautifier');
+const noImage = require('../../config/config').noImage;
 
 /**
  * A schema for a book
@@ -13,8 +14,9 @@ const bookSchema = new mongoose.Schema({
     authors     : [{type: mongoose.Schema.ObjectId, ref: 'Author', required: true}],
     cost        : {type: Number, default: 0},
     description : String,
-    edition     : String,
+    edition: {type: String, required: true},
     ISBN        : String,
+    image: {type: String, default: noImage},
     publisher   : String,
     published   : Date,
     instances   : [{type: mongoose.Schema.ObjectId, ref: 'BookInstance'}]

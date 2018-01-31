@@ -20,7 +20,7 @@ const instanceModel = {
 /*
     Defining schemas
  */
-const types = ['book', 'journal', 'media'];
+const types = config.documentTypes;
 
 /*
     Generating and exporting models dynamically

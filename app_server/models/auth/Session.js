@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const beautifier = require('../util/beautifier');
 
 const sessionSchema = new mongoose.Schema({
