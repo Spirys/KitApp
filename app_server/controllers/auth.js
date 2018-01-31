@@ -4,11 +4,12 @@
 // TODO Generate session id and put it to the database
 // TODO Write documentation and decouple logic from controller
 
-const mongoose = require("mongoose");
-const config = require("../config/config");
+const config = require('../config/config');
 
-const Login = mongoose.model("Login", require("../models/auth/Login"));
-const Session = mongoose.model("Session", require("../models/auth/Session"));
+const Login = require('../models/auth/Login');
+const Session = require('../models/auth/Session');
+const Patron = require('../models/users/Patron');
+const Librarian = require('../models/users/Librarian');
 
 /*
     Private fields
@@ -44,14 +45,26 @@ module.exports.login = function (req, res) {
 module.exports.verifySession = function (sessionId, next, onError) {
     // noinspection JSIgnoredPromiseFromCall
     Session.findOne({_sessionId: sessionId})
-        .select('_sessionId userId')
+        .select('_sessionId user')
         .exec(function (err, session) {
             if (err) {
+                console.log(err);
                 onError();
             } else if (!session || typeof session === "undefined" || session === null) {
                 onError();
             } else {
-                return next({code: config.okCode, session: session._sessionId, userId: session.userId});
+                Patron.findById(session.user, function (err, user) {
+                    if (err) {
+                        console.log(err);
+                        onError();
+                    } else {
+                        return next({
+                            code: config.okCode,
+                            session: session._sessionId,
+                            user: user
+                        });
+                    }
+                });
             }
         });
 };
@@ -76,17 +89,17 @@ function verifyPassword(login) {
 
 function saveSession(session, login) {
     let newSession = {
-        userId: login.userId,
+        user: login.user,
         _sessionId: session,
         expires: Date.now() + config.sessionExpires
     };
     Session.create(newSession, function (err, session) {
         if (err) {
             return {code: config.errorCode, message: err};
-        } else if (!session || typeof session === "undefined" || session === null) {
+        } else if (!session || typeof session === 'undefined' || session === null) {
             return {code: config.errorCode, message: config.invalidSession};
         } else {
-            sendData({code: config.okCode, userId: login.userId, email: login.login});
+            sendData({code: config.okCode, user: login.user, email: login.login});
         }
     });
 }
@@ -98,7 +111,7 @@ function getUser(login) {
         .exec(function (err, login) {
             if (err) {
                 sendData({error: true, code: config.errorCode});
-            } else if (!login || typeof login === "undefined" || login === null) {
+            } else if (!login || typeof login === 'undefined' || login === null) {
                 // The user is absent in database
                 sendData({error: true, code: config.userNotRegistered});
             } else {

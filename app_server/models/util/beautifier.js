@@ -1,7 +1,7 @@
 'use strict';
 // noinspection JSUnusedLocalSymbols
 const beautifyId = function (oldId) {
-    let bytes = this._id.valueOf().substring(18);
+    let bytes = oldId.valueOf().toString().substring(18);
     return parseInt(bytes, 16);
 };
 
@@ -16,7 +16,7 @@ module.exports.virtualId = function (schema) {
     });
 };
 
-module.exports.toInstanceForm = new function (name) {
+module.exports.toInstanceForm = function (name) {
     return capitalizeFirstLetter(name) + 'Instance';
 };
 

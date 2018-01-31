@@ -32,4 +32,4 @@ userSchema.virtual('name').get(function () {
 
 beautifier.virtualId(userSchema);
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('Patron', userSchema);
