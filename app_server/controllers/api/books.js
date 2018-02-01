@@ -12,26 +12,23 @@ function error(message) {
  * Default value of <i>n</i> is 25.
  * Can be specified via <code>length</code> parameter in request.
  * @param req Request.
- *  Must include valid <code>session</code> parameter.
+ *  Must include valid <code>token</code> parameter.
  *  <p>Can include <code>length</code> and <code>page</code> parameters.</p>
  * @param res
  */
 module.exports.all = function (req, res) {
-    if (!req.session) {
+    auth.verifySession(req.query.token, function () {
+        const length = (req.query.length) ? req.query.length : config.defaultPageLength;
+        const page = (req.query.page) ? req.query.page : 1;
+        const next = function (books) {
+            res.send({code: config.okCode, page, length: books.length, results: books});
+        };
+        DocumentsRepository.getAllBooks(length, page, next);
+    }, function () {
         res.status(403);
-        res.send(error(config.invalidSession));
-    } else {
-        auth.verifySession(req.session, function () {
-            const length = (req.length) ? req.length : config.defaultPageLength;
-            const page = (req.page) ? req.page : 1;
-            const next = function (books) {
-                res.send(books);
-            };
-            DocumentsRepository.getAllBooks(length, page, next);
-        }, function () {
-            res.send(error(config.invalidSession));
-        })
-    }
+        res.send(error(config.invalidToken));
+    })
+
 };
 
 module.exports.search = function (req, res) {

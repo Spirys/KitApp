@@ -1,3 +1,5 @@
+'use strict';
+
 function getAuthor(name) {
     return 'Stub!';
 }

@@ -16,6 +16,7 @@ module.exports.noLoginProvided      = messages.noLoginProvided;
 module.exports.noPassProvided       = messages.noPassProvided;
 module.exports.wrongPassword        = messages.wrongPassword;
 module.exports.invalidSession       = messages.invalidSession;
+module.exports.invalidToken = messages.invalidToken;
 module.exports.emptyDocument = messages.emptyDocument;
 module.exports.unknownDocument = messages.unknownDocument;
 

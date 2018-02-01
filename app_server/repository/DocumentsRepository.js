@@ -44,6 +44,7 @@ function createDocument(document, next) {
     } else return {code: config.errorCode, message: config.unknownDocument};
 }
 
-module.exports.getAllBooks = function (length, page) {
-
+module.exports.getAllBooks = function (length, page, next) {
+    let results = [];
+    next(results);
 };

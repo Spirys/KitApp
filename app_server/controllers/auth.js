@@ -43,8 +43,30 @@ module.exports.login = function (req, res) {
 };
 
 module.exports.verifySession = function (sessionId, next, onError) {
+    if (!sessionId || sessionId === null || sessionId === "") {
+        onError(config.invalidSession);
+    } else {
+        verifySession(sessionId, next, onError);
+    }
+};
+
+/**
+ * Token verification is equal to session verification
+ */
+module.exports.verifyToken = function (token, next, onError) {
+    if (!token || token === null || token === "") {
+        onError(config.invalidToken);
+    } else {
+        verifySession(token, next, onError);
+    }
+};
+
+/*
+    Private functions
+ */
+function verifySession(session, next, onError) {
     // noinspection JSIgnoredPromiseFromCall
-    Session.findOne({_sessionId: sessionId})
+    Session.findOne({_sessionId: session})
         .select('_sessionId user')
         .exec(function (err, session) {
             if (err) {
@@ -67,11 +89,7 @@ module.exports.verifySession = function (sessionId, next, onError) {
                 });
             }
         });
-};
-
-/*
-    Private functions
- */
+}
 
 function sendData(data) {
     response.send(data);

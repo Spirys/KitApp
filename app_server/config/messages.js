@@ -6,6 +6,7 @@ module.exports.noLoginProvided = 'No email is provided';
 module.exports.noPassProvided = 'No password is provided';
 module.exports.wrongPassword = 'Wrong password';
 module.exports.invalidSession = 'Invalid session';
+module.exports.invalidToken = 'Invalid token';
 module.exports.emptyDocument = 'The document is empty';
 module.exports.unknownDocument = 'Type of the document is unknown';
 
