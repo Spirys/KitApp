@@ -28,6 +28,7 @@ module.exports.signIn = messages.signIn;
     Images
  */
 module.exports.noImage = '/images/no_image.png';
+module.exports.defaultUserImage = '/images/user.png';
 
 /*
     Document statuses (possible localization)
@@ -42,6 +43,11 @@ module.exports.statusReserved       = 'Reserved';
  */
 module.exports.patronTypes          = ['Student', 'Faculty member'];
 module.exports.documentTypes = ['book', 'journal', 'media'];
+
+/*
+    Request defaults
+ */
+module.exports.defaultPageLength = 25;
 
 /*
     Security configuration

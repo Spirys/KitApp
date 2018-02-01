@@ -43,3 +43,7 @@ function createDocument(document, next) {
 
     } else return {code: config.errorCode, message: config.unknownDocument};
 }
+
+module.exports.getAllBooks = function (length, page) {
+
+};

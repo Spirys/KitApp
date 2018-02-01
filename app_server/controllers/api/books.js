@@ -1,8 +1,37 @@
 'use strict';
-const Book = require('../../models/documents/Book');
+const auth = require('../auth');
+const DocumentsRepository = require('../../repository/DocumentsRepository');
+const config = require('../../config/config');
 
+function error(message) {
+    return {code: config.errorCode, message: message};
+}
+
+/**
+ * Returns the first <i>n</i> books from database.
+ * Default value of <i>n</i> is 25.
+ * Can be specified via <code>length</code> parameter in request.
+ * @param req Request.
+ *  Must include valid <code>session</code> parameter.
+ *  <p>Can include <code>length</code> and <code>page</code> parameters.</p>
+ * @param res
+ */
 module.exports.all = function (req, res) {
-
+    if (!req.session) {
+        res.status(403);
+        res.send(error(config.invalidSession));
+    } else {
+        auth.verifySession(req.session, function () {
+            const length = (req.length) ? req.length : config.defaultPageLength;
+            const page = (req.page) ? req.page : 1;
+            const next = function (books) {
+                res.send(books);
+            };
+            DocumentsRepository.getAllBooks(length, page, next);
+        }, function () {
+            res.send(error(config.invalidSession));
+        })
+    }
 };
 
 module.exports.search = function (req, res) {

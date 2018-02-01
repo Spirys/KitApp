@@ -23,7 +23,8 @@ const userSchema = new mongoose.Schema({
     phone           :   Number,
     occupation      :   String,
     patronType      :   {type: String, enum: config.patronTypes, required: true},
-    about           :   String
+    about: String,
+    avatar: {type: String, default: config.defaultUserImage}
 });
 
 userSchema.virtual('name').get(function () {
