@@ -16,20 +16,21 @@ module.exports.noLoginProvided      = messages.noLoginProvided;
 module.exports.noPassProvided       = messages.noPassProvided;
 module.exports.wrongPassword        = messages.wrongPassword;
 module.exports.invalidSession       = messages.invalidSession;
-module.exports.invalidToken = messages.invalidToken;
-module.exports.emptyDocument = messages.emptyDocument;
-module.exports.unknownDocument = messages.unknownDocument;
+module.exports.invalidToken         = messages.invalidToken;
+module.exports.emptyDocument        = messages.emptyDocument;
+module.exports.missingRequired      = messages.missingRequired;
+module.exports.unknownDocument      = messages.unknownDocument;
 
 /*
     UI messages (possible localization)
  */
-module.exports.signIn = messages.signIn;
+module.exports.signIn               = messages.signIn;
 
 /*
     Images
  */
-module.exports.noImage = '/images/no_image.png';
-module.exports.defaultUserImage = '/images/user.png';
+module.exports.noImage              = '/images/no_image.png';
+module.exports.defaultUserImage     = '/images/user.png';
 
 /*
     Document statuses (possible localization)
@@ -43,20 +44,25 @@ module.exports.statusReserved       = 'Reserved';
     Types
  */
 module.exports.patronTypes          = ['Student', 'Faculty member'];
-module.exports.documentTypes = ['book', 'journal', 'media'];
+module.exports.documentTypes        = ['book', 'journal', 'media'];
 
 /*
     Request defaults
  */
 module.exports.defaultPageLength = 25;
+module.exports.requiredDocumentFields = {
+    book        : ['title', 'authors', 'cost', 'edition', 'keywords'],
+    journal     : ['title', 'publisher', 'editors', 'date'],
+    media       : ['name']
+};
 
 /*
     Security configuration
  */
-module.exports.cookieHttpsOnly = false;
-module.exports.sessionExpires = 1000 * 60 * 60 * 24 * 7; // 1 week
+module.exports.cookieHttpsOnly  = false;
+module.exports.sessionExpires   = 1000 * 60 * 60 * 24 * 7; // 1 week
 
 /*
     Database configuration
  */
-module.exports.mongoURI = 'mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp';
+module.exports.mongoURI         = 'mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp';

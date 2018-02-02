@@ -1,12 +1,12 @@
 'use strict';
-const beautifier    = require('../util/beautifier');
+const beautifier    = require('../../util/beautifier');
 const mongoose      = require('mongoose');
 
 const model = {
-    first_name: String,
-    last_name: String,
-    birthDate: Date,
-    deathDate: Date
+    first_name  : {type: String, required: true},
+    last_name   : {type: String, required: true},
+    birth_date  : Date,
+    death_date  : Date
 };
 
 const authorSchema = new mongoose.Schema(model);

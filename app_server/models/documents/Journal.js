@@ -1,15 +1,15 @@
 'use strict';
-const beautifier    = require('../util/beautifier');
+const beautifier    = require('../../util/beautifier');
 const mongoose      = require('mongoose');
 
 /**
  *
  */
 const journalSchema = new mongoose.Schema({
-    name            :   {type: String, required: true},
-    publisher       :   String,
+    title           :   {type: String, required: true},
+    publisher       :   {type: String, required: true},
     issue: {
-        editors     :   [{type: mongoose.Schema.ObjectId, ref: 'Author'}],
+        editors     :   {type: [mongoose.Schema.ObjectId], ref: 'Author', required: true},
         date        :   {type: Date, required: true, default: Date.now}
     },
     articles        :   [{type: mongoose.Schema.ObjectId, ref: 'Article'}],

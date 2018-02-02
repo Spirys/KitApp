@@ -1,7 +1,7 @@
 'use strict';
-const beautifier = require('../util/beautifier');
-const config = require('../../config/config');
-const mongoose = require('mongoose');
+const beautifier    = require('../../util/beautifier');
+const config        = require('../../config/config');
+const mongoose      = require('mongoose');
 
 /**
  * Defining the basic model for all the document instances

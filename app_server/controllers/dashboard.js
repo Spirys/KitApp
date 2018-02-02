@@ -6,11 +6,14 @@ function fetchBookInfo(id) {
 
 }
 
-module.exports.dashboard = function (req, res) {
+module.exports.dashboard = async function (req, res) {
+
     let session = req.cookies._sessionId;
-    auth.verifySession(session, function (user) {
-        res.render('index', {title: 'Success', debugInfo: JSON.stringify(user)});
-    }, function () {
+    let response = await auth.verifySession(session);
+
+    if (response.code === config.okCode) {
+        res.render('index', {title: 'Success', debugInfo: JSON.stringify(response)});
+    } else {
         res.render('auth', {title: config.signIn});
-    });
+    }
 };

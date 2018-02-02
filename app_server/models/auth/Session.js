@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const beautifier = require('../util/beautifier');
+const beautifier = require('../../util/beautifier');
 
 const sessionSchema = new mongoose.Schema({
     user: {type: mongoose.Schema.ObjectId},

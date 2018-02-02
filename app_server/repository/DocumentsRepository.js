@@ -22,29 +22,41 @@ function getInstancesOf(id) {
 
 }
 
-function createBook(title, authors, publisher, edition, next) {
-    const authorIds = authorsRepository.getAuthors(authors);
+async function createBook(title, authors, publisher, edition, next) {
+    const authorIds = await authorsRepository.getAuthors(authors);
 }
 
-function createDocument(document, next) {
+async function createDocument(document, next) {
     if (typeof document === 'undefined' || document === null) {
         return {code: config.errorCode, message: config.emptyDocument};
-    } else if (document.book) {
-        // This is a book
-        createBook(document.book.title,
-            document.book.authors,
-            document.book.publisher,
-            document.book.edition, next);
-    } else if (document.journal) {
-        // This is a journal
+    }
 
-    } else if (document.media) {
-        // This is a media-file
+    // This is a book
+    else if (document.book) {
+        let authors = await authorsRepository.getAuthors(document.book.authors, );
+        let book = await createBook(document.book.title,
+            document.book.authors,
+            document.book.cost,
+            document.book.edition,
+            document.book.keywords);
+        next(book);
+    }
+
+    // This is a journal
+    else if (document.journal) {
+
+
+    }
+
+    // This is a media-file
+    else if (document.media) {
+
 
     } else return {code: config.errorCode, message: config.unknownDocument};
 }
 
-module.exports.getAllBooks = function (length, page, next) {
-    let results = [];
-    next(results);
+module.exports.getAllBooks = async function (length, page) {
+    return await [];
 };
+
+module.exports.create = createDocument();

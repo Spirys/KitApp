@@ -42,53 +42,53 @@ module.exports.login = function (req, res) {
     getUser(login);
 };
 
-module.exports.verifySession = function (sessionId, next, onError) {
+module.exports.verifySession = async function (sessionId) {
     if (!sessionId || sessionId === null || sessionId === "") {
-        onError(config.invalidSession);
+        return {message: config.invalidSession};
     } else {
-        verifySession(sessionId, next, onError);
+        return await verifySession(sessionId)
     }
 };
 
 /**
  * Token verification is equal to session verification
  */
-module.exports.verifyToken = function (token, next, onError) {
+module.exports.verifyToken = async function (token) {
     if (!token || token === null || token === "") {
-        onError(config.invalidToken);
+        return {code: config.errorCode, message: config.invalidToken};
     } else {
-        verifySession(token, next, onError);
+        return await verifySession(token);
     }
 };
 
 /*
     Private functions
  */
-function verifySession(session, next, onError) {
-    // noinspection JSIgnoredPromiseFromCall
-    Session.findOne({_sessionId: session})
-        .select('_sessionId user')
-        .exec(function (err, session) {
-            if (err) {
-                console.log(err);
-                onError();
-            } else if (!session || typeof session === 'undefined' || session === null) {
-                onError();
-            } else {
-                Patron.findById(session.user, function (err, user) {
-                    if (err) {
-                        console.log(err);
-                        onError();
-                    } else {
-                        return next({
-                            code: config.okCode,
-                            session: session._sessionId,
-                            user: user
-                        });
-                    }
-                });
-            }
-        });
+async function verifySession(sessionId) {
+
+    let response = {};
+
+    try {
+        let session = await Session.findOne({_sessionId: sessionId})
+            .select('_sessionId user')
+            .exec();
+
+        if (!session || typeof session === 'undefined' || session === null) {
+
+        } else {
+            let patron = await Patron.findById(session.user);
+            response = {
+                code: config.okCode,
+                session: session._sessionId,
+                user: patron
+            };
+        }
+    } catch (err) {
+        console.log(err);
+        response = {code: config.errorCode, message: err}
+    } finally {
+        return response;
+    }
 }
 
 function sendData(data) {

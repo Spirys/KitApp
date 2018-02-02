@@ -1,5 +1,5 @@
 'use strict';
-const beautifier    = require('../util/beautifier.js');
+const beautifier    = require('../../util/beautifier.js');
 const config        = require('../../config/config');
 const mongoose      = require('mongoose');
 
