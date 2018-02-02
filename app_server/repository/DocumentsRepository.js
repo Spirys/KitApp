@@ -56,7 +56,7 @@ async function createDocument(document, next) {
 }
 
 module.exports.getAllBooks = async function (length, page) {
-    return await [];
+    return [];
 };
 
 module.exports.create = createDocument();

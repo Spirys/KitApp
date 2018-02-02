@@ -17,8 +17,9 @@ $('document').ready(function () {
         });
 
         function submitForm() {
-            let password = $("#login-form #inputPassword")[0].value;
-            let data = hashPassword($("#login-form"), password);
+            var form = $("#login-form");
+            var password = form.find("#inputPassword")[0].value;
+            var data = hashPassword(form, password);
 
             /**
              * Sending async request
@@ -41,7 +42,7 @@ $('document').ready(function () {
                             if (response.message) {
                                 errMessage = response.message;
                             }
-                            $("#error").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span> &nbsp; ' + errMessage + '</div>');
+                            $("#error").html('<div class="alert alert-danger"> <span class="glyphicon glyphicon-info-sign"></span>' + errMessage + '</div>');
                             $("#button-login").html('<span class="glyphicon glyphicon-log-in"></span> &nbsp; Sign In');
                         });
                     }
@@ -60,7 +61,7 @@ function hashPassword(data, password) {
 
     // Find and replace `content` if there
     for (index = 0; index < values.length; ++index) {
-        if (values[index].name == "password") {
+        if (values[index].name === "password") {
             values[index].value = $.md5(password);
             break;
         }

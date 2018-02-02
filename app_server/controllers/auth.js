@@ -14,16 +14,16 @@ const Librarian = require('../models/users/Librarian');
 /*
     Private fields
  */
-let response;
-let login;
-let password;
-let remember;
+let response,
+    login,
+    password,
+    remember;
 
 /*
     Public function
  */
 
-module.exports.login = function (req, res) {
+module.exports.login = async function (req, res) {
 
     response = res;
     login = req.body.email;
@@ -39,7 +39,12 @@ module.exports.login = function (req, res) {
         return;
     }
 
-    getUser(login);
+    let user = await getUser(login);
+    if (user.code === config.okCode) {
+        sendData(user);
+    } else {
+        sendData(user);
+    }
 };
 
 module.exports.verifySession = async function (sessionId) {
@@ -86,68 +91,77 @@ async function verifySession(sessionId) {
     } catch (err) {
         console.log(err);
         response = {code: config.errorCode, message: err}
-    } finally {
-        return response;
     }
+    return response;
 }
 
 function sendData(data) {
     response.send(data);
 }
 
-function verifyPassword(login) {
+async function verifyPassword(login) {
     if (login.password === password) {
         let session = randomSession();
-        saveSession(session, login);
-        setCookie(remember, session);
+        let response = await saveSession(session, login);
+        if (response.code === config.okCode) {
+            setCookie(remember, session);
+        }
+        return response;
     } else {
-        sendData({code: config.wrongPassword});
+        return {code: config.errorCode, message: config.wrongPassword};
     }
 }
 
-function saveSession(session, login) {
+async function saveSession(session, login) {
     let newSession = {
         user: login.user,
         _sessionId: session,
         expires: Date.now() + config.sessionExpires
     };
-    Session.create(newSession, function (err, session) {
-        if (err) {
-            return {code: config.errorCode, message: err};
-        } else if (!session || typeof session === 'undefined' || session === null) {
+    try {
+        let response = await Session.create(newSession);
+        if (!response || typeof response === 'undefined' || response === null) {
             return {code: config.errorCode, message: config.invalidSession};
         } else {
-            sendData({code: config.okCode, user: login.user, email: login.login});
+            return {code: config.okCode, session};
         }
-    });
+    } catch (err) {
+        return {code: config.errorCode, message: err.toString()};
+    }
 }
 
-function getUser(login) {
-    // noinspection JSIgnoredPromiseFromCall
-    Login.findOne({login: login})
-        .select('userId password')
-        .exec(function (err, login) {
-            if (err) {
-                sendData({error: true, code: config.errorCode});
-            } else if (!login || typeof login === 'undefined' || login === null) {
-                // The user is absent in database
-                sendData({error: true, code: config.userNotRegistered});
+async function getUser(login) {
+    try {
+        let user = await Login.findOne({login: login})
+            .select('user password')
+            .exec();
+
+        if (!user || typeof user === 'undefined' || user === null) {
+            // The user is absent in database
+            return {code: config.errorCode, message: config.userNotRegistered};
+        } else {
+            let response = await verifyPassword(user);
+            if (response.code === config.okCode) {
+                return {code: config.okCode, user: user.id, session: response.session};
             } else {
-                verifyPassword(login);
+                return response;
             }
-        });
+        }
+    } catch (err) {
+        console.log(err);
+        return {code: config.errorCode, message: JSON.stringify(err)};
+    }
 }
 
 function setCookie(remember, session) {
     let cookie = {
         domain: '.kitapptatar.ru',
-        secure: config.cookieHttpsOnly,
     };
+    if (config.cookieHttpsOnly) cookie.secure = true;
     if (remember) {
         cookie.expires = new Date(Date.now() + config.sessionExpires);
     }
     response.cookie('_sessionId', session, cookie);
-    return session;
 }
 
 function randomSession() {

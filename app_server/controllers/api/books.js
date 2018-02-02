@@ -52,7 +52,7 @@ module.exports.all = async function (req, res) {
             const next = function (books) {
                 res.json({code: config.okCode, page, length: books.length, results: books});
             };
-            let books = await DocumentsRepository.getAllBooks(length, page, next);
+            let books = await DocumentsRepository.getAllBooks(length, page);
             next(books);
         } else {
             throw new Error();
