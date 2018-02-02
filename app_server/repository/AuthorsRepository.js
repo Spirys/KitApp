@@ -1,58 +1,45 @@
 'use strict';
 const Author = require('../models/documents/Author');
+const config = require('../config/config');
 
 /**
  * Gets the existing author {@link ObjectId}
- * @param author An object containing following fields:
  * <ul>
  *     <li>first_name</li>
  *     <li>last_name</li>
  * </ul>
- * @param next
- * @param onError
  * @returns {string}
+ * @param anAuthor
  */
-function getAuthor(author, next, onError) {
-    Author.findOne({first_name: author.first_name, last_name: author.last_name}, function (err, author) {
-        if (err) {
-            onError();
-        } else if (!author || typeof author === 'undefined') {
+module.exports.getAuthor = async function (anAuthor) {
+    try {
+        let author = await Author.findOne({first_name: anAuthor.first_name, last_name: anAuthor.last_name});
+        if (!author || typeof author === 'undefined' || author === null) {
             let fields = new Author({
-                first_name: author.first_name,
-                last_name: author.last_name,
-                birth_date: author.birth_date,
-                death_date: author.death_date
+                first_name: anAuthor.first_name,
+                last_name: anAuthor.last_name,
+                birth_date: anAuthor.birth_date,
+                death_date: anAuthor.death_date
             });
 
-            Author.create(fields, function (err, newAuthor) {
-                if (err) {
-                    onError();
-                } else {
-                    return next(newAuthor);
-                }
-            });
-        } else {
-            next(author);
+            author = await Author.create(fields);
         }
-    });
-}
+        return author;
+    } catch (err) {
+        return {code: config.errorCode}
+    }
+};
 
-module.exports.getAuthor = getAuthor;
-
-module.exports.getAuthors = function (authors, next, onError) {
+module.exports.getAuthors = async function (authors) {
     if (Array.isArray(authors)) {
-        let authorIds = [];
+        let newAuthors = [];
         for (let author in authors) {
             if (authors.hasOwnProperty(author) && author && author !== null) {
-                getAuthor(author, function (author) {
-                    authorIds.push(author);
-                }, onError)
+                newAuthors.push(await getAuthor(author));
             }
         }
-        return authorIds;
+        return newAuthors;
     } else if (authors.hasOwnProperty('first_name') && authors.hasOwnProperty('last_name')) {
-        return getAuthor(authors, next, onError);
-    } else {
-        onError();
+        return await exports.getAuthor(authors);
     }
 };

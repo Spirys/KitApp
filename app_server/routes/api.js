@@ -20,7 +20,7 @@ router.get('/books/search', booksController.all);
 /*
     POST request to the books
  */
-router.post('/', booksController.create);
+router.post('/books', booksController.create);
 
 /*
     Specific book
@@ -34,7 +34,7 @@ router.get('/books/:id', booksController.getById);
 /**
  * POST request to the book checks it out or adds a user to query
  */
-router.post('/books/:id');
+router.post('/books/:id', booksController.checkOut);
 
 /**
  * DELETE request to the book deletes it from the database

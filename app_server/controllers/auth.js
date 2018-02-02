@@ -40,11 +40,7 @@ module.exports.login = async function (req, res) {
     }
 
     let user = await getUser(login);
-    if (user.code === config.okCode) {
-        sendData(user);
-    } else {
-        sendData(user);
-    }
+    sendData(user);
 };
 
 module.exports.verifySession = async function (sessionId) {

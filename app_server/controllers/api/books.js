@@ -4,6 +4,11 @@ const DocumentsRepository = require('../../repository/DocumentsRepository');
 const config = require('../../config/config');
 const validator = require('../../util/validator');
 
+/*
+    Todo: create reusable function for generating message with an error
+    Todo: create reusable function for session checks (use validator)
+ */
+
 /**
  * Builds an error with given message
  * @param error
@@ -18,20 +23,21 @@ function error(error) {
     }
 }
 
-async function createDocument(query, next, onError) {
+async function createDocument(query) {
     const requiredFields = config.requiredDocumentFields;
 
-    for (let type in config.documentTypes){
+    for (let iter in config.documentTypes) {
+        let type = config.documentTypes[iter];
         if (query[type]) {
             let missing = validator.validateFields(query[type], requiredFields[type]);
             if (!(missing.length === 0)) {
-                onError({message: config.missingRequired, missing})
+                return {code: config.errorCode, message: config.missingRequired, missing: missing}
             } else {
-                DocumentsRepository.create();
+                return await DocumentsRepository.createDocument(query);
             }
-            break;
         }
     }
+    return {code: config.unknownDocument};
 }
 
 /**
@@ -70,19 +76,26 @@ module.exports.getById = function (req, res) {
 
 };
 
-module.exports.create = function (req, res) {
-    auth.verifySession(req.query.token, function () {
-        createDocument(req.query, function (response) {
-
-        }, function (err) {
-
-        })
-    }, function (err) {
-        res.send(error(err));
-    })
+module.exports.create = async function (req, res) {
+    try {
+        let sessionResponse = await auth.verifySession(req.body.token);
+        if (sessionResponse.code === config.okCode) {
+            let books = await createDocument(req.body);
+            res.json(books);
+        } else {
+            res.status(403).json(error(config.invalidToken));
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(403).json(error(config.invalidToken));
+    }
 };
 
 module.exports.delete = function (req, res) {
+
+};
+
+module.exports.checkOut = function (req, res) {
 
 };
 

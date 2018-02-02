@@ -11,16 +11,16 @@
 function validateFields(object, fields) {
     if (Array.isArray(fields) && object && object !== null) {
         let missing = [];
-        for (let field in fields){
-            if (fields.hasOwnProperty(field)){
-                if (!object.hasOwnProperty(field)) {
-                    missing.push(field);
+        for (let i in fields) {
+            if (fields.hasOwnProperty(i)) {
+                if (!object.hasOwnProperty(fields[i])) {
+                    missing.push(fields[i]);
                 }
             }
         }
         return missing;
     } else {
-        return null;
+        return fields;
     }
 }
 
