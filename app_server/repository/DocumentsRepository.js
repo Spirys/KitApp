@@ -60,7 +60,7 @@ async function createDocument(document) {
 }
 
 module.exports.getAllBooks = async function (length, page) {
-    return await Book.find().limit(length).exec();
+    return await Book.find().limit(length).populate('authors').exec();
 };
 
 module.exports.createDocument = createDocument;
