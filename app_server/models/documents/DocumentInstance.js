@@ -14,7 +14,7 @@ const instanceModel = {
         default: config.statusMaintenance
     },
     due_back    : {type: Date, default: Date.now},
-    taker       : {type: mongoose.Schema.ObjectId, ref: 'Patron', required: true}
+    taker       : {type: mongoose.Schema.ObjectId, ref: 'Patron', required: false}
 };
 
 /*
@@ -26,7 +26,7 @@ const types = config.documentTypes;
     Generating and exporting models dynamically
  */
 for (let name in types) {
-    module.exports[beautifier.toInstanceForm(name)] = buildModel(name);
+    module.exports[beautifier.toInstanceForm(types[name])] = buildModel(types[name]);
 }
 
 /**
@@ -37,7 +37,7 @@ function buildModel(name) {
     let instanceSchema = new mongoose.Schema(changeModel(name, {
         type: mongoose.Schema.ObjectId,
         ref: beautifier.capitalFirst(name),
-        required: true
+        required: false
     }));
 
     beautifier.virtualId(instanceSchema);
@@ -51,7 +51,8 @@ function buildModel(name) {
  * @returns {mongoose.Schema}
  */
 function changeModel(field, value) {
-    let newModel = instanceModel.create();
+    //let newModel = instanceModel.create({});
+    let newModel = Object.assign({}, instanceModel);
     newModel[field] = value;
     return newModel;
 }

@@ -38,7 +38,7 @@ module.exports.documentTypes        = ['book', 'journal', 'media'];
  */
 module.exports.defaultPageLength = 25;
 module.exports.requiredDocumentFields = {
-    book: ['title', 'authors', 'cost', 'edition', 'publisher', 'keywords'],
+    book        : ['title', 'authors', 'cost', 'edition', 'publisher', 'keywords'],
     journal     : ['title', 'publisher', 'editors', 'date'],
     media       : ['name']
 };
@@ -46,16 +46,17 @@ module.exports.requiredDocumentFields = {
 /*
     Error messages
  */
-module.exports.bookCreationFailed = messages.bookCreationFailed;
-module.exports.userNotRegistered = messages.userNotRegistered;
-module.exports.noLoginProvided = messages.noLoginProvided;
-module.exports.noPassProvided = messages.noPassProvided;
-module.exports.wrongPassword = messages.wrongPassword;
-module.exports.invalidSession = messages.invalidSession;
-module.exports.invalidToken = messages.invalidToken;
-module.exports.emptyDocument = messages.emptyDocument;
-module.exports.missingRequired = messages.missingRequired;
-module.exports.unknownDocument = messages.unknownDocument
+module.exports.bookCreationFailed       = messages.bookCreationFailed;
+module.exports.journalCreationFailed    = messages.journalCreationFailed;
+module.exports.userNotRegistered        = messages.userNotRegistered;
+module.exports.noLoginProvided          = messages.noLoginProvided;
+module.exports.noPassProvided           = messages.noPassProvided;
+module.exports.wrongPassword            = messages.wrongPassword;
+module.exports.invalidSession           = messages.invalidSession;
+module.exports.invalidToken             = messages.invalidToken;
+module.exports.emptyDocument            = messages.emptyDocument;
+module.exports.missingRequired          = messages.missingRequired;
+module.exports.unknownDocument          = messages.unknownDocument
     + '. Please make sure that you specify one of the following: ' + module.exports.documentTypes;
 
 

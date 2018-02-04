@@ -40,6 +40,14 @@ async function createDocument(query) {
     return {code: config.unknownDocument};
 }
 
+async function checkOutDocument(query) {
+    try {
+
+    } catch (err) {
+        //res.status(403).json(config.)
+    }
+}
+
 /**
  * Returns the first <i>n</i> books from database.
  * Default value of <i>n</i> is 25.
@@ -80,8 +88,28 @@ module.exports.create = async function (req, res) {
     try {
         let sessionResponse = await auth.verifySession(req.body.token);
         if (sessionResponse.code === config.okCode) {
-            let books = await createDocument(req.body);
-            res.json(books);
+            let book = await createDocument(req.body);
+            let instances = [];
+            for (let i = 0; i<book.instances.length;i++){
+                let tmp = book.instances[i];
+                instances.push({
+                    "id": tmp.id,
+                    "status": tmp.status,
+                    "due_back": tmp.due_back
+                });
+            }
+            let response = {
+                "id": book.id,
+                "authors": book.authors,
+                "cost": book.cost,
+                "image": book.image,
+                "instances": instances,
+                "title": book.title,
+                "edition": book.edition,
+                "publisher": book.publisher,
+                "keywords": book.keywords
+            };
+            res.json(response);
         } else {
             res.status(403).json(error(config.invalidToken));
         }
@@ -95,8 +123,19 @@ module.exports.delete = function (req, res) {
 
 };
 
-module.exports.checkOut = function (req, res) {
-
+module.exports.checkOut = async function (req, res) {
+    try {
+        let sessionResponse = await auth.verifySession(req.body.token);
+        if (sessionResponse.code === config.okCode){
+            let checkOut = checkOutDocument();
+            res.json(checkOut);
+        } else {
+            res.status(403).json(error(config.invalidToken));
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(403).json(error(config.invalidToken));
+    }
 };
 
 // 1. /all — returns the first 25 books from the db

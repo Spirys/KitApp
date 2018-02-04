@@ -2,8 +2,10 @@
 const config = require('../config/config');
 const authorsRepository = require('./AuthorsRepository');
 const Book = require('../models/documents/Book');
+const DocumentInstance = require('../models/documents/DocumentInstance');
+const Journal = require('../models/documents/Journal');
 
-function findBook(title, author, publisher) {
+function findBook(title, edition, publisher) {
 
 }
 
@@ -25,9 +27,52 @@ function getInstancesOf(id) {
 
 async function createBook(title, authors, edition, cost, publisher, keywords) {
     try {
-        return await Book.create({title, authors, edition, cost, publisher, keywords})
+        let props= {
+            title: title,
+            edition: edition,
+            publisher: publisher,
+        };
+
+        let book = await Book.findOne(props)
+                            .populate('instances')
+                            .populate('authors')
+                            .exec();
+        if (!book || book == null || typeof book === 'undefined'){
+            book = new Book({
+                title: title,
+                authors: authors,
+                edition: edition,
+                cost: cost,
+                publisher: publisher,
+                keywords: keywords,
+                instances: []
+            });
+        }
+
+        let bookInstance = await DocumentInstance['BookInstance']();
+        await bookInstance.save();
+
+        book.instances.push(bookInstance);
+        book.markModified('instances');
+        return await book.save();
+        // return await Book.create({
+        //     title: title,
+        //     authors: authors,
+        //     edition: edition,
+        //     cost: cost,
+        //     publisher: publisher,
+        //     keywords: keywords,
+        //     instances: [bookInstance]});
     } catch (err) {
-        return {code: config.errorCode, message: config.bookCreationFailed}
+        return {code: config.errorCode, message: config.bookCreationFailed};
+    }
+}
+
+async function createJournal(title, publisher, issue) {
+    try {
+        return await Journal.create({title, publisher, issue})
+    } catch (err) {
+        return {code: config.errorCode, message:config.journalCreationFailed}
     }
 }
 
@@ -39,7 +84,8 @@ async function createDocument(document) {
     // This is a book
     else if (document.book) {
         let authors = await authorsRepository.getAuthors(document.book.authors);
-        return await createBook(document.book.title,
+        return await createBook(
+            document.book.title,
             authors,
             document.book.edition,
             document.book.cost,
@@ -49,7 +95,11 @@ async function createDocument(document) {
 
     // This is a journal
     else if (document.journal) {
-
+        let authors = await authorsRepository.getAuthors(document.journal.issue.editors);
+        return await createJournal(
+            document.journal.title,
+            document.journal.publisher,
+            {editors: authors, date: document.journal.date});
     }
 
     // This is a media-file
@@ -60,7 +110,7 @@ async function createDocument(document) {
 }
 
 module.exports.getAllBooks = async function (length, page) {
-    return await Book.find().limit(length).populate('authors').exec();
+    return await Book.find().limit(length).populate('authors').populate('instances').exec();
 };
 
 module.exports.createDocument = createDocument;

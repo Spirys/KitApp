@@ -33,9 +33,10 @@ module.exports.getAuthor = async function (anAuthor) {
 module.exports.getAuthors = async function (authors) {
     if (Array.isArray(authors)) {
         let newAuthors = [];
-        for (let author in authors) {
-            if (authors.hasOwnProperty(author) && author && author !== null) {
-                newAuthors.push(await getAuthor(author));
+        for (let i in authors) {
+            let author = authors[i];
+            if (authors.hasOwnProperty(i) && author && author !== null) {
+                newAuthors.push(await exports.getAuthor(author));
             }
         }
         return newAuthors;
