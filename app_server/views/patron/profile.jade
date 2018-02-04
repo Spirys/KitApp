@@ -1,0 +1,178 @@
+extends patron_layout
+
+block head_extra
+    link(href='stylesheets/animate.min.css', rel='stylesheet')
+block content
+    body
+        .wrapper
+            .sidebar(data-background-color='white', data-active-color='danger')
+                .sidebar-wrapper
+                    .logo
+                        a.simple-text(href='http://kitapptatar.ru')
+                            | Kitapp
+                    ul.nav
+                        li
+                            a(href='dashboard')
+                                i.ti-panel
+                                p Dashboard
+                        li.active
+                            a(href='user')
+                                i.ti-user
+                                p User Profile
+                        li
+                            a(href='card')
+                                i.ti-view-list-alt
+                                p Library card
+                        li
+                            a(href='search')
+                                i.ti-book
+                                p Search books
+                        li
+                            a(href='notifications')
+                                i.ti-bell
+                                p Notifications
+            .main-panel
+                nav.navbar.navbar-default
+                    .container-fluid
+                        .navbar-header
+                            button.navbar-toggle(type='button')
+                                span.sr-only Toggle navigation
+                                span.icon-bar.bar1
+                                span.icon-bar.bar2
+                                span.icon-bar.bar3
+                            a.navbar-brand(href='#') Dashboard
+                        .collapse.navbar-collapse
+                            ul.nav.navbar-nav.navbar-right
+                                li
+                                    a.dropdown-toggle(href='#', data-toggle='dropdown')
+                                        i.ti-email
+                                        p Mail
+                                li.dropdown
+                                    a.dropdown-toggle(href='#', data-toggle='dropdown')
+                                        i.ti-bell
+                                        p.notification 5
+                                        p Notifications
+                                        b.caret
+                                    ul.dropdown-menu
+                                        li
+                                            a(href='#') Notification 1
+                                        li
+                                            a(href='#') Notification 2
+                                        li
+                                            a(href='#') Notification 3
+                                        li
+                                            a(href='#') Notification 4
+                                        li
+                                            a(href='#') Another notification
+                                li
+                                    a(href='#')
+                                        i.ti-settings
+                                        p Settings
+                .content
+                    .container-fluid
+                        .row
+                            .col-lg-4.col-md-5
+                                .card.card-user
+                                    .image
+                                        img(src='../images/background.jpg', alt='...')
+                                    .content
+                                        .author
+                                            img.avatar.border-white(src='../images/faces/shk.jpg', alt='...')
+                                            h4.title
+                                                | Will Sh
+                                                br
+                                        p.description.text-center
+                                            | Student, BS1-2
+                                    hr
+                                    .text-center
+                                        .row
+                                            .col-md-3.col-md-offset-1
+                                                h5
+                                                    | 12
+                                                    br
+                                                    small Books on hands
+                                            .col-md-4
+                                                h5
+                                                    | 2
+                                                    br
+                                                    small Books awaiting
+                                            .col-md-3
+                                                h5
+                                                    | 24,6$
+                                                    br
+                                                    small Fines
+                            .col-lg-8.col-md-7
+                                .card
+                                    .header
+                                        h4.title Edit Profile
+                                    .content
+                                        form
+                                            .row
+                                                .col-md-5
+                                                    .form-group
+                                                        label Status
+                                                        input.form-control.border-input(type='text', disabled='', placeholder='Status', value='Student')
+                                                .col-md-4
+                                                    .form-group
+                                                        label(for='email') Email address
+                                                        input.form-control.border-input(type='email', disabled='', placeholder='Email', id="email", name="email", value='w.sh@innopolis.ru')
+                                            .row
+                                                .col-md-6
+                                                    .form-group
+                                                        label First Name
+                                                        input.form-control.border-input(type='text', placeholder='First Name', value='William')
+                                                .col-md-6
+                                                    .form-group
+                                                        label Last Name
+                                                        input.form-control.border-input(type='text', placeholder='Last Name', value='Shin')
+                                            .row
+                                                .col-md-12
+                                                    .form-group
+                                                        label Card ID
+                                                        input.form-control.border-input(type='text', disabled='', placeholder='ID', value='12000784836567')
+                                            .row
+                                                .col-md-4
+                                                    .form-group
+                                                        label Year
+                                                        input.form-control.border-input(type='text', placeholder='Year', value='Bachelor, 1st')
+                                                .col-md-4
+                                                    .form-group
+                                                        label Group
+                                                        input.form-control.border-input(type='text', placeholder='Group', value='BS1-2')
+                                    .text-center
+                                        button.btn.btn-info.btn-fill.btn-wd(type='submit') Request Changes
+                                    .clearfix
+            footer.footer
+                .container-fluid
+                    nav.pull-left
+                        ul
+                            li
+                                a(href='http://kitapptatar.ru')
+                                    | Kitapp
+                            li
+                                a(href='')
+                                    | Innopolis University Library
+                            li
+                                a(href='http://www.creative-tim.com/license')
+                                    | Licenses
+                    .copyright.pull-right
+                        | ©
+                        script.
+                            document.write(new Date().getFullYear())
+                        | , made with
+                        i.fa.fa-heart.heart
+                        |  by
+                        a(href='http://kitapptatar.ru') Kitapp
+block scripts
+    // Checkbox, Radio & Switch Plugins
+    script(src='../bootstrap/javascripts/bootstrap-checkbox-radio.js')
+    // Charts Plugin
+    script(src='../bootstrap/javascripts/chartist.min.js')
+    // Notifications Plugin
+    script(src='../bootstrap/javascripts/bootstrap-notify.js')
+    // Google Maps Plugin
+    script(type='text/javascript', src='https://maps.googleapis.com/maps/api/js')
+    // Paper Dashboard Core javascript and methods for Demo purpose
+    script(src='../bootstrap/javascripts/paper-dashboard.js')
+    // Paper Dashboard DEMO methods, don't include it in your project!
+    script(src='../bootstrap/javascripts/demo.js')

@@ -1,0 +1,159 @@
+extends patron_layout
+block head_extra
+
+block content
+    body
+        .wrapper
+            .sidebar(data-background-color='white', data-active-color='danger')
+                .sidebar-wrapper
+                    .logo
+                        a.simple-text(href='http://kitapptatar.ru')
+                            | Kitapp
+                    ul.nav
+                        li.active
+                            a(href='dashboard')
+                                i.ti-panel
+                                p Dashboard
+                        li
+                            a(href='user')
+                                i.ti-user
+                                p User Profile
+                        li
+                            a(href='card')
+                                i.ti-view-list-alt
+                                p Library card
+                        li
+                            a(href='search')
+                                i.ti-book
+                                p Search books
+                        li
+                            a(href='notifications')
+                                i.ti-bell
+                                p Notifications
+            .main-panel
+                nav.navbar.navbar-default
+                    .container-fluid
+                        .navbar-header
+                            button.navbar-toggle(type='button')
+                                span.sr-only Toggle navigation
+                                span.icon-bar.bar1
+                                span.icon-bar.bar2
+                                span.icon-bar.bar3
+                            a.navbar-brand(href='#') Dashboard
+                        .collapse.navbar-collapse
+                            ul.nav.navbar-nav.navbar-right
+                                li
+                                    a.dropdown-toggle(href='#', data-toggle='dropdown')
+                                        i.ti-email
+                                        p Mail
+                                li.dropdown
+                                    a.dropdown-toggle(href='#', data-toggle='dropdown')
+                                        i.ti-bell
+                                        p.notification 5
+                                        p Notifications
+                                        b.caret
+                                    ul.dropdown-menu
+                                        li
+                                            a(href='#') Notification 1
+                                        li
+                                            a(href='#') Notification 2
+                                        li
+                                            a(href='#') Notification 3
+                                        li
+                                            a(href='#') Notification 4
+                                        li
+                                            a(href='#') Another notification
+                                li
+                                    a(href='#')
+                                        i.ti-settings
+                                        p Settings
+                .content
+                    .container-fluid
+                        .row
+                            .col-lg-3.col-sm-6
+                                .card
+                                    .content
+                                        .row
+                                            .col-xs-5
+                                                .icon-big.icon-warning.text-center
+                                                    i.ti-alarm-clock
+                                            .col-xs-7
+                                                .text
+                                                    p Upcoming deadlines
+                                                    .entry
+                                                        | Friday, Jan 25
+                                        .footer
+                                            hr
+                                            .stats
+                                                i.ti-reload
+                                                |  Updated now
+                            .col-lg-3.col-sm-6
+                                .card
+                                    .content
+                                        .row
+                                            .col-xs-5
+                                                .icon-big.icon-success.text-center
+                                                    i.ti-book
+                                            .col-xs-7
+                                                .numbers
+                                                    p Books on hands
+                                                    |                                            23
+                                        .footer
+                                            hr
+                                            .stats
+                                                i.ti-calendar
+                                                |  Last day
+                            .col-lg-3.col-sm-6
+                                .card
+                                    .content
+                                        .row
+                                            .col-xs-5
+                                                .icon-big.icon-danger.text-center
+                                                    i.ti-money
+                                            .col-xs-7
+                                                .numbers
+                                                    p Overdue
+                                                    |                                             3
+                                        .footer
+                                            hr
+                                            .stats
+                                                i.ti-timer
+                                                |  In the last hour
+                            .col-lg-3.col-sm-6
+                                .card
+                                    .content
+                                        .row
+                                            .col-xs-5
+                                                .icon-big.icon-info.text-center
+                                                    i.ti-bookmark
+                                            .col-xs-7
+                                                .text
+                                                    p Pinned books
+                                                    |                                            Catcher in the Rye" J. D. Salinger
+                                        .footer
+                                            hr
+                                            .stats
+                                                i.ti-reload
+                                                |  Updated now
+                footer.footer
+                    .container-fluid
+                        nav.pull-left
+                            ul
+                                li
+                                    a(href='http://kitapptatar.ru')
+                                        | Kitapp
+                                li
+                                    a(href='')
+                                        | Innopolis University Library
+                                li
+                                    a(href='http://www.creative-tim.com/license')
+                                        | Licenses
+                        .copyright.pull-right
+                            | ©
+                            script.
+                                document.write(new Date().getFullYear())
+                            | , made with
+                            i.fa.fa-heart.heart
+                            |  by
+                            a(href='http://kitapptatar.ru') Kitapp
+block scripts
