@@ -40,7 +40,7 @@ async function getUserByLogin(login) {
     try {
         let user = await Login.findOne({login: login}).exec();
 
-        if (!user || typeof user === 'undefined' || user === null) {
+        if (!user) {
             // The user is absent in database
             response = {code: config.errorCode, message: config.userNotRegistered};
         } else {

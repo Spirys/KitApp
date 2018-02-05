@@ -11,7 +11,9 @@ function capitalizeFirstLetter(string) {
 }
 
 function composePatron(model) {
+    console.log(model);
     return {
+        _id: model._id,
         id: model.id,
         name: {
             first: model.first_name,
@@ -28,6 +30,7 @@ function composePatron(model) {
 
 function composeLibrarian(model) {
     return {
+        _id: model._id,
         id: model.id,
         name: {
             first: model.first_name,

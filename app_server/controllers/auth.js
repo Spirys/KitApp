@@ -43,7 +43,7 @@ module.exports.login = async function (req, res) {
     if (!!await verifyPassword(login, password)) {
         let session = randomSession();
         let user = await getUser(login);
-        let response = await saveSession(session, user._id);
+        let response = await saveSession(session, user.user._id);
         if (response.code === config.okCode) {
             // Everything is OK
             setCookie(remember, session);
@@ -100,13 +100,13 @@ async function verifySession(sessionId) {
             .select('_sessionId user')
             .exec();
 
-        if (!session || typeof session === 'undefined' || session === null) {
+        if (!session) {
             response = {
                 code: config.permissionDeniedCode,
                 message: config.invalidSession
             }
         } else {
-            response = {code: config.okCode};
+            response = {code: config.okCode, session: session};
         }
     } catch (err) {
         console.log(err);
@@ -129,6 +129,8 @@ async function verifyPassword(login, password) {
 }
 
 async function saveSession(session, userId) {
+    console.log(session);
+    console.log(userId);
     let newSession = {
         user: userId,
         _sessionId: session,
