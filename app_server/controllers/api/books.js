@@ -40,11 +40,12 @@ async function createDocument(query) {
     return {code: config.unknownDocument};
 }
 
-async function checkOutDocument(query) {
+async function checkOutDocument(query, patron) {
     try {
-
+        return await DocumentsRepository.checkOutDocument('book', query, patron);
     } catch (err) {
-        //res.status(403).json(config.)
+        return {code: config.errorCode, message: config.invalidToken}
+        res.status(403).json(config.invalidToken);
     }
 }
 
@@ -131,7 +132,7 @@ module.exports.checkOut = async function (req, res) {
     try {
         let sessionResponse = await auth.verifySession(req.body.token);
         if (sessionResponse.code === config.okCode){
-            let checkOut = checkOutDocument();
+            let checkOut = checkOutDocument(req.params, req.body.token);
             res.json(checkOut);
         } else {
             res.status(403).json(error(config.invalidToken));
