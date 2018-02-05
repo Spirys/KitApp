@@ -1,28 +1,84 @@
 'use strict';
 const config = require('../config/config');
 const authorsRepository = require('./AuthorsRepository');
+const usersRepository = require('./UsersRepository');
+const Session = require('../models/auth/Session');
+const Patron = require('../models/users/Patron');
 const Book = require('../models/documents/Book');
 const DocumentInstance = require('../models/documents/DocumentInstance');
 const Journal = require('../models/documents/Journal');
 
-function findBook(title, edition, publisher) {
+async function findBook(title, edition, publisher) {
+    return await Book.findOne({
+        title: title,
+        edition: edition,
+        publisher: publisher
+    }).exec();
+}
+
+async function getBook(id) {
+    return await Book.findOne({
+        $where: `parseInt(this._id.valueOf().toString().substring(18), 16) === ${id}`
+    }).populate('instances').populate('authors').exec();
+}
+
+async function checkOutBook(bookId, token) {
+    let book = await getBook(bookId);
+    if (book) {
+        let instances = book.instances;
+        for (let i = 0; i < instances.length; i++) {
+            if (instances[i].status === config.statusAvailable) {
+                let session = await Session.findOne({'_sessionId': token}).exec();
+                let patron  = await Patron.findById(session.user).exec();
+                instances[i].status     = config.statusLoaned;
+                instances[i].due_back   = Date.now() + config.loanTime;
+                instances[i].taker      = patron;
+                instances[i].save();
+                book.markModified('instances');
+
+                return {
+                    taker: patron._id,
+                    book: book._id
+                }
+            }
+        }
+        return {code: config.errorCode, message: config.bookUnvailable}
+    } else {
+        return {code: config.errorCode, message: config.bookDoesNotExist};
+    }
+}
+
+async function getArticle(id) {
 
 }
 
-function getBook(id) {
+async function getJournal(id) {
 
 }
 
-function getArticle(id) {
+async function getInstancesOf(id) {
+    let doc = await getBook(id);
+    // TODO: make better
+    if(doc == null) {
+        doc = await getArticle(id);
+    } else if (doc == null) {
+        doc = await getJournal(id)
+    }
 
+    return doc.instances;
 }
 
-function getJournal(id) {
-
-}
-
-function getInstancesOf(id) {
-
+async function checkOutDocument(type, query, patron) {
+    switch (type) {
+        case 'book':
+            return await checkOutBook(query.id, patron);
+        case 'journal':
+            break;
+        case 'media':
+            break;
+        default:
+            return {code:config.errorCode, message: config.invalidId};
+    }
 }
 
 async function createBook(title, authors, edition, cost, publisher, keywords, status) {
@@ -107,3 +163,5 @@ module.exports.getAllBooks = async function (length, page) {
 };
 
 module.exports.createDocument = createDocument;
+
+module.exports.checkOutDocument = checkOutDocument;

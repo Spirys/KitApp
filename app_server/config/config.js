@@ -45,6 +45,11 @@ module.exports.requiredDocumentFields = {
 };
 
 /*
+    Check out settings
+ */
+module.exports.loanTime = 1000 * 60 * 60 * 24 * 7; // 1 week
+
+/*
     Error messages
  */
 module.exports.bookCreationFailed       = messages.bookCreationFailed;
@@ -60,6 +65,10 @@ module.exports.missingRequired          = messages.missingRequired;
 module.exports.unknownDocument          = messages.unknownDocument
     + '. Please make sure that you specify one of the following: '
     + module.exports.documentTypes;
+module.exports.bookDoesNotExist         = messages.bookDoesNotExist;
+module.exports.invalidId                = messages.invalidId;
+module.exports.bookUnvailable           = messages.bookUnavailable;
+
 
 /*
     Security configuration
