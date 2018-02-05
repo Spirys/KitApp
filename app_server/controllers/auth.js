@@ -5,11 +5,9 @@
 // TODO Write documentation and decouple logic from controller
 
 const config = require('../config/config');
-
-const Login = require('../models/auth/Login');
 const Session = require('../models/auth/Session');
-const Patron = require('../models/users/Patron');
-const Librarian = require('../models/users/Librarian');
+const UserRepository = require('../repository/UsersRepository');
+
 
 /*
     Private fields
@@ -25,38 +23,66 @@ let response,
 
 module.exports.login = async function (req, res) {
 
+    // Set global-scope private variables for convenience
     response = res;
     login = req.body.email;
     password = req.body.password;
     remember = req.body.remember;
 
-    if (!(login)) {
+    // Verify fields
+    if (!login) {
         sendData({code: config.errorCode, message: config.noLoginProvided});
         return;
     }
-    if (!(password)) {
+    if (!password) {
         sendData({code: config.errorCode, message: config.noPassProvided});
         return;
     }
 
-    let user = await getUser(login);
-    sendData(user);
-};
-
-module.exports.verifySession = async function (sessionId) {
-    if (!sessionId || sessionId === null || sessionId === "") {
-        return {message: config.invalidSession};
+    // Verify the password of the user
+    if (!!await verifyPassword(login, password)) {
+        let session = randomSession();
+        let user = await getUser(login);
+        let response = await saveSession(session, user._id);
+        if (response.code === config.okCode) {
+            // Everything is OK
+            setCookie(remember, session);
+            sendData(user);
+        } else {
+            sendData(response);
+        }
     } else {
-        return await verifySession(sessionId)
+        sendData({code: config.errorCode, message: config.wrongPassword});
     }
 };
 
 /**
- * Token verification is equal to session verification
+ * Verifies the session. Checks the input, then looks it up on the database.
+ * @param session The ID of the session
+ * @return {Promise<{
+ *      code: config.okCode | config.errorCode | config.permissionDeniedCode | string,
+ *      [message]: messages.invalidSession | string
+ *  }>}
+ */
+module.exports.verifySession = async function (session) {
+    if (!session) {
+        return {code: config.permissionDeniedCode, message: config.invalidSession};
+    } else {
+        return await verifySession(session)
+    }
+};
+
+/**
+ * Verifies the token. Checks the input, then looks it up on the database.
+ * @param token The token
+ * @return {Promise<{
+ *      code: config.okCode | config.errorCode | config.permissionDeniedCode | string,
+ *      [message]: messages.invalidToken | string
+ *  }>}
  */
 module.exports.verifyToken = async function (token) {
-    if (!token || token === null || token === "") {
-        return {code: config.errorCode, message: config.invalidToken};
+    if (!token) {
+        return {code: config.permissionDeniedCode, message: config.invalidToken};
     } else {
         return await verifySession(token);
     }
@@ -75,14 +101,12 @@ async function verifySession(sessionId) {
             .exec();
 
         if (!session || typeof session === 'undefined' || session === null) {
-
-        } else {
-            let patron = await Patron.findById(session.user);
             response = {
-                code: config.okCode,
-                session: session._sessionId,
-                user: patron
-            };
+                code: config.permissionDeniedCode,
+                message: config.invalidSession
+            }
+        } else {
+            response = {code: config.okCode};
         }
     } catch (err) {
         console.log(err);
@@ -95,29 +119,26 @@ function sendData(data) {
     response.send(data);
 }
 
-async function verifyPassword(login) {
-    if (login.password === password) {
-        let session = randomSession();
-        let response = await saveSession(session, login);
-        if (response.code === config.okCode) {
-            setCookie(remember, session);
-        }
-        return response;
-    } else {
-        return {code: config.errorCode, message: config.wrongPassword};
-    }
+async function verifyPassword(login, password) {
+    let result = await UserRepository.verifyPassword(login, password);
+    return result
+        ? result.code === config.okCode
+            ? result.equal
+            : false
+        : false;
 }
 
-async function saveSession(session, login) {
+async function saveSession(session, userId) {
     let newSession = {
-        user: login.user,
+        user: userId,
         _sessionId: session,
         expires: Date.now() + config.sessionExpires
     };
+
     try {
         let response = await Session.create(newSession);
-        if (!response || typeof response === 'undefined' || response === null) {
-            return {code: config.errorCode, message: config.invalidSession};
+        if (!response) {
+            return {code: config.errorCode, message: config.errorCode};
         } else {
             return {code: config.okCode, session};
         }
@@ -127,26 +148,7 @@ async function saveSession(session, login) {
 }
 
 async function getUser(login) {
-    try {
-        let user = await Login.findOne({login: login})
-            .select('user password')
-            .exec();
-
-        if (!user || typeof user === 'undefined' || user === null) {
-            // The user is absent in database
-            return {code: config.errorCode, message: config.userNotRegistered};
-        } else {
-            let response = await verifyPassword(user);
-            if (response.code === config.okCode) {
-                return {code: config.okCode, user: user.id, session: response.session};
-            } else {
-                return response;
-            }
-        }
-    } catch (err) {
-        console.log(err);
-        return {code: config.errorCode, message: JSON.stringify(err)};
-    }
+    return await UserRepository.getUserByLogin(login);
 }
 
 function setCookie(remember, session) {

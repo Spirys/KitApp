@@ -17,18 +17,22 @@ const mongoose      = require('mongoose');
  * </ul>
  */
 const userSchema = new mongoose.Schema({
-    first_name      :   {type: String, required: true},
-    last_name       :   {type: String, required: true},
-    dateOfBirth     :   {type: Date, required: true},
-    phone           :   Number,
-    occupation      :   String,
-    patronType      :   {type: String, enum: config.patronTypes, required: true},
+    first_name: {type: String, required: true},
+    last_name: {type: String, required: true},
+    birth_date: {type: Date, required: true},
+    phone: Number,
+    occupation: String,
+    patron_type: {type: String, enum: config.patronTypes, required: true},
     about: String,
     avatar: {type: String, default: config.defaultUserImage}
 });
 
 userSchema.virtual('name').get(function () {
     return this.first_name + ' ' + this.last_name;
+});
+
+userSchema.virtual('patron').get(function () {
+    return true;
 });
 
 beautifier.virtualId(userSchema);

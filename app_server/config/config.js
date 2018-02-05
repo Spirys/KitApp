@@ -4,6 +4,7 @@ const messages = require('./messages');
     Codes
  */
 module.exports.errorCode = 'error';
+module.exports.permissionDeniedCode = 'forbidden';
 
 // Not safe to change this variable. Must also change public/javascripts/login.js
 module.exports.okCode = 'ok';
@@ -57,8 +58,8 @@ module.exports.invalidToken             = messages.invalidToken;
 module.exports.emptyDocument            = messages.emptyDocument;
 module.exports.missingRequired          = messages.missingRequired;
 module.exports.unknownDocument          = messages.unknownDocument
-    + '. Please make sure that you specify one of the following: ' + module.exports.documentTypes;
-
+    + '. Please make sure that you specify one of the following: '
+    + module.exports.documentTypes;
 
 /*
     Security configuration

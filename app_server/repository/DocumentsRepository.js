@@ -25,9 +25,9 @@ function getInstancesOf(id) {
 
 }
 
-async function createBook(title, authors, edition, cost, publisher, keywords) {
+async function createBook(title, authors, edition, cost, publisher, keywords, status) {
     try {
-        let props= {
+        let props = {
             title: title,
             edition: edition,
             publisher: publisher,
@@ -49,20 +49,12 @@ async function createBook(title, authors, edition, cost, publisher, keywords) {
             });
         }
 
-        let bookInstance = await DocumentInstance['BookInstance']();
+        let bookInstance = await DocumentInstance['BookInstance']({status});
         await bookInstance.save();
 
         book.instances.push(bookInstance);
         book.markModified('instances');
         return await book.save();
-        // return await Book.create({
-        //     title: title,
-        //     authors: authors,
-        //     edition: edition,
-        //     cost: cost,
-        //     publisher: publisher,
-        //     keywords: keywords,
-        //     instances: [bookInstance]});
     } catch (err) {
         return {code: config.errorCode, message: config.bookCreationFailed};
     }
@@ -90,7 +82,8 @@ async function createDocument(document) {
             document.book.edition,
             document.book.cost,
             document.book.publisher,
-            document.book.keywords);
+            document.book.keywords,
+            document.book.status);
     }
 
     // This is a journal

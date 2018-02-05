@@ -48,10 +48,9 @@ function buildModel(name) {
  * Creates the new model based on the predefined model, but with changed field
  * @param field what to change
  * @param value what to assign to the <code>field</code>
- * @returns {mongoose.Schema}
+ * @returns {mongoose.Schema | *}
  */
 function changeModel(field, value) {
-    //let newModel = instanceModel.create({});
     let newModel = Object.assign({}, instanceModel);
     newModel[field] = value;
     return newModel;

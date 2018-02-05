@@ -26,8 +26,8 @@ function error(error) {
 async function createDocument(query) {
     const requiredFields = config.requiredDocumentFields;
 
-    for (let iter in config.documentTypes) {
-        let type = config.documentTypes[iter];
+    for (let i in config.documentTypes) {
+        let type = config.documentTypes[i];
         if (query[type]) {
             let missing = validator.validateFields(query[type], requiredFields[type]);
             if (!(missing.length === 0)) {
@@ -86,28 +86,32 @@ module.exports.getById = function (req, res) {
 
 module.exports.create = async function (req, res) {
     try {
-        let sessionResponse = await auth.verifySession(req.body.token);
+        let sessionResponse = await auth.verifyToken(req.body.token);
         if (sessionResponse.code === config.okCode) {
             let book = await createDocument(req.body);
+            if (book.code && book.code !== config.okCode) {
+                res.status(400).json(book);
+                return;
+            }
             let instances = [];
-            for (let i = 0; i<book.instances.length;i++){
+            for (let i = 0; i < book.instances.length; i++) {
                 let tmp = book.instances[i];
                 instances.push({
-                    "id": tmp.id,
-                    "status": tmp.status,
-                    "due_back": tmp.due_back
+                    id: tmp.id,
+                    status: tmp.status,
+                    due_back: tmp.due_back
                 });
             }
             let response = {
-                "id": book.id,
-                "authors": book.authors,
-                "cost": book.cost,
-                "image": book.image,
-                "instances": instances,
-                "title": book.title,
-                "edition": book.edition,
-                "publisher": book.publisher,
-                "keywords": book.keywords
+                id: book.id,
+                authors: book.authors,
+                cost: book.cost,
+                image: book.image,
+                instances: instances,
+                title: book.title,
+                edition: book.edition,
+                publisher: book.publisher,
+                keywords: book.keywords
             };
             res.json(response);
         } else {

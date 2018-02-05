@@ -18,7 +18,7 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
     first_name: {type: String, required: true},
     last_name: {type: String, required: true},
-    dateOfBirth: {type: Date, required: true},
+    birth_date: {type: Date, required: true},
     avatar: {type: String, default: config.defaultUserImage},
     contacts: String,
     phone: Number
@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
 
 userSchema.virtual('name').get(function () {
     return this.first_name + ' ' + this.last_name;
+});
+
+userSchema.virtual('librarian').get(function () {
+    return true;
 });
 
 beautifier.virtualId(userSchema);
