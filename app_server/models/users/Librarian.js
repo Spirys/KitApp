@@ -4,15 +4,14 @@ const config = require('../../config/config');
 const mongoose = require('mongoose');
 
 /**
- * A schema for a user
+ * A schema for a librarian
  * <ul>
- *     <li>first_name — the first name of the user</li>
- *     <li></li>
- *     <li></li>
- *     <li></li>
- *     <li></li>
- *     <li>Occupation — the additional information about occupation.</li>
- *     <li>Contacts — the additional information of how to contact the librarian.</li>
+ *     <li>first_name — the first name of the librarian</li>
+ *     <li>last_name — the last name of the librarian</li>
+ *     <li>birth_date — the date of birth of the librarian</li>
+ *     <li>avatar — the avatar (profile photo) of the librarian</li>
+ *     <li>contacts — contacts (telegram alias, e-mail) of the librarian</li>
+ *     <li>phone — phone number of the librarian</li>
  * </ul>
  */
 const userSchema = new mongoose.Schema({

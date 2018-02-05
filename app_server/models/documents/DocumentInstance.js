@@ -4,7 +4,12 @@ const config        = require('../../config/config');
 const mongoose      = require('mongoose');
 
 /**
- * Defining the basic model for all the document instances
+ * Defining the basic model for all document instances
+ * <ul>
+ *     <li>status — a status of document instance</li>
+ *     <li>due_back — a due date of returning document instance</li>
+ *     <li>taker — a taker of document instance</li>
+ * </ul>
  */
 const instanceModel = {
     status: {
@@ -35,9 +40,8 @@ for (let name in types) {
  */
 function buildModel(name) {
     let instanceSchema = new mongoose.Schema(changeModel(name, {
-        type: mongoose.Schema.ObjectId,
-        ref: beautifier.capitalFirst(name),
-        required: false
+        type    : mongoose.Schema.ObjectId,
+        ref     : beautifier.capitalFirst(name),
     }));
 
     beautifier.virtualId(instanceSchema);
@@ -51,7 +55,7 @@ function buildModel(name) {
  * @returns {mongoose.Schema | *}
  */
 function changeModel(field, value) {
-    let newModel = Object.assign({}, instanceModel);
+    let newModel    = Object.assign({}, instanceModel);
     newModel[field] = value;
     return newModel;
 }

@@ -45,7 +45,6 @@ async function checkOutDocument(query, patron) {
         return await DocumentsRepository.checkOutDocument('book', query, patron);
     } catch (err) {
         return {code: config.errorCode, message: config.invalidToken}
-        res.status(403).json(config.invalidToken);
     }
 }
 
@@ -70,7 +69,7 @@ module.exports.all = async function (req, res) {
             let books = await DocumentsRepository.getAllBooks(length, page);
             next(books);
         } else {
-            throw new Error();
+            res.status(403).json(error(config.invalidToken));
         }
     } catch(err) {
         res.status(403).json(error(config.invalidToken));
@@ -98,21 +97,21 @@ module.exports.create = async function (req, res) {
             for (let i = 0; i < book.instances.length; i++) {
                 let tmp = book.instances[i];
                 instances.push({
-                    id: tmp.id,
-                    status: tmp.status,
+                    id      : tmp.id,
+                    status  : tmp.status,
                     due_back: tmp.due_back
                 });
             }
             let response = {
-                id: book.id,
-                authors: book.authors,
-                cost: book.cost,
-                image: book.image,
-                instances: instances,
-                title: book.title,
-                edition: book.edition,
-                publisher: book.publisher,
-                keywords: book.keywords
+                id          : book.id,
+                authors     : book.authors,
+                cost        : book.cost,
+                image       : book.image,
+                instances   : instances,
+                title       : book.title,
+                edition     : book.edition,
+                publisher   : book.publisher,
+                keywords    : book.keywords
             };
             res.json(response);
         } else {

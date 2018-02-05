@@ -1,12 +1,8 @@
 'use strict';
 
-// TODO Write the connection to the database
-// TODO Generate session id and put it to the database
-// TODO Write documentation and decouple logic from controller
-
-const config = require('../config/config');
-const Session = require('../models/auth/Session');
-const UserRepository = require('../repository/UsersRepository');
+const config            = require('../config/config');
+const Session           = require('../models/auth/Session');
+const UserRepository    = require('../repository/UsersRepository');
 
 
 /*
@@ -24,10 +20,10 @@ let response,
 module.exports.login = async function (req, res) {
 
     // Set global-scope private variables for convenience
-    response = res;
-    login = req.body.email;
-    password = req.body.password;
-    remember = req.body.remember;
+    response    = res;
+    login       = req.body.email;
+    password    = req.body.password;
+    remember    = req.body.remember;
 
     // Verify fields
     if (!login) {

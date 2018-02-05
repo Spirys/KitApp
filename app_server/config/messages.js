@@ -1,8 +1,8 @@
 /*
     Api messages
  */
-module.exports.bookCreationFailed = 'Book creation failed';
-module.exports.journalCreationFailed = 'Journal creation failed';
+module.exports.bookCreationFailed   = 'Book creation failed';
+module.exports.journalCreationFailed= 'Journal creation failed';
 module.exports.userNotRegistered    = 'Login is invalid';
 module.exports.noLoginProvided      = 'No email is provided';
 module.exports.noPassProvided       = 'No password is provided';

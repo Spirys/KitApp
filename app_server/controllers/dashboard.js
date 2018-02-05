@@ -1,7 +1,7 @@
 'use strict';
-const auth = require('./auth');
-const config = require('../config/config');
-const UserRepository = require('../repository/UsersRepository');
+const auth              = require('./auth');
+const config            = require('../config/config');
+const UserRepository    = require('../repository/UsersRepository');
 
 function fetchBookInfo(id) {
 
@@ -29,15 +29,15 @@ module.exports.profile = async function (req, res) {
         if (user.code === config.okCode) {
             user = user.user;
             res.render('patron/profile', {
-                title: 'Success',
-                first_name: user.name.first,
-                last_name: user.name.last,
-                id: user.id,
-                email: "Not available",
-                phoneNumber: user.phone,
-                birthDay: user.dateOfBirth,
-                about: user.about ? user.about : "",
-                avatar: user.avatar
+                title       : 'Success',
+                first_name  : user.name.first,
+                last_name   : user.name.last,
+                id          : user.id,
+                email       : "Not available",
+                phoneNumber : user.phone,
+                birthDay    : user.dateOfBirth,
+                about       : user.about ? user.about : "",
+                avatar      : user.avatar
             });
         } else {
             res.render('auth', {title: config.signIn});
