@@ -3,7 +3,12 @@ const beautifier = require('../../util/beautifier');
 const mongoose = require('mongoose');
 
 /**
- *
+ * A schema for a Media material (Audio/Video material)
+ * <ul>
+ *     <li>name — a name of an AV-material</li>
+ *	   <li>authors — authors of an AV-material/li>
+ *	   <li>instances — all instances of an AV-material</li>
+ * </ul>
  */
 const mediaFileSchema = new mongoose.Schema({
     name        :   {type: String, required: true},

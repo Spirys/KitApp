@@ -6,7 +6,17 @@ const noImage       = require('../../config/config').noImage;
 /**
  * A schema for a book
  * <ul>
- *     <li>Title — a title of a book</li>
+ *     <li>title — a title of a book</li>
+ *     <li>authors — authors of a book</li>
+ *     <li>cost — a cost of a book</li>
+ *     <li>description — a description (annotation) of a book</li>
+ *     <li>edition — an edition of a book</li>
+ *     <li>ISBN — an ISBN (International Standard Book Number) of a book</li>
+ *     <li>image — a image (cover) of a book</li>
+ *     <li>keywords — keywords of a book</li>
+ *     <li>publisher — a name of book publisher</li>
+ *     <li>published — a date of book publishing</li>
+ *     <li>instances — all instances of a book</li>
  * </ul>
  */
 const bookSchema = new mongoose.Schema({

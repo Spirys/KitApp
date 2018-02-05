@@ -4,7 +4,12 @@ const config        = require('../../config/config');
 const mongoose      = require('mongoose');
 
 /**
- * Defining the basic model for all the document instances
+ * Defining the basic model for all document instances
+ * <ul>
+ *     <li>status — a status of document instance</li>
+ *     <li>due_back — a due date of returning document instance</li>
+ *     <li>taker — a taker of document instance</li>
+ * </ul>
  */
 const instanceModel = {
     status: {

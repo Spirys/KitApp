@@ -7,13 +7,14 @@ const mongoose      = require('mongoose');
  * A schema for a user
  * <ul>
  *     <li>first_name — the first name of the user</li>
- *     <li></li>
- *     <li></li>
- *     <li></li>
- *     <li></li>
- *     <li>Occupation — the additional information about occupation.</li>
- *     <li>Patron type — the type of the user.</li>
- *     <li>About — the additional information about the user.</li>
+ *     <li>last_name — the last name of the user</li>
+ *     <li>birth_date — the date of birth of the user</li>
+ *     <li>phone — phone number of the user</li>
+ *     <li>occupation — additional information about occupation</li>
+ *     <li>patron_type — the type of patron</li>
+ *     <li>avatar — the avatar (profile photo) of the user</li>
+ *     <li>about — additional information about user</li>
+ *     <li>contacts — contacts (telegram alias, e-mail) of the user</li>
  * </ul>
  */
 const userSchema = new mongoose.Schema({
