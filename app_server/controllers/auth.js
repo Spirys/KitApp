@@ -153,7 +153,9 @@ function setCookie(remember, session) {
     let cookie = {
         domain: '.kitapptatar.ru',
     };
-    if (config.cookieHttpsOnly) cookie.secure = true;
+    if (config.cookieHttpsOnly) {
+        cookie.secure = true;
+    }
     if (remember) {
         cookie.expires = new Date(Date.now() + config.sessionExpires);
     }

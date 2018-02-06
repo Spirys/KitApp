@@ -49,7 +49,7 @@ async function checkOutBook(bookId, token) {
 }
 
 async function getArticle(id) {
-
+    
 }
 
 async function getJournal(id) {

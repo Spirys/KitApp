@@ -23,6 +23,12 @@ function error(error) {
     }
 }
 
+
+/**
+ * Creates document with given values of parameters query
+ * @param parameters of document
+ * @return created document
+ */
 async function createDocument(query) {
     const requiredFields = config.requiredDocumentFields;
 
@@ -77,11 +83,11 @@ module.exports.all = async function (req, res) {
 };
 
 module.exports.search = function (req, res) {
-
+    //TODO
 };
 
 module.exports.getById = function (req, res) {
-
+    //TODO
 };
 
 module.exports.create = async function (req, res) {
@@ -124,7 +130,7 @@ module.exports.create = async function (req, res) {
 };
 
 module.exports.delete = function (req, res) {
-
+    //TODO
 };
 
 module.exports.checkOut = async function (req, res) {
