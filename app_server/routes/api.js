@@ -34,7 +34,7 @@ router.get('/books/:id', booksController.getById);
 /**
  * POST request to the book checks it out or adds a user to query
  */
-router.post('/books/:id', booksController.checkOut);
+router.post('/books/:id/checkout', booksController.checkOut);
 
 /**
  * DELETE request to the book deletes it from the database

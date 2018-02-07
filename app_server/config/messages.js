@@ -15,6 +15,7 @@ module.exports.unknownDocument      = 'Type of the document is unknown';
 module.exports.bookDoesNotExist     = 'Book does not exist';
 module.exports.invalidId            = 'Invalid ID';
 module.exports.bookUnavailable      = 'Book unavailable';
+module.exports.documentAlreadyTaken = 'This document is already taken by user';
 
 /*
     UI messages

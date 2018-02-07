@@ -13,9 +13,10 @@ html(lang='en')
         link(href='../stylesheets/demo.css', rel='stylesheet')
         link(href='https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css', rel='stylesheet')
         link(href='https://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons', rel='stylesheet', type='text/css')
+        link(href='../stylesheets/themify-icons.css', rel='stylesheet')
     body
         .wrapper
-            .sidebar(data-color='purple', data-image='../images/f.jpg')
+            .sidebar(data-color='blue', data-image='../images/f.jpg')
                 .logo
                     a.simple-text(href='https://kitapptatar.ru')
                         | Kitapp
@@ -84,9 +85,9 @@ html(lang='en')
                 .content
                     .container-fluid
                         .row
-                            .col-lg-6.col-md-12
+                            .col-lg-12.col-md-12
                                 .card
-                                    .card-header(data-background-color='orange')
+                                    .card-header(data-background-color='blue')
                                         h4.title Library card
                                         p.category Last update: 3 min ago
                                     .card-content.table-responsive
@@ -132,30 +133,30 @@ html(lang='en')
                                                     td returned
                                                     td 27/07/2017
                                                     td 31/08/2017
-            footer.footer
-                .container-fluid
-                    nav.pull-left
-                        ul
-                            li
-                                a(href='#')
-                                    | Kitapp
-                            li
-                                a(href='#')
-                                    | About Innopolis University
-                            li
-                                a(href='#')
-                                    | Library Rules
-                            li
-                                a(href='#')
-                                    | Feedback
-                    p.copyright.pull-right
-                        | ©
-                        script.
-                            document.write(new Date().getFullYear())
-                        a(href='https://kitapptatar.com') &nbsp;Kitapp
-                        | , made with
-                        i.fa.fa-heart.heart
-                        |  for Innopolis University
+                footer.footer
+                    .container-fluid
+                        nav.pull-left
+                            ul
+                                li
+                                    a(href='#')
+                                        | Kitapp
+                                li
+                                    a(href='#')
+                                        | About Innopolis University
+                                li
+                                    a(href='#')
+                                        | Library Rules
+                                li
+                                    a(href='#')
+                                        | Feedback
+                        p.copyright.pull-right
+                            | ©
+                            script.
+                                document.write(new Date().getFullYear())
+                            a(href='https://kitapptatar.com') &nbsp;Kitapp
+                            | , made with
+                            i.ti.ti-heart.heart
+                            |  for Innopolis University
     script(src='../javascripts/jquery-3.2.1.min.js', type='text/javascript')
     script(src='../javascripts/bootstrap.min.js', type='text/javascript')
     script(src='../javascripts/material.min.js', type='text/javascript')
