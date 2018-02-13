@@ -51,7 +51,7 @@ async function checkOutBook(bookId, token) {
                     code    : config.okCode,
                     taker   : patron.id,
                     book    : book.id,
-                    due_back: (Date.now() + config.loanTime(patron.type)).toLocaleString()
+                    due_back: new Date(Date.now() + config.loanTime(patron.type))
                 }
             }
         }
