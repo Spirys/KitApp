@@ -5,7 +5,6 @@ const config = require('../../config/config');
 const validator = require('../../util/validator');
 
 /*
-    Todo: create reusable function for generating message with an error
     Todo: create reusable function for session checks (use validator)
  */
 
@@ -50,6 +49,7 @@ async function checkOutDocument(query, patron) {
     try {
         return await DocumentsRepository.checkOutDocument('book', query, patron);
     } catch (err) {
+        console.log(err);
         return {code: config.errorCode, message: config.invalidToken}
     }
 }
@@ -70,7 +70,44 @@ module.exports.all = async function (req, res) {
             const length = (req.query.length) ? req.query.length : config.defaultPageLength;
             const page = (req.query.page) ? req.query.page : 1;
             const next = function (books) {
-                res.json({code: config.okCode, page, length: books.length, results: books});
+                let documents = [];
+                for (let i = 0; i < books.length; i++){
+                    // Todo delegate it to Response Composer
+                    let authors = [];
+                    for (let j = 0; j < books[i].authors.length; j++) {
+                        let author = books[i].authors[j];
+                        authors.push({
+                            first_name: author.first_name,
+                            last_name: author.last_name
+                        });
+                        if (author.birth_date) authors[j].birth_date = author.birth_date;
+                        if (author.death_date) authors[j].death_date = author.death_date;
+                    }
+
+                    let instances = [];
+                    for (let j = 0; j < books[i].instances.length; j++) {
+                        let instance = books[i].instances[j];
+                        instances.push({
+                            due_back: instance.due_back.toLocaleString(), // TODO LOCALIZATION
+                            id: instance.id,
+                            status: instance.status
+                        });
+                    }
+
+                    let book = {
+                        authors,
+                        cost        : books[i].cost,
+                        image       : books[i].image,
+                        instances,
+                        id          : books[i].id,
+                        title       : books[i].title,
+                        edition     : books[i].edition,
+                        publisher   : books[i].publisher,
+                        keywords    : books[i].keywords
+                    };
+                    documents.push(book);
+                }
+                res.json({code: config.okCode, page, length: documents.length, results: documents});
             };
             let books = await DocumentsRepository.getAllBooks(length, page);
             next(books);
@@ -135,11 +172,12 @@ module.exports.delete = function (req, res) {
 
 module.exports.checkOut = async function (req, res) {
     try {
-        let sessionResponse = await auth.verifySession(req.body.token);
+        let sessionResponse = await auth.verifyToken(req.body.token);
         if (sessionResponse.code === config.okCode){
-            let checkOut = checkOutDocument(req.params, req.body.token);
+            let checkOut = await checkOutDocument(req.params, req.body.token);
             res.json(checkOut);
         } else {
+            console.log(sessionResponse);
             res.status(403).json(error(config.invalidToken));
         }
     } catch (err) {

@@ -878,8 +878,8 @@ h2.title {
 
 .sidebar[data-color="blue"] .nav li.active a,
 .off-canvas-sidebar[data-color="blue"] .nav li.active a {
-    background-color: #00bcd4;
-    box-shadow: 0 12px 20px -10px rgba(0, 188, 212, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(0, 188, 212, 0.2);
+    background-color: #0088d1;
+    box-shadow: 0 12px 20px -10px rgba(0, 18, 252, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(0, 18, 252, 0.2);
 }
 
 .sidebar[data-color="green"] .nav li.active a,
@@ -1200,7 +1200,7 @@ fieldset[disabled] .navbar .navbar-nav>li>a.btn.btn-default.active {
 .open>.navbar .navbar-nav>li>a.btn.btn-primary.dropdown-toggle,
 .open>.navbar .navbar-nav>li>a.btn.btn-primary.dropdown-toggle:focus,
 .open>.navbar .navbar-nav>li>a.btn.btn-primary.dropdown-toggle:hover {
-    background-color: #9c27b0;
+    background-color: #0088d1;
     color: #FFFFFF;
 }
 
@@ -5294,8 +5294,8 @@ footer .btn {
 }
 
 .card [data-background-color="blue"] {
-    background: linear-gradient(60deg, #26c6da, #00acc1);
-    box-shadow: 0 12px 20px -10px rgba(0, 188, 212, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(0, 188, 212, 0.2);
+    background: linear-gradient(-60deg, #005b9f, #6d9fff);
+    box-shadow: 0 12px 20px -10px rgba(0, 18, 252, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(0, 18, 252, 0.2);
 }
 
 .card [data-background-color="green"] {

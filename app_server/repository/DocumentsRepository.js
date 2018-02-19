@@ -24,25 +24,38 @@ async function getBook(id) {
 
 async function checkOutBook(bookId, token) {
     let book = await getBook(bookId);
-    if (book) {
+    let session = await Session.findOne({'_sessionId': token}).exec();
+    let patron  = await Patron.findById(session.user).exec();
+    if (book && patron) {
         let instances = book.instances;
         for (let i = 0; i < instances.length; i++) {
-            if (instances[i].status === config.statusAvailable) {
-                let session = await Session.findOne({'_sessionId': token}).exec();
-                let patron  = await Patron.findById(session.user).exec();
-                instances[i].status     = config.statusLoaned;
-                instances[i].due_back   = Date.now() + config.loanTime;
-                instances[i].taker      = patron;
-                instances[i].save();
-                book.markModified('instances');
-
+            if (instances[i].taker && instances[i].taker.toString() === patron._id.toString()) {
                 return {
-                    taker: patron._id,
-                    book: book._id
+                    code    : config.permissionDeniedCode,
+                    message : config.documentAlreadyTaken
                 }
             }
         }
-        return {code: config.errorCode, message: config.bookUnvailable}
+
+        for (let i = 0; i < instances.length; i++) {
+            if (instances[i].status === config.statusAvailable) {
+                await DocumentInstance['BookInstance'].findByIdAndUpdate(instances[i]._id, {
+                    $set: {
+                        status     : config.statusLoaned,
+                        due_back   : Date.now() + config.loanTime(patron.type),
+                        taker      : patron._id
+                    }
+                });
+
+                return {
+                    code    : config.okCode,
+                    taker   : patron.id,
+                    book    : book.id,
+                    due_back: new Date(Date.now() + config.loanTime(patron.type))
+                }
+            }
+        }
+        return {code: config.errorCode, message: config.bookUnavailable}
     } else {
         return {code: config.errorCode, message: config.bookDoesNotExist};
     }

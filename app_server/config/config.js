@@ -1,4 +1,6 @@
 const messages = require('./messages');
+const DAY   = 1000 * 60 * 60 * 24;
+const WEEK  = DAY * 7;
 
 /*
     Codes
@@ -47,7 +49,11 @@ module.exports.requiredDocumentFields = {
 /*
     Check out settings
  */
-module.exports.loanTime = 1000 * 60 * 60 * 24 * 7; // 1 week
+module.exports.loanTime = function (type) {
+    return type === exports.patronTypes[0]
+            ? 2 * WEEK
+            : 4 * WEEK;
+};
 
 /*
     Error messages
@@ -67,8 +73,8 @@ module.exports.unknownDocument          = messages.unknownDocument
     + module.exports.documentTypes;
 module.exports.bookDoesNotExist         = messages.bookDoesNotExist;
 module.exports.invalidId                = messages.invalidId;
-module.exports.bookUnvailable           = messages.bookUnavailable;
-
+module.exports.bookUnavailable          = messages.bookUnavailable;
+module.exports.documentAlreadyTaken     = messages.documentAlreadyTaken;
 
 /*
     Security configuration
@@ -79,4 +85,4 @@ module.exports.sessionExpires   = 1000 * 60 * 60 * 24 * 7; // 1 week
 /*
     Database configuration
  */
-module.exports.mongoURI         = 'mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp';
+module.exports.mongoURI         = 'mongodb://dev:12346@ds012058.mlab.com:12058/kitapp-tests';
