@@ -18,7 +18,8 @@ module.exports = {
     KEYWORDS_NOT_ARRAY: 'Keywords must be an array',
     NAME_INVALID: nonEmptyString('name'),
     DESCRIPTION_INVALID: nonEmptyString('description'),
-    PUBLISHER_INVALID: nonEmptyString('publisher')
+    PUBLISHER_INVALID: nonEmptyString('publisher'),
+    INVALID_DATE: "Date is invalid. It must correspond to format DD-MM-YYYY"
 };
 
 /**

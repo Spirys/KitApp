@@ -1,11 +1,26 @@
-var express = require('express');
-var router = express.Router();
+/*
+ * Routes for user dashboard.
+ * Copyright (c) 2018 Marsel Shaihin
+ */
 
-// TODO write user routes here (actually this might be an SPA page)
+'use strict';
+
+/**
+ * Module dependencies
+ * @private
+ */
+
+const express = require('express');
+const router = express.Router();
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
   res.send('respond with a resource');
 });
+
+
+/**
+ * Module exports
+ */
 
 module.exports = router;

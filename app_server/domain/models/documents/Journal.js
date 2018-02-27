@@ -20,20 +20,20 @@ const Errors = require('../../Errors');
 class Journal extends DocumentParent {
 
     /**
-     * Constructor for the book object
+     * Constructor for the journal object
      * @param title
      * @param authors
      * @param cost
      * @param edition
-     * @param ISBN
+     * @param ISSN
      * @param keywords
      */
-    constructor(title, authors, cost, edition, ISBN, keywords){
+    constructor(title, authors, cost, edition, ISSN, keywords){
         super(title);
         this._authors = authors;
         this._cost = cost;
         this._edition = edition;
-        this._ISBN = ISBN;
+        this._ISSN = ISSN;
         this._keywords = keywords;
     }
 
@@ -74,8 +74,8 @@ class Journal extends DocumentParent {
         return this._edition
     }
 
-    get isbn() {
-        return this._ISBN
+    get issn() {
+        return this._ISSN
     }
 
     get image() {

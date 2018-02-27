@@ -1,0 +1,28 @@
+/*
+ * Copyright (c) 2018 Marsel Shaihin
+ */
+
+'use strict';
+
+/**
+ * Module dependencies
+ * @private
+ */
+
+const MESSAGES_RU = require('./messages/messages_ru');
+const MESSAGES_EN = require('./messages/messages_en');
+
+/**
+ * Module exports
+ * @public
+ */
+
+/**
+ * Provides messages. By default all messages are in 'EN' locale
+ * @param locale {string} Code of the locale in ISO 639-1 format
+ * @return {*}
+ */
+
+module.exports.messages = function (locale) {
+    return (locale.toLowerCase() === "ru") ? MESSAGES_RU : MESSAGES_EN
+};

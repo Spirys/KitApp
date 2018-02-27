@@ -23,7 +23,7 @@ class Author {
         this.lastName = lastName
     }
 
-    get firstName(){
+    get firstName() {
         return this._firstName
     }
 
@@ -36,7 +36,7 @@ class Author {
         }
     }
 
-    get lastName(){
+    get lastName() {
         return this._lastName
     }
 
@@ -49,15 +49,29 @@ class Author {
         }
     }
 
-    get birthDate(){
-
+    get birthDate() {
+        return this._birthDate
     }
 
-    get deathDate(){
-
+    set birthDate(value) {
+        if (validator.validateDate(value)) {
+            this._birthDate = value
+        } else {
+            throw new TypeError(Errors.INVALID_DATE)
+        }
     }
 
+    get deathDate() {
+        return this._deathDate
+    }
 
+    set deathDate(value) {
+        if (validator.validateDate(value)) {
+            this._deathDate = value
+        } else {
+            throw new TypeError(Errors.INVALID_DATE)
+        }
+    }
 }
 
 module.exports = Author;
