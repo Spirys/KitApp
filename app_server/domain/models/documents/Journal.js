@@ -22,14 +22,15 @@ class Journal extends DocumentParent {
     /**
      * Constructor for the journal object
      * @param title
+     * @param id
      * @param authors
      * @param cost
      * @param edition
      * @param ISSN
      * @param keywords
      */
-    constructor(title, authors, cost, edition, ISSN, keywords){
-        super(title);
+    constructor(title, id, authors, cost, edition, ISSN, keywords){
+        super(title, id);
         this._authors = authors;
         this._cost = cost;
         this._edition = edition;

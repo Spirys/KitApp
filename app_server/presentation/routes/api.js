@@ -40,6 +40,7 @@ router.delete("/books/:id/instances/:instanceId", apiProvider.booksController.de
  */
 
 router.post('/login', apiProvider.authController.login);
+router.post('/logout', apiProvider.authController.logout);
 
 /**
  * Router configuration for users

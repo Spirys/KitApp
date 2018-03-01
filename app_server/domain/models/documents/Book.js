@@ -23,14 +23,15 @@ class Book extends DocumentParent {
     /**
      * Constructor for the book object
      * @param title
+     * @param id
      * @param authors
      * @param cost
      * @param edition
      * @param ISBN
      * @param keywords
      */
-    constructor(title, authors, cost, edition, ISBN, keywords){
-        super(title);
+    constructor(title, id, authors, cost, edition, ISBN, keywords){
+        super(title, id);
         this._authors = authors;
         this._cost = cost;
         this._edition = edition;
@@ -162,6 +163,7 @@ class Book extends DocumentParent {
 /**
  * Module exports a {@link Book} class
  * @type {Book}
+ * @public
  */
 
 module.exports = Book;
