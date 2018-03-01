@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2018 Marsel Shaihin
  */
 
@@ -9,18 +9,18 @@
  * @private
  */
 
+/**
+ * Module functions
+ * @private
+ */
 
+function format(err, user, fields, locale) {
+
+}
 
 /**
  * Module exports
  * @public
  */
 
-/**
- * Gets the needed page composer
- * @param type Specifies the
- * @return {*}
- */
-module.exports = function (type) {
-
-};
+module.exports.format = format;

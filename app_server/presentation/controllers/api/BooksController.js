@@ -10,6 +10,9 @@
  * @private
  */
 
+const responseComposer = require('../../composers/ResponseComposer').book;
+const interactor = require('../../../domain/interactors/BooksInteractor');
+const usersInteractor = require('../../../domain/interactors/UsersInteractor');
 
 /**
  * Module exports
@@ -17,13 +20,15 @@
  */
 
 module.exports.getAll = async function (req, res) {
+    const books = interactor.getAll();
+    let response = {};
 
+    res.json(response);
 };
 
 module.exports.search = async function (req, res) {
 
 };
-
 
 module.exports.new = async function (req, res) {
 

@@ -6,24 +6,6 @@
 'use strict';
 
 /**
- * Module exports
- * @public
- */
-
-module.exports.provideAuthenticationRepository  = provideRepository('authentication');
-module.exports.provideAuthorsRepository         = provideRepository('authors');
-module.exports.provideBooksRepository           = provideRepository('books');
-module.exports.provideJournalsRepository        = provideRepository('journals');
-module.exports.provideMediaRepository           = provideRepository('media');
-module.exports.provideUserFilesRepository       = provideRepository('userFiles');
-module.exports.provideUsersRepository           = provideRepository('users');
-
-/**
- * Module dependencies
- * @private
- */
-
-/**
  * Cache for the repositories
  * @private
  */
@@ -33,6 +15,7 @@ const repositories = Object.create(null);
 /**
  * Provides a repository with given name
  * @param repoName
+ * @private
  */
 
 function provideRepository(repoName) {
@@ -70,3 +53,16 @@ function provideRepository(repoName) {
 
     return (repositories[repoName] = repository)
 }
+
+/**
+ * Module exports
+ * @public
+ */
+
+module.exports.AuthenticationRepository  = provideRepository('authentication');
+module.exports.AuthorsRepository         = provideRepository('authors');
+module.exports.BooksRepository           = provideRepository('books');
+module.exports.JournalsRepository        = provideRepository('journals');
+module.exports.MediaRepository           = provideRepository('media');
+module.exports.UserFilesRepository       = provideRepository('userFiles');
+module.exports.UsersRepository           = provideRepository('users');

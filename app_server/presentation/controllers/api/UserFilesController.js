@@ -15,3 +15,6 @@
  * @public
  */
 
+module.exports.loadImage = async function (req, res) {
+
+};

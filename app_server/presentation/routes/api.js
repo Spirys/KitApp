@@ -56,6 +56,13 @@ router.put("/users/:id", apiProvider.usersController.updateById);
 router.delete("/users/:id", apiProvider.usersController.deleteById);
 
 /**
+ * Router configuration for images
+ * @private
+ */
+
+router.post('/images', apiProvider.userFilesController.loadImage);
+
+/**
  * Module exports
  * @public
  */
