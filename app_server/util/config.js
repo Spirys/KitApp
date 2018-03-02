@@ -31,12 +31,14 @@ module.exports = MESSAGES;
  */
 
 module.exports.messages = function (locale) {
-    return (locale.toLowerCase() === "ru") ? MESSAGES_RU : MESSAGES_EN
+    return (locale.toLowerCase() === 'ru') ? MESSAGES_RU : MESSAGES_EN
 };
 
 /**
  * Specific parameters
- * @type {string}
  */
 module.exports.COOKIE_NAME = '_sessionId';
 module.exports.COOKIE_HTTPS_ONLY = true;
+
+module.exports.DEFAULT_DOCS_NUMBER = 25;
+module.exports.DEFAULT_BOOK_FIELDS = ['title', 'authors', 'cost', 'edition', 'id', 'publisher', 'isbn', 'keywords', 'description', 'available', 'loaned', 'reference'];

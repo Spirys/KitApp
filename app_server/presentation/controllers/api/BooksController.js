@@ -13,6 +13,19 @@
 const responseComposer = require('../../composers/ResponseComposer').book;
 const interactor = require('../../../domain/interactors/BooksInteractor');
 const usersInteractor = require('../../../domain/interactors/UsersInteractor');
+const defaultNumberOfBooks = require('../../../util/config').DEFAULT_DOCS_NUMBER;
+const defaultFields = require('../../../util/config').DEFAULT_BOOK_FIELDS;
+
+/**
+ * Gets the locale from the request
+ * @param req
+ * @return {string}
+ * @private
+ */
+
+function getLocale(req) {
+    return req.cookies.locale || 'en';
+}
 
 /**
  * Module exports
@@ -20,9 +33,19 @@ const usersInteractor = require('../../../domain/interactors/UsersInteractor');
  */
 
 module.exports.getAll = async function (req, res) {
-    const books = interactor.getAll();
-    let response = {};
 
+    // Traversing request
+    const page = req.query.page || 1;
+    const length = req.query.length || defaultNumberOfBooks;
+    const fields = (typeof req.query.fields === 'string')
+        ? req.query.fields.split(',')
+        : defaultFields;
+    const locale = getLocale(req);
+
+    // Getting the books
+    const books = await interactor.getAll(page, length, fields);
+
+    let response = responseComposer.formatMultiple(books, fields, page, length, locale, books.err);
     res.json(response);
 };
 

@@ -20,8 +20,16 @@ const Repository = require('../../data/RepositoryProvider').BooksRepository;
  * @public
  */
 
-module.exports.getAll = async function () {
-    return await Repository.get();
+/**
+ * Gets all books from the repository starting from (page - 1) * length till the length - 1
+ * @param page
+ * @param length
+ * @param fields
+ * @return {Promise<Array>}
+ */
+
+module.exports.getAll = async function (page, length, fields) {
+    return await Repository.getAll(page, length, fields);
 };
 
 module.exports.search = async function () {
