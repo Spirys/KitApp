@@ -25,10 +25,10 @@ module.exports.remove = remove;
  */
 
 const mongoose = require('mongoose');
-const Journal = require('../../domain/models/documents/Journal').models.mongo;
-const Article = require('../../domain/models/documents/Article').models.mongo;
-const JournalInstance = require('../../domain/models/documents/DocumentInstance').models.mongo.journal;
-const AuthorRepo = require('AuthorsRepository');
+const Journal = require('../models/documents/Journal').models.mongo;
+const Article = require('../models/documents/Article').models.mongo;
+const JournalInstance = require('../models/documents/DocumentInstance').models.mongo.journal;
+const AuthorRepo = require('./AuthorsRepository');
 
 /**
  * CRUD functions

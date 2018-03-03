@@ -26,11 +26,11 @@ module.exports.remove = remove;
  */
 
 const mongoose = require('mongoose');
-const Book = require('../../domain/models/documents/Book').models.mongo;
+const Book = require('../models/documents/Book').models.mongo;
 const AuthorRepo = require('AuthorsRepository');
-const BookInstance = require('../../domain/models/documents/DocumentInstance').models.mongo.book;
-const User = require('../../domain/models/users/Patron');
-const UserRepo = require('UsersRepository');
+const BookInstance = require('../models/documents/DocumentInstance').models.mongo.book;
+const User = require('../models/users/Patron');
+const UserRepo = require('./UsersRepository');
 
 /**
  * CRUD functions

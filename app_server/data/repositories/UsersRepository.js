@@ -23,7 +23,7 @@ module.exports.remove = remove;
  */
 
 const mongoose = require('mongoose');
-const User = require('../../domain/models/users/Patron').models.mongo;
+const User = require('../models/users/Patron').models.mongo;
 
 /**
  * CRUD functions

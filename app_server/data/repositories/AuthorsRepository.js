@@ -25,13 +25,15 @@ module.exports.remove = remove;
  */
 
 const mongoose = require('mongoose');
-const Author = require('../../domain/models/documents/Author').models.mongo;
+const Author = require('../models/documents/Author').models.mongo;
 
 /**
  * CRUD functions
  * @private
  */
+/*
 
+ */
 async function get(id = null, fields = null, count = 1) {
     if (id) {
         return await Author.findOne({
