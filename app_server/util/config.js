@@ -42,3 +42,5 @@ module.exports.COOKIE_HTTPS_ONLY = true;
 
 module.exports.DEFAULT_DOCS_NUMBER = 25;
 module.exports.DEFAULT_BOOK_FIELDS = ['title', 'authors', 'cost', 'edition', 'id', 'publisher', 'isbn', 'keywords', 'description', 'available', 'loaned', 'reference'];
+
+module.exports.mongoURI = 'mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp';
