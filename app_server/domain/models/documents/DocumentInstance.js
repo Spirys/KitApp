@@ -10,7 +10,6 @@
  * @private
  */
 
-const mongoose = require('mongoose');
 
 /**
  * Model of the document instance. May be used as-is
@@ -52,26 +51,6 @@ class DocumentInstance {
     }
 }
 
-const documentInstanceRawModel = {
-    _id: mongoose.Types.ObjectId,
-    status: String,
-    taker: {type: mongoose.Types.ObjectId, ref: 'Patron', required: false},
-    document: {
-        kind: String,
-        dos: {type: mongoose.Types.ObjectId, refPath: 'document.kind'}
-    },
-    take_due: {type: Date, required: false},
-    due_back: {type: Date, required: false}
-};
-
-const documentInstanceSchema=mongoose.Schema(documentInstanceRawModel);
-documentInstanceSchema.virtual('id').get(() => {
-    let bytes = this._id.valueOf()
-        .toString()
-        .substring(18);
-    return parseInt(bytes, 16);
-});
-
 /**
  * Module exports a class {@link DocumentInstance}
  * @type {DocumentInstance}
@@ -79,10 +58,3 @@ documentInstanceSchema.virtual('id').get(() => {
  */
 
 module.exports = DocumentInstance;
-module.exports.models = {
-    raw: documentInstanceRawModel,
-    mongo: {
-        book: mongoose.model('BookInstance', documentInstanceSchema),
-        journal: mongoose.model('JournalInstance', documentInstanceSchema)
-    }
-};

@@ -13,7 +13,6 @@
 const DocumentInstance = require('DocumentInstance');
 const Errors = require('../../Errors');
 const validator = require('../../validation/SetterValidation.js');
-const mongoose = require('mongoose');
 
 /**
  * Model of the document. May be used as-is
@@ -70,20 +69,6 @@ class Document {
     }
 }
 
-const documentRawModel = {
-    _id: mongoose.Types.ObjectId,
-    title: String,
-    instances: [{type: mongoose.Types.ObjectId, ref: 'Instance'}]
-};
-
-const documentSchema = mongoose.Schema(documentRawModel);
-documentSchema.virtual('id').get(() => {
-    let bytes = this._id.valueOf()
-        .toString()
-        .substring(18);
-    return parseInt(bytes, 16);
-});
-
 /**
  * Module exports a class {@link Document}
  * @type {Document}
@@ -91,7 +76,3 @@ documentSchema.virtual('id').get(() => {
  */
 
 module.exports = Document;
-module.exports.models = {
-    raw: documentRawModel,
-    mongo: mongoose.model('Document', documentSchema)
-};
