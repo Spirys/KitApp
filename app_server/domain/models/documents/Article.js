@@ -12,6 +12,7 @@
 
 const Errors = require('../../Errors');
 const validator = require('../../validation/SetterValidation.js');
+const mongoose = require('mongoose');
 
 /**
  * An article model
@@ -24,7 +25,7 @@ class Article {
      * @param name
      * @param authors
      */
-    constructor(name, authors){
+    constructor(name, authors) {
         this.name = name;
         this._authors = authors;
     }
@@ -37,7 +38,7 @@ class Article {
         this._authors = value
     }
 
-    get name(){
+    get name() {
         return this._name
     }
 
@@ -51,9 +52,28 @@ class Article {
     }
 }
 
+const articleRawModel = {
+    _id: mongoose.Types.ObjectId,
+    name: String,
+    authors: [{type: mongoose.Types.ObjectId, ref: 'Author'}],
+    published: {type: Date, required: false}
+};
+
+const articleSchema = mongoose.Schema(articleRawModel);
+articleSchema.virtual('id').get(() => {
+    let bytes = this._id.valueOf()
+        .toString()
+        .substring(18);
+    return parseInt(bytes, 16);
+});
+
 /**
  * Module exports a {@link Book} class
  * @type {Book}
  */
 
 module.exports = Book;
+module.exports.models = {
+    raw: articleRawModel,
+    mongo: mongoose.model('Article', articleSchema)
+};
