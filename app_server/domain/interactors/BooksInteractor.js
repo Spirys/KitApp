@@ -36,20 +36,20 @@ module.exports.search = async function () {
     
 };
 
-module.exports.new = async function () {
-
+module.exports.new = async function (fields) {
+    return await Repository.create(fields);
 };
 
-module.exports.getById = async function () {
-
+module.exports.getById = async function (id) {
+    return await Repository.get(id);
 };
 
-module.exports.updateById = async function () {
-
+module.exports.updateById = async function (id, fields) {
+    return await Repository.update(id, fields);
 };
 
 module.exports.deleteById = async function () {
-
+    return await Repository.delete(id);
 };
 
 module.exports.checkoutById = async function () {
