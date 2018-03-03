@@ -17,11 +17,10 @@ const mongoose = require('mongoose');
 
 
 const authorRawModel = {
-    _id: mongoose.Types.ObjectId,
-    first_name: String,
-    last_name: String,
-    birth_date: {type: Date, required: false},
-    death_date: {type: Date, required: false}
+    first_name: {type: String, required: true},
+    last_name: {type: String, required: true},
+    birth_date: String,
+    death_date: String
 };
 
 const authorSchema = mongoose.Schema(authorRawModel);

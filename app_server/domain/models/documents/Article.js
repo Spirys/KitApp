@@ -52,8 +52,8 @@ class Article {
 }
 
 /**
- * Module exports a {@link Book} class
- * @type {Book}
+ * Module exports an {@link Article} class
+ * @type {Article}
  */
 
 module.exports = Article;

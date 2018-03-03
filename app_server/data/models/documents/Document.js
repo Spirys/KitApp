@@ -10,7 +10,7 @@
  * @private
  */
 
-const DocumentInstance = require('DocumentInstance');
+const DocumentInstance = require('./DocumentInstance');
 const mongoose = require('mongoose');
 
 /**
@@ -19,9 +19,8 @@ const mongoose = require('mongoose');
  */
 
 const documentRawModel = {
-    _id: mongoose.Types.ObjectId,
-    title: String,
-    instances: [{type: mongoose.Types.ObjectId, ref: 'Instance'}]
+    title: {type: String, required: true},
+    instances: [{type: mongoose.Schema.ObjectId, ref: 'Instance'}]
 };
 
 const documentSchema = mongoose.Schema(documentRawModel);

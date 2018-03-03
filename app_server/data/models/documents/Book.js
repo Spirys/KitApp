@@ -17,18 +17,17 @@ const mongoose = require('mongoose');
  * A book model
  */
 
-
 const bookRawModel = Object.assign({}, DocumentParent.models.raw, {
-    authors: [{type: mongoose.Types.ObjectId, ref: 'Author'}],
+    authors: [{type: mongoose.Schema.ObjectId, ref: 'Author'}],
     cost: Number,
     edition: String,
     isbn: String,
     keywords: [String],
-    bestseller: {type: Boolean, required: false, default: false},
-    description: {type: String, required: false},
-    image: {type: String, required: false},
-    publisher: {type: String, required: false},
-    published: {type: Date, required: false}
+    bestseller: {type: Boolean, default: false},
+    description: String,
+    image: String,
+    publisher: String,
+    published: String
 });
 
 const bookSchema = mongoose.Schema(bookRawModel);

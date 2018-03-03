@@ -1,6 +1,6 @@
 /*!
  * Article
- * Copyright(c) 2018 Marsel Shaihin
+ * Copyright(c) 2018 Ilya Khabirov
  */
 
 'use strict';
@@ -17,10 +17,9 @@ const mongoose = require('mongoose');
  */
 
 const articleRawModel = {
-    _id: mongoose.Types.ObjectId,
-    name: String,
-    authors: [{type: mongoose.Types.ObjectId, ref: 'Author'}],
-    published: {type: Date, required: false}
+    name: {type: String, required: true},
+    authors: [{type: mongoose.Schema.ObjectId, ref: 'Author'}],
+    published: String
 };
 
 const articleSchema = mongoose.Schema(articleRawModel);

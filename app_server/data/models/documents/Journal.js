@@ -19,17 +19,17 @@ const mongoose = require('mongoose');
 
 const journalRawModel = Object.assign({}, DocumentParent.models.raw, {
     issue: {
-        editors: [{type:mongoose.Types.ObjectId, ref:'Author'}],
-        date: Date
+        editors: [{type:mongoose.Schema.ObjectId, ref:'Author'}],
+        date: {type: String, required: true}
     },
     cost: Number,
     issn: String,
     keywords: [String],
-    articles: [{type: mongoose.Types.ObjectId, ref: 'Article'}],
-    bestseller: {type: Boolean, required: false, default: false},
-    description: {type: String, required: false},
-    image: {type: String, required: false},
-    publisher: {type: String, required: false}
+    articles: [{type: mongoose.Schema.ObjectId, ref: 'Article'}],
+    bestseller: {type: Boolean, default: false},
+    description: String,
+    image: String,
+    publisher: String
 });
 
 const journalSchema = mongoose.Schema(journalRawModel);

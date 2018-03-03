@@ -19,11 +19,10 @@ const mongoose = require('mongoose');
  */
 
 const patronRawModel = {
-    _id: mongoose.Types.ObjectId,
-    first_name: String,
-    last_name: String,
-    type: String,
-    birth_date: Date,
+    first_name: {type: String, required: true},
+    last_name: {type: String, required: true},
+    type: {type: String, required: true},
+    birth_date: {type: String, required: true},
     email: String,
     phone: String,
     occupation: String,

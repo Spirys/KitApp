@@ -18,15 +18,14 @@ const mongoose = require('mongoose');
  */
 
 const documentInstanceRawModel = {
-    _id: mongoose.Types.ObjectId,
-    status: String,
-    taker: {type: mongoose.Types.ObjectId, ref: 'Patron', required: false},
+    status: {type: String, required: true},
+    taker: {type: mongoose.Schema.ObjectId, ref: 'Patron'},
     document: {
         kind: String,
-        doc: {type: mongoose.Types.ObjectId, refPath: 'document.kind'}
+        doc: {type: mongoose.Schema.ObjectId, refPath: 'document.kind'}
     },
-    take_due: {type: Date, required: false},
-    due_back: {type: Date, required: false}
+    take_due: Date,
+    due_back: Date
 };
 
 const documentInstanceSchema = mongoose.Schema(documentInstanceRawModel);
