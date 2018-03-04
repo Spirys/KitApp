@@ -10,6 +10,19 @@
  */
 
 const config = require('../../util/config');
+const defaultFields = config.DEFAULT_BOOK_RESPONSE_FIELDS;
+
+/**
+ * Module functions
+ * @private
+ */
+
+function error(err, locale) {
+    return {
+        code: config.errorCode,
+        message: config.messages(locale)[err]
+    }
+}
 
 /**
  * Module functions
@@ -17,16 +30,27 @@ const config = require('../../util/config');
  */
 
 function format(book, fields, locale, err) {
-    // TODO
-    return book
+    if (err) {
+        return error(err, locale)
+    }
+
+    const response = {};
+    for (let i = 0; i < fields.length; i++) {
+        let field = fields[i];
+        if (defaultFields.find((s) => s === field)) {
+            let sel = (field === 'bestseller')
+                ? book.isBestseller
+                : book[field];
+
+            if (typeof sel !== 'undefined') response[field] = sel;
+        }
+    }
+    return response
 }
 
 function formatMultiple(books, fields, page, length, locale, err) {
     if (err) {
-        return {
-            code: config.errorCode,
-            message: config.messages(locale)[err]
-        }
+        return error(err, locale)
     }
 
     let response = {
