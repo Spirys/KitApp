@@ -19,7 +19,7 @@ module.exports = {
     NAME_INVALID: nonEmptyString('name'),
     DESCRIPTION_INVALID: nonEmptyString('description'),
     PUBLISHER_INVALID: nonEmptyString('publisher'),
-    INVALID_DATE: "Date is invalid. It must correspond to format DD-MM-YYYY"
+    INVALID_DATE: 'Date is invalid. It must correspond to format DD-MM-YYYY'
 };
 
 /**

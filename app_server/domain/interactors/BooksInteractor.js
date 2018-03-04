@@ -12,8 +12,8 @@
  * @private
  */
 
-const validator = require('../validation/InputValidation');
 const Repository = require('../../data/RepositoryProvider').BooksRepository;
+const DocumentInstance = require('../models/documents/DocumentInstance.js');
 
 /**
  * Module exports
@@ -24,7 +24,7 @@ const Repository = require('../../data/RepositoryProvider').BooksRepository;
  * Gets all books from the repository starting from (page - 1) * length till the length - 1
  * @param page
  * @param length
- * @param fields
+ * @param fields the fields to include
  * @return {Promise<Array>}
  */
 
@@ -45,7 +45,9 @@ module.exports.getById = async function (id) {
 };
 
 module.exports.updateById = async function (id, fields) {
-    return await Repository.update(id, fields);
+    let book = await Repository.get(id);
+    book.title = 'NEW';
+    return await Repository.update(book);
 };
 
 module.exports.deleteById = async function () {
@@ -73,8 +75,14 @@ module.exports.getAllInstances = async function (book) {
 
 };
 
-module.exports.newInstance = async function (book, instance) {
+module.exports.newInstance = async function (id, request) {
+    const inst = new DocumentInstance(request.status);
+    inst.dueBack = request.due_back;
+    inst.taker = request.taker;
 
+    let book = await Repository.get(id);
+    book.addInstance(inst);
+    return await Repository.update(book, 'instances');
 };
 
 module.exports.getInstanceById = async function () {

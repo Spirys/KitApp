@@ -10,7 +10,7 @@
  * @private
  */
 
-const DocumentInstance = require('DocumentInstance');
+const DocumentInstance = require('./DocumentInstance');
 const Errors = require('../../Errors');
 const validator = require('../../validation/SetterValidation.js');
 

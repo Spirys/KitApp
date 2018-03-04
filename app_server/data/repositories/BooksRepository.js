@@ -43,15 +43,18 @@ async function get(id = null, query = null, count = 1) {
         }, err => {
             if (err) console.log(err);
             // found!
-        }).populate('instances')
+        })
+            .populate('instances')
             .populate('authors')
             .exec();
     }
     else if (query) {
-        let books = await Book.find(query, err => {
+        let books = await Book.find({}, err => {
             if (err) console.log(err);
             // found!
-        }).populate('instances')
+        })
+            .limit(count)
+            .populate('instances')
             .populate('authors')
             .exec();
 

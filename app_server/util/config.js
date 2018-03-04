@@ -35,6 +35,16 @@ module.exports.messages = function (locale) {
 };
 
 /**
+ * Gets the locale from the request
+ * @return {string}
+ * @public
+ */
+
+module.exports.getLocale = function (req) {
+    return req.cookies.locale;
+};
+
+/**
  * Specific parameters
  */
 module.exports.COOKIE_NAME = '_sessionId';

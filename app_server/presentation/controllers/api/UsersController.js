@@ -9,6 +9,7 @@
  * @private
  */
 
+const interactor = require('../../../domain/interactors/UsersInteractor');
 
 /**
  * Module exports

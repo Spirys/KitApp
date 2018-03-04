@@ -18,3 +18,5 @@ const errors = require('./messages').errors;
 
 module.exports[errors.ERROR1] = 'Произошла ошибка 1';
 module.exports[errors.ERROR2] = 'Произошла ошибка 2';
+module.exports[errors.ERROR3] = 'Произошла ошибка 3';
+module.exports[errors.WRONG_LOGIN_PASSWORD] = 'Неверная пара логин/пароль';

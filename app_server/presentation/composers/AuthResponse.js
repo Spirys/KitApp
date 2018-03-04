@@ -12,22 +12,31 @@
 const config = require('../../util/config');
 
 /**
+ * Module functions
+ * @private
+ */
+
+function error(err, locale) {
+    return {
+        code: config.errorCode,
+        message: config.messages(locale)[err]
+    }
+}
+
+/**
  * Module exports
  * @public
  */
 
 module.exports.format = function (data, locale, err) {
     if (err) {
-        return {
-            code: config.errorCode,
-            message: config.messages(locale)[err]
-        }
+        return error(err, locale)
     } else {
         return {
             code: config.okCode,
-            response: {
-                user: data.userId
-            }
+            response: data
         }
     }
 };
+
+module.exports.error = error;
