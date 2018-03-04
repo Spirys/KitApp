@@ -31,7 +31,9 @@ module.exports = MESSAGES;
  */
 
 module.exports.messages = function (locale) {
-    return (locale.toLowerCase() === 'ru') ? MESSAGES_RU : MESSAGES_EN
+    return locale && locale.toLowerCase
+        ? (locale.toLowerCase() === 'ru') ? MESSAGES_RU : MESSAGES_EN
+        : MESSAGES_EN
 };
 
 /**
@@ -52,5 +54,6 @@ module.exports.COOKIE_HTTPS_ONLY = true;
 
 module.exports.DEFAULT_DOCS_NUMBER = 25;
 module.exports.DEFAULT_BOOK_FIELDS = ['title', 'authors', 'cost', 'edition', 'id', 'publisher', 'isbn', 'keywords', 'description', 'available', 'loaned', 'reference'];
+module.exports.DEFAULT_BOOK_RESPONSE_FIELDS = ['id', 'authors', 'bestseller', 'cost', 'image', 'instances', 'title', 'edition', 'publisher', 'keywords'];
 
 module.exports.mongoURI = 'mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp';
