@@ -36,6 +36,7 @@ const UserRepo = require('./UsersRepository');
  * @private
  */
 
+// TODO: returns class
 async function get(id = null, query = null, count = 1) {
     if (id) {
         return await Book.findOne({
@@ -77,6 +78,7 @@ async function getAll(page, length, fields) {
 }
 
 // FIXME: MAKE BETTER!!!!
+
 async function update(id, query) {
     let book = await get(id);
 

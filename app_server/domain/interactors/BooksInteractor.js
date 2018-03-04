@@ -12,6 +12,7 @@
  * @private
  */
 
+const validator = require('../validation/InputValidation');
 const Repository = require('../../data/RepositoryProvider').BooksRepository;
 const DocumentInstance = require('../models/documents/DocumentInstance.js');
 
@@ -28,6 +29,7 @@ const DocumentInstance = require('../models/documents/DocumentInstance.js');
  * @return {Promise<Array>}
  */
 
+// TODO: returns class
 module.exports.getAll = async function (page, length, fields) {
     return await Repository.getAll(page, length, fields);
 };
@@ -41,12 +43,14 @@ module.exports.new = async function (fields) {
 };
 
 module.exports.getById = async function (id) {
+    // let book = await Repository.get(id);
+    // return classify(book);
     return await Repository.get(id);
 };
 
 module.exports.updateById = async function (id, fields) {
     let book = await Repository.get(id);
-    book.title = 'NEW';
+    book.title = 'Book'; // and other ${fields}
     return await Repository.update(book);
 };
 
@@ -82,7 +86,7 @@ module.exports.newInstance = async function (id, request) {
 
     let book = await Repository.get(id);
     book.addInstance(inst);
-    return await Repository.update(book, 'instances');
+    return await Repository.update(book);
 };
 
 module.exports.getInstanceById = async function () {

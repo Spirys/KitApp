@@ -1,6 +1,6 @@
 /*!
  * Article
- * Copyright(c) 2018 Ilya Khabirov
+ * Copyright(c) 2018 Marsel Shaihin
  */
 
 'use strict';
