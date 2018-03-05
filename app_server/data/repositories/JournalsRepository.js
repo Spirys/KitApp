@@ -25,9 +25,9 @@ module.exports.remove = remove;
  */
 
 const mongoose = require('mongoose');
-const Journal = require('../models/documents/Journal').models.mongo;
-const Article = require('../models/documents/Article').models.mongo;
-const JournalInstance = require('../models/documents/DocumentInstance').models.mongo.journal;
+const Journal = require('../models/documents/Journal');
+const Article = require('../models/documents/Article');
+const JournalInstance = require('../models/documents/DocumentInstance');
 const AuthorRepo = require('./AuthorsRepository');
 
 /**

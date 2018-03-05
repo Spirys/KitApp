@@ -16,110 +16,130 @@ module.exports.create = create;
 module.exports.read = get;
 module.exports.get = get;
 module.exports.getAll = getAll;
-module.exports.update = update;
+module.exports.update = updateBook;
 module.exports.delete = remove;
 module.exports.remove = remove;
+module.exports.checkout = checkout;
+module.exports.returnBook = returnBook;
 
 /**
  * Module dependencies
  * @private
  */
 
-const Book = require('../models/documents/Book').models.mongo;
+const config = require('../../util/config');
+
+const BookDB = require('../models/documents/Book');
+const BookInstanceDB = require('../models/documents/DocumentInstance');
+const UserDB = require('../models/users/Patron');
+
 const AuthorRepo = require('./AuthorsRepository');
-const BookInstance = require('../models/documents/DocumentInstance').models.mongo.book;
-const User = require('../models/users/Patron');
 const UserRepo = require('./UsersRepository');
+
+const BookClass = require('../converters/model_to_class/documents/BookModelToClass');
+const AuthorClass = require('../../domain/models/documents/Author');
+const BookInstanceClass = require('../../domain/models/documents/DocumentInstance');
+const UserClass = require('../../domain/models/users/Patron');
+
+const BookModel = require('../converters/class_to_model/documents/BookClassToModel');
+const BookInstanceModel = require('../converters/class_to_model/documents/DocumentInstanceClassToModel');
 
 /**
  * CRUD functions
  * @private
  */
 
-// TODO: returns class
-async function get(id = null, query = null, count = 1) {
-    if (id) {
-        return await Book.findOne({
-            $where: `parseInt(this._id.valueOf().toString().substring(18), 16) === ${id}`
-        }, err => {
-            if (err) console.log(err);
-            // found!
-        })
-            .populate('instances')
-            .populate('authors')
-            .exec();
-    }
-    else if (query) {
-        let books = await Book.find({}, err => {
-            if (err) console.log(err);
-            // found!
-        })
-            .limit(count)
-            .populate('instances')
-            .populate('authors')
-            .exec();
-
-        if (books && count === 1) {
-            return books[0];
-        } else if (books && count !== -1) {
-            return books.slice(0, count);
-        } else {
-            return books;
-        }
-    }
-    else {
-        return null;
-    }
-}
-
-// TODO: get all books
-async function getAll(page, length, fields) {
-    return await get(null, fields, length);
-}
-
-// FIXME: MAKE BETTER!!!!
-
-async function update(id, query) {
-    let book = await get(id);
-
-    if (!book) {
-        return null;
-    }
-
-    if (query.title) book.title = query.title;
-    if (query.bestseller) book.bestseller = query.bestseller;
-    if (query.cost) book.cost = query.cost;
-    if (query.publisher) book.publisher = query.publisher;
-    if (query.edition) book.edition = query.edition;
-    if (query.isbn) book.isbn = query.isbn;
-    if (query.keywords) book.keywords = query.keywords;
-    if (query.description) book.description = query.description;
-    if (query.image) book.image = query.image;
-    if (query.published) book.published = query.published;
-
-    if (query.authors) {
-        let authors = [];
-        for (let i = 0; i < query.authors.length; i++) {
-            let author = await AuthorRepo.get(null, query.authors[i]);
-            if (!author) {
-                author = await AuthorRepo.create(query.authors[i]);
-            }
-            authors.push(author);
-        }
-        book.authors = authors;
-    }
-
-    return await book.save(err => {
+async function get(id) {
+    let bookDb = await BookDB.findOne({
+        $where: `parseInt(this._id.valueOf().toString().substring(18), 16) === ${id}`
+    }, err => {
         if (err) console.log(err);
-        // saved!
-    });
+        // found!
+    })
+        .populate('instances')
+        .populate('authors')
+        .exec();
+
+    if (bookDb.instances) {
+        for (let i = 0; i < bookDb.instances.length; i++) {
+            if (bookDb.instances[i].taker) {
+                await UserDB.populate(bookDb.instances[i], {
+                    path: 'taker'
+                });
+            }
+        }
+    }
+
+    let book = BookClass(bookDb);
+
+    return book;
+}
+
+async function search(query) {
+    let books = await BookDB.find(query)
+        .populate('authors')
+        .populate('instances')
+        .exec();
+
+    let bookClasses = [];
+    for (let i = 0; i < books.length; i++) {
+        let b = books[i];
+
+        for (let j = 0; j < b.instances.length; j++) {
+            if (b.instances[j].taker) {
+                await UserDB.populate(b.instances[j], {
+                    path: 'taker'
+                });
+            }
+        }
+        bookClasses.push(BookClass(b));
+    }
+
+    return bookClasses;
+}
+
+async function getAll(page, length) {
+    let books = await BookDB.find()
+        .skip((page - 1) * length)
+        .limit(length)
+        .populate('authors')
+        .populate('instances')
+        .exec();
+
+    let bookClasses = [];
+    for (let i = 0; i < books.length; i++) {
+        let b = books[i];
+
+        for (let j = 0; j < b.instances.length; j++) {
+            if (b.instances[j].taker) {
+                await UserDB.populate(b.instances[j], {
+                    path: 'taker'
+                });
+            }
+        }
+        bookClasses.push(BookClass(b));
+    }
+
+    return bookClasses;
+}
+
+async function updateBook(book) {
+    let bookModel = BookModel(book);
+
+    await BookDB.findByIdAndUpdate(book.innerId, bookModel).exec();
+
+    return book;
 }
 
 async function create(query) {
-    let book = await get(null, query);
+    let book = await search({
+        title: query.title,
+        edition: query.edition,
+        publisher: query.publisher
+    });
 
     if (!book) {
-        book = {
+        let bookDb = await BookDB.create({
             title: query.title,
             authors: [],
             instances: [],
@@ -132,60 +152,53 @@ async function create(query) {
             isbn: query.isbn,
             image: query.image,
             published: query.published
-        };
+        });
 
+        book = BookClass(bookDb);
+
+        let authors = [];
         for (let i = 0; i < query.authors.length; i++) {
-            let author = await AuthorRepo.get(null, query.authors[i]);
+            let author = await AuthorRepo.search(query.authors[i]);
             if (!author) {
                 author = await AuthorRepo.create(query.authors[i]);
             }
-            book.authors.push(author);
+            authors.push(author);
         }
-
-        book = await Book.create(book, err => {
-            if (err) console.log(err);
-            // created!
-        });
+        book.authors = authors;
     }
 
     if (query.available) {
         for (let i = 0; i < query.available; i++) {
-            let instance = await createInstance('Available', book);
-            book.instances.push(instance);
+            let instance = await createInstance('Available');
+            book.addInstance(instance);
         }
     }
 
     if (query.reference) {
         for (let i = 0; i < query.reference; i++) {
-            let instance = await createInstance('Reference', book);
-            book.instances.push(instance);
+            let instance = await createInstance('Reference');
+            book.addInstance(instance);
         }
     }
 
     if (query.maintenance || 1) {
         let count = query.maintenance ? query.maintenance : 1;
         for (let i = 0; i < count; i++) {
-            let instance = await createInstance('Maintenance', book);
-            book.instances.push(instance);
+            let instance = await createInstance('Maintenance');
+            book.addInstance(instance);
         }
     }
 
-    return await book.save(err => {
-        if (err) console.log(err);
-        // saved!
-    });
+    await updateBook(book);
+
+    return book;
 }
 
 async function remove(id) {
     let book = await get(id);
+
     if (book) {
-        await Book.remove({_id: book._id}, err => {
-            if (err) {
-                console.log(err);
-                return false;
-            }
-            // removed!
-        });
+        await BookDB.remove({_id: book.innerId});
 
         return true;
     }
@@ -193,84 +206,62 @@ async function remove(id) {
 }
 
 // FIXME: add errors
-async function checkout(id, query) {
-    let book = await get(id);
-    if (!book) {
-        return 'SOME ERROR';
-    }
-
-    let user = UserRepo.get(query.user_id);
-    let time = query.time * 24 * 60 * 60 * 1000;
-    if (user.type === 'Student') {
-        if (book.bestseller) {
-            // 2 weeks
-            time = (14 * 24 * 60 * 60 * 1000) > time ? time : (14 * 24 * 60 * 60 * 1000);
-        } else {
-            // 3 weeks
-            time = (21 * 24 * 60 * 60 * 1000) > time ? time : (21 * 24 * 60 * 60 * 1000);
-        }
-    } else {
-        // 4 weeks
-        time = (28 * 24 * 60 * 60 * 1000) > time ? time : (28 * 24 * 60 * 60 * 1000);
-    }
-
-    // FIXME: return something
+async function checkout(book, user) {
     for (let i = 0; i < book.instances.length; i++) {
         if (book.instances[i].status === 'Available') {
             let date_now = Date.now();
-            await BookInstance.update({_id: book.instances[i]._id}, {
-                $set: {
-                    status: 'Loaned',
-                    taker: user,
-                    take_due: date_now,
-                    due_back: date_now + time
+
+            let instance = book.instances[i];
+            instance.taker = user;
+            instance.takeDue = date_now;
+            if (user.type === 'Student') {
+                if (book.isBestseller) {
+                    instance.dueBack = date_now + config.DEFAULT_CHECKOUT_TIME_STUDENT_BESTSELLER;
+                } else {
+                    instance.dueBack = date_now + config.DEFAULT_CHECKOUT_TIME_STUDENT_NOT_BESTSELLER;
                 }
-            }, err => {
-                if (err) console.log(err);
-                // updated!
-            });
+            } else {
+                instance.dueBack = date_now + config.DEFAULT_CHECKOUT_TIME_FACULTY;
+            }
+
+            await updateInstance(instance);
             break;
         }
     }
+
+    return book;
 }
 
-async function returnBook(id, query) {
-    let book = await get(id);
-    if (!book) {
-        return 'SOME ERROR';
-    }
-
-    // FIXME: return something
+async function returnBook(book, user) {
     for (let i = 0; i < book.instances.length; i++) {
         if (book.instances[i].status === 'Loaned') {
             let instance = book.instances[i];
-            await User.populate(instance, {
-                path: 'taker'
-            });
-            if (instance.taker.id === query.id) {
-                instance.status = 'Available';
-                instance.taker = undefined;
-                instance.take_due = undefined;
-                instance.due_back = undefined;
+            if (instance.taker.id === user.id) {
+                instance.taker = null;
+                instance.dueBack = null;
+                instance.takeDue = null;
 
-                await instance.save();
+                await updateInstance(instance);
                 break;
             }
         }
     }
+
+    return book;
 }
 
-async function createInstance(status, book) {
-    let instance = await BookInstance.create({
-        status: status,
-        document: {
-            kind: 'Book',
-            doc: book
-        }
-    }, err => {
-        if (err) console.log(err);
-        // created!
+async function createInstance(status) {
+    let instance = await BookInstanceDB.create({
+        status: status
     });
+
+    return BookInstanceClass(instance);
+}
+
+async function updateInstance(instance) {
+    let instanceModel = BookModel(instance);
+
+    await BookDB.findByIdAndUpdate(instance.innerId, instanceModel).exec();
 
     return instance;
 }

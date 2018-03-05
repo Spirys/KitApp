@@ -22,60 +22,36 @@ module.exports.remove = remove;
  * @private
  */
 
-const mongoose = require('mongoose');
-const User = require('../models/users/Patron').models.mongo;
+const UserDB = require('../models/users/Patron');
+
+const UserClass = require('../../data/converters/model_to_class/user/PatronModelToClass');
+
+const UserModel = require('../../data/converters/class_to_model/users/PatronClassToModel');
 
 /**
  * CRUD functions
  * @private
  */
 
-async function get(id = null, query = null, count = 1) {
-    if (id) {
-        return await User.findOne({
-            $where: `parseInt(this._id.valueOf().toString().substring(18), 16) === ${id}`
-        }, err => {
-            if (err) console.log(err);
-            // found!
-        }).exec();
-    }
-    else if (query) {
-        let users = await User.find(query, err => {
-            if (err) console.log(err);
-            // found!
-        }).exec();
+async function get(id) {
+    let userDb = await UserDB.findOne({
+        $where: `parseInt(this._id.valueOf().toString().substring(18), 16) === ${id}`
+    }, err => {
+        if (err) console.log(err);
+        // found!
+    }).exec();
 
-        if (users && count === 1) {
-            return users[0];
-        } else if (users && count !== -1) {
-            return users.slice(0, count);
-        } else {
-            return users;
-        }
-    }
-    else {
-        return null;
-    }
+    let user = UserClass(userDb);
+
+    return user;
 }
 
-async function update(id, query) {
-    let user = await get(id);
-    if (!user) {
-        return null;
-    }
+async function update(user) {
+    let userModel = UserModel(user);
 
-    if (query.first_name) user.first_name = query.first_name;
-    if (query.last_name) user.last_name = query.last_name;
-    if (query.type) user.type = query.type;
-    if (query.birth_date) user.birth_date = query.birth_date;
-    if (query.email) user.email = query.email;
-    if (query.phone) user.phone = query.phone;
-    if (query.occupation) user.occupation = query.occupation;
-    if (query.about) user.about = query.about;
-    if (query.telegram) user.telegram = query.telegram;
-    if (query.avatar) user.avatar = query.avatar;
+    await UserDB.findByIdAndUpdate(user.innerId, user);
 
-    return await user.save();
+    return user;
 }
 
 async function create(query) {
@@ -84,7 +60,7 @@ async function create(query) {
         return user
     }
 
-    user = await User.create({
+    user = await UserDB.create({
         first_name: query.first_name,
         last_name: query.last_name,
         type: query.type,
@@ -102,13 +78,7 @@ async function create(query) {
 async function remove(id) {
     let user = await get(id);
     if (user) {
-        await User.remove({_id: user._id}, err => {
-            if (err) {
-                console.log(err);
-                return false;
-            }
-            // removed!
-        });
+        await UserDB.remove({_id: user._id});
 
         return true;
     }
