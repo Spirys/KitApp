@@ -14,7 +14,7 @@ const responseComposer = require('../../composers/ResponseComposer').book;
 const interactor = require('../../../domain/interactors/BooksInteractor');
 const usersInteractor = require('../../../domain/interactors/UsersInteractor');
 const defaultNumberOfBooks = require('../../../util/config').DEFAULT_DOCS_NUMBER;
-const defaultFields = require('../../../util/config').DEFAULT_BOOK_FIELDS;
+const defaultFields = require('../../../util/config').DEFAULT_BOOK_RESPONSE_FIELDS;
 
 /**
  * Gets the locale from the request
