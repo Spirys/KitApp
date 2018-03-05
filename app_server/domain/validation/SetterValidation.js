@@ -27,7 +27,7 @@ function stringValidation (s) {
  */
 
 function validateDate(date) {
-    return moment(date, "DD-MM-YYYY").isValid()
+    return moment(date, 'DD-MM-YYYY').isValid()
     // return (/^\d{2}-\d{2}-\d{4}$/.test(date))
 }
 

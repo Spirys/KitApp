@@ -64,7 +64,11 @@ let test5 = Object.create(test1);
 // delete test5.books[0].bestseller; // Uncomment to test
 test5.fields = ['id', 'bestseller', 'cost', 'keywords'];
 
-let current = test1;
+let test6 = Object.create(test4);
+test6.err = config.errors.ERROR1;
+delete test6.locale;
+
+let current = test3;
 let r = BookResponse.formatMultiple(current.books, current.fields, current.page, current.length, current.locale, current.err);
 
 console.debug(r);

@@ -1,4 +1,5 @@
 /**
+ * Page composer. Builds an HTML page for the client
  * Copyright (c) 2018 Marsel Shaihin
  */
 

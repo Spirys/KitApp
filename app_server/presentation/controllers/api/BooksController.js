@@ -45,7 +45,11 @@ module.exports.getAll = async function (req, res) {
     // Getting the books
     const books = await interactor.getAll(page, length, fields);
 
-    let response = responseComposer.formatMultiple(books, fields, page, length, locale, books.err);
+    let response = responseComposer.formatMultiple(books, true, fields, page, length, locale, books.err);
+
+    // TODO Get rid of maintenance copies for patron
+    // TODO Get rid of 'taker' and 'due_back' for patron
+
     res.json(response);
 };
 

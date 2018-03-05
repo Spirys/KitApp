@@ -1,4 +1,5 @@
 /**
+ * Response composer. Builds the JSON response for the client.
  * Copyright (c) 2018 Marsel Shaihin
  */
 
@@ -9,9 +10,10 @@
  * @private
  */
 
-const BookResponseComposer = require('./BookResponse');
-const UserResponseComposer = require('./UserResponse');
-const AuthResponseComposer = require('./AuthResponse');
+const BookResponseComposer = require('./formatting/BookResponse');
+const UserResponseComposer = require('./formatting/UserResponse');
+const AuthResponseComposer = require('./formatting/AuthResponse');
+const AuthorsResponseComposer = require('./formatting/AuthorsResponse');
 
 /**
  * Module exports
@@ -25,5 +27,6 @@ const AuthResponseComposer = require('./AuthResponse');
 module.exports = {
     book:  BookResponseComposer,
     user:  UserResponseComposer,
-    auth:  AuthResponseComposer
+    auth:  AuthResponseComposer,
+    author: AuthorsResponseComposer
 };

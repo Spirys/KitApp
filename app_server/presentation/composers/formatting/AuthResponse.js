@@ -9,7 +9,7 @@
  * @private
  */
 
-const config = require('../../util/config');
+const config = require('../../../util/config');
 
 /**
  * Module functions
