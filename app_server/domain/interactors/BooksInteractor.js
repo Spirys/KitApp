@@ -15,6 +15,7 @@
 //const validator = require('../validation/InputValidation');
 const Repository = require('../../data/RepositoryProvider').BooksRepository;
 const DocumentInstance = require('../models/documents/DocumentInstance.js');
+const UserRepo = require('../../data/RepositoryProvider').UsersRepository;
 
 /**
  * Module exports
@@ -64,20 +65,26 @@ module.exports.updateById = async function (id, fields) {
     return await Repository.update(book);
 };
 
-module.exports.deleteById = async function () {
+module.exports.deleteById = async function (id) {
     return await Repository.delete(id);
 };
 
-module.exports.checkoutById = async function () {
+module.exports.checkoutById = async function (bookId, userId) {
+    let book = await Repository.get(bookId);
+    let user = await UserRepo.get(userId);
 
+    return await Repository.checkout(book, user);
 };
 
 /**
  * Marks the book with given id as returned by user
  */
 
-module.exports.returnById = async function (id, user) {
+module.exports.returnById = async function (bookId, userId) {
+    let book = await Repository.get(bookId);
+    let user = await UserRepo.get(userId);
 
+    return await Repository.returnBook(book, user);
 };
 
 /**
