@@ -24,3 +24,4 @@ module.exports[errors.INVALID_TOKEN] = 'Неверный токен';
 module.exports[errors.DOCUMENT_NOT_FOUND] = 'Запрашиваемый документ не найден';
 module.exports[errors.DOCUMENT_ALREADY_TAKEN] = 'Запрашиваемый документ уже есть у пользователя';
 module.exports[errors.DOCUMENT_NOT_AVAILABLE] = 'Запрашиваемый документ нельзя взять';
+module.exports[errors.DOCUMENT_NOT_TAKEN] = 'Запрашиваемый документ не взят данным пользователем';

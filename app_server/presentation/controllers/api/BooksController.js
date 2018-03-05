@@ -144,7 +144,7 @@ module.exports.returnById = async function (req, res) {
         res.json(error(user.err, locale))
     }
 
-    const book = await interactor.returnById(bookId, user.user);
+    const book = await interactor.returnById(bookId, user.user.id);
 
     let response = responseComposer.format(book, true, defaultFields, locale, book.err);
     res.json(response);

@@ -126,10 +126,25 @@ module.exports.checkoutById = async function (bookId, user) {
  * Marks the book with given id as returned by user
  */
 
-module.exports.returnById = async function (bookId, user) {
-    let book = await Repository.get(bookId);
+module.exports.returnById = async function (bookId, userId) {
 
-    return await Repository.returnBook(book, user);
+    // Getting the book
+    let book = await Repository.get(bookId);
+    if (book.err) return {err: config.errors.DOCUMENT_NOT_FOUND};
+
+    // Finding the loaned book which is taken by the user
+    let instance = book.instances.find(i => i.taker && i.taker.id === userId);
+
+    if (!instance) return {err: config.errors.DOCUMENT_NOT_TAKEN};
+
+    instance.status = 'Available';
+    instance.taker = undefined;
+    instance.dueBack = undefined;
+    instance.takeDue = undefined;
+
+    await Repository.updateInstance(instance);
+
+    return book;
 };
 
 /**

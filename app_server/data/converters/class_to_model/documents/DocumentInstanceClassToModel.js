@@ -8,9 +8,9 @@ module.exports = instance => {
         status: instance.status
     };
 
-    if (instance.taker) inst.taker = Patron(instance.taker); else inst.taker = undefined;
-    if (instance.takeDue) inst.take_due = instance.takeDue; else inst.take_due = undefined;
-    if (instance.dueBack) inst.due_back = instance.dueBack; else inst.due_back = undefined;
+    inst.taker = (instance.taker) ? Patron(instance.taker) : undefined;
+    inst.take_due = (instance.takeDue) ? instance.takeDue : undefined;
+    inst.due_back = (instance.dueBack) ? instance.dueBack : undefined;
 
     return inst;
 };

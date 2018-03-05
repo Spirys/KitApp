@@ -204,25 +204,6 @@ async function remove(id) {
     };
 }
 
-async function returnBook(book, user) {
-    for (let i = 0; i < book.instances.length; i++) {
-        if (book.instances[i].status === 'Loaned') {
-            let instance = book.instances[i];
-            if (instance.taker.id === user.id) {
-                instance.status = 'Available';
-                instance.taker = undefined;
-                instance.dueBack = undefined;
-                instance.takeDue = undefined;
-
-                await updateInstance(instance);
-                break;
-            }
-        }
-    }
-
-    return book;
-}
-
 async function createInstance(status) {
     let instance = await BookInstanceDB.create({
         status: status
@@ -260,5 +241,3 @@ module.exports.update = updateBook;
 module.exports.updateInstance = updateInstance;
 module.exports.delete = remove;
 module.exports.remove = remove;
-module.exports.checkout = checkout;
-module.exports.returnBook = returnBook;

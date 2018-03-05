@@ -25,5 +25,6 @@ module.exports = {
         'DOCUMENT_NOT_FOUND' : 'DNF',
         'DOCUMENT_ALREADY_TAKEN' : 'DAT',
         'DOCUMENT_NOT_AVAILABLE' : 'DNA',
+        'DOCUMENT_NOT_TAKEN' : 'DNT',
     }
 };
