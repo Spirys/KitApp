@@ -38,7 +38,7 @@ const UserRepo = require('./UsersRepository');
 
 const BookClass = require('../converters/model_to_class/documents/BookModelToClass');
 const AuthorClass = require('../../domain/models/documents/Author');
-const BookInstanceClass = require('../../domain/models/documents/DocumentInstance');
+const BookInstanceClass = require('../converters/model_to_class/documents/DocumentInstanceModelToClass');
 const UserClass = require('../../domain/models/users/Patron');
 
 const BookModel = require('../converters/class_to_model/documents/BookClassToModel');
@@ -138,7 +138,7 @@ async function create(query) {
         publisher: query.publisher
     });
 
-    if (!book) {
+    if (book.length === 0) {
         let bookDb = await BookDB.create({
             title: query.title,
             authors: [],
@@ -159,8 +159,10 @@ async function create(query) {
         let authors = [];
         for (let i = 0; i < query.authors.length; i++) {
             let author = await AuthorRepo.search(query.authors[i]);
-            if (!author) {
+            if (author.length === 0) {
                 author = await AuthorRepo.create(query.authors[i]);
+            } else {
+                author = author[0];
             }
             authors.push(author);
         }
@@ -198,11 +200,21 @@ async function remove(id) {
     let book = await get(id);
 
     if (book) {
+        for (let i = 0; i < book.instances.length; i++) {
+            await removeInstance(book.instances[i]);
+        }
+
         await BookDB.remove({_id: book.innerId});
 
-        return true;
+        book.instances = [];
+        return {
+            success: true,
+            book
+        };
     }
-    return false;
+    return {
+        success: false
+    };
 }
 
 // FIXME: add errors
@@ -212,13 +224,14 @@ async function checkout(book, user) {
             let date_now = Date.now();
 
             let instance = book.instances[i];
+            instance.status = 'Loaned';
             instance.taker = user;
-            instance.takeDue = date_now;
+            instance.takeDue = new Date(date_now);
             if (user.type === 'Student') {
                 if (book.isBestseller) {
-                    instance.dueBack = date_now + config.DEFAULT_CHECKOUT_TIME_STUDENT_BESTSELLER;
+                    instance.dueBack = new Date(date_now + config.DEFAULT_CHECKOUT_TIME_STUDENT_BESTSELLER);
                 } else {
-                    instance.dueBack = date_now + config.DEFAULT_CHECKOUT_TIME_STUDENT_NOT_BESTSELLER;
+                    instance.dueBack = new Date(date_now + config.DEFAULT_CHECKOUT_TIME_STUDENT_NOT_BESTSELLER);
                 }
             } else {
                 instance.dueBack = date_now + config.DEFAULT_CHECKOUT_TIME_FACULTY;
@@ -237,9 +250,10 @@ async function returnBook(book, user) {
         if (book.instances[i].status === 'Loaned') {
             let instance = book.instances[i];
             if (instance.taker.id === user.id) {
-                instance.taker = null;
-                instance.dueBack = null;
-                instance.takeDue = null;
+                instance.status = 'Available';
+                instance.taker = undefined;
+                instance.dueBack = undefined;
+                instance.takeDue = undefined;
 
                 await updateInstance(instance);
                 break;
@@ -259,9 +273,17 @@ async function createInstance(status) {
 }
 
 async function updateInstance(instance) {
-    let instanceModel = BookModel(instance);
+    let instanceModel = BookInstanceModel(instance);
 
-    await BookDB.findByIdAndUpdate(instance.innerId, instanceModel).exec();
+    await BookInstanceDB.findByIdAndUpdate(instance.innerId, instanceModel).exec();
 
     return instance;
+}
+
+async function removeInstance(instance) {
+    let instanceModel = BookInstanceModel(instance);
+
+    await BookInstanceDB.remove({_id: instance.innerId});
+
+    return true;
 }
