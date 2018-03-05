@@ -12,12 +12,13 @@
 
 const DocumentParent = require('./Document');
 const mongoose = require('mongoose');
+const virtualSetter = require('../VirtualSetter');
 
 /**
  * A book model
  */
 
-const bookRawModel = Object.assign({}, DocumentParent.models.raw, {
+const bookRawModel = Object.assign({}, DocumentParent.raw, {
     authors: [{type: mongoose.Schema.ObjectId, ref: 'Author'}],
     cost: Number,
     edition: String,
@@ -31,20 +32,13 @@ const bookRawModel = Object.assign({}, DocumentParent.models.raw, {
 });
 
 const bookSchema = mongoose.Schema(bookRawModel);
-bookSchema.virtual('id').get(() => {
-    let bytes = this._id.valueOf()
-        .toString()
-        .substring(18);
-    return parseInt(bytes, 16);
-});
+virtualSetter.addId(bookSchema);
 
 /**
- * Module exports a {@link Book} class
+ * Module exports a {@link Book} model
  * @type {Book}
  * @public
  */
 
-module.exports.models = {
-    raw: bookRawModel,
-    mongo: mongoose.model('Book', bookSchema)
-};
+module.exports = mongoose.model('Book', bookSchema);
+module.exports.raw = bookRawModel;

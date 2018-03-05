@@ -11,6 +11,7 @@
  */
 
 const mongoose = require('mongoose');
+const virtualSetter = require('../VirtualSetter');
 
 /**
  * An article model
@@ -23,19 +24,12 @@ const articleRawModel = {
 };
 
 const articleSchema = mongoose.Schema(articleRawModel);
-articleSchema.virtual('id').get(() => {
-    let bytes = this._id.valueOf()
-        .toString()
-        .substring(18);
-    return parseInt(bytes, 16);
-});
+virtualSetter.addId(articleSchema);
 
 /**
- * Module exports a {@link Book} class
- * @type {Book}
+ * Module exports an {@link articleSchema} model
+ * @type {Model}
  */
 
-module.exports.models = {
-    raw: articleRawModel,
-    mongo: mongoose.model('Article', articleSchema)
-};
+module.exports = mongoose.model('Article', articleSchema);
+module.exports.raw = articleRawModel;

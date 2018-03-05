@@ -11,10 +11,10 @@
  */
 
 const mongoose = require('mongoose');
+const virtualSetter = require('../VirtualSetter');
 
 /**
  * The model for patron
- * @see Patron#constructor
  * @private
  */
 
@@ -31,13 +31,13 @@ const patronRawModel = {
     avatar: String
 };
 
+const patronSchema = mongoose.Schema(patronRawModel);
+virtualSetter.addId(patronSchema);
+
 /**
- * Module exports a {@link Patron} class
- * @type {Patron}
- * @public
+ * Module exports a {@link patronSchema} model
+ * @type {Model}
  */
 
-module.exports.models = {
-    raw: patronRawModel,
-    mongo: mongoose.model('Patron', mongoose.Schema(patronRawModel))
-};
+module.exports = mongoose.model('Patron', patronSchema);
+module.exports.raw = patronRawModel;

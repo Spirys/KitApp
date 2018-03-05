@@ -7,14 +7,15 @@
 
 /**
  * Module dependencies
+ * @private
  */
 
 const mongoose = require('mongoose');
+const virtualSetter = require('../VirtualSetter');
 
 /**
  * Author model
  */
-
 
 const authorRawModel = {
     first_name: {type: String, required: true},
@@ -24,14 +25,12 @@ const authorRawModel = {
 };
 
 const authorSchema = mongoose.Schema(authorRawModel);
-authorSchema.virtual('id').get(() => {
-    let bytes = this._id.valueOf()
-        .toString()
-        .substring(18);
-    return parseInt(bytes, 16);
-});
+virtualSetter.addId(authorSchema);
 
-module.exports.models = {
-    raw: authorRawModel,
-    mongo: mongoose.model('Author', authorSchema)
-};
+/**
+ * Module exports an {@link authorSchema} model
+ * @type {Model}
+ */
+
+module.exports = mongoose.model('Author', authorSchema);
+module.exports.raw = authorRawModel;

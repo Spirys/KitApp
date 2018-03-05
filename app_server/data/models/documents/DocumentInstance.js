@@ -11,6 +11,7 @@
  */
 
 const mongoose = require('mongoose');
+const virtualSetter = require('../VirtualSetter');
 
 /**
  * Model of the document instance. May be used as-is
@@ -29,23 +30,12 @@ const documentInstanceRawModel = {
 };
 
 const documentInstanceSchema = mongoose.Schema(documentInstanceRawModel);
-documentInstanceSchema.virtual('id').get(() => {
-    let bytes = this._id.valueOf()
-        .toString()
-        .substring(18);
-    return parseInt(bytes, 16);
-});
+virtualSetter.addId(documentInstanceSchema);
 
 /**
- * Module exports a class {@link DocumentInstance}
- * @type {DocumentInstance}
- * @private
+ * Module exports {@link documentInstanceSchema} models
+ * @type {{book: Model, journal: Model, media: Model}}
  */
 
-module.exports.models = {
-    raw: documentInstanceRawModel,
-    mongo: {
-        book: mongoose.model('BookInstance', documentInstanceSchema),
-        journal: mongoose.model('JournalInstance', documentInstanceSchema)
-    }
-};
+module.exports = mongoose.model('DocumentInstance', documentInstanceSchema);
+module.exports.raw = documentInstanceRawModel;
