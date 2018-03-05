@@ -8,21 +8,6 @@
 'use strict';
 
 /**
- * Module exports
- * @public
- */
-
-module.exports.create = create;
-module.exports.read = get;
-module.exports.get = get;
-module.exports.getAll = getAll;
-module.exports.update = updateBook;
-module.exports.delete = remove;
-module.exports.remove = remove;
-module.exports.checkout = checkout;
-module.exports.returnBook = returnBook;
-
-/**
  * Module dependencies
  * @private
  */
@@ -50,29 +35,31 @@ const BookInstanceModel = require('../converters/class_to_model/documents/Docume
  */
 
 async function get(id) {
-    let bookDb = await BookDB.findOne({
+
+    const query = {
         $where: `parseInt(this._id.valueOf().toString().substring(18), 16) === ${id}`
-    }, err => {
-        if (err) console.log(err);
-        // found!
-    })
+    };
+
+    let book = await BookDB.findOne(query)
         .populate('instances')
         .populate('authors')
         .exec();
 
-    if (bookDb.instances) {
-        for (let i = 0; i < bookDb.instances.length; i++) {
-            if (bookDb.instances[i].taker) {
-                await UserDB.populate(bookDb.instances[i], {
+    if (!book) {
+        return {err: config.errors.DOCUMENT_NOT_FOUND}
+    }
+
+    if (book.instances) {
+        for (let i = 0; i < book.instances.length; i++) {
+            if (book.instances[i].taker) {
+                await UserDB.populate(book.instances[i], {
                     path: 'taker'
                 });
             }
         }
     }
 
-    let book = BookClass(bookDb);
-
-    return book;
+    return BookClass(book);
 }
 
 async function search(query) {
@@ -217,34 +204,6 @@ async function remove(id) {
     };
 }
 
-// FIXME: add errors
-async function checkout(book, user) {
-    for (let i = 0; i < book.instances.length; i++) {
-        if (book.instances[i].status === 'Available') {
-            let date_now = Date.now();
-
-            let instance = book.instances[i];
-            instance.status = 'Loaned';
-            instance.taker = user;
-            instance.takeDue = new Date(date_now);
-            if (user.type === 'Student') {
-                if (book.isBestseller) {
-                    instance.dueBack = new Date(date_now + config.DEFAULT_CHECKOUT_TIME_STUDENT_BESTSELLER);
-                } else {
-                    instance.dueBack = new Date(date_now + config.DEFAULT_CHECKOUT_TIME_STUDENT_NOT_BESTSELLER);
-                }
-            } else {
-                instance.dueBack = date_now + config.DEFAULT_CHECKOUT_TIME_FACULTY;
-            }
-
-            await updateInstance(instance);
-            break;
-        }
-    }
-
-    return book;
-}
-
 async function returnBook(book, user) {
     for (let i = 0; i < book.instances.length; i++) {
         if (book.instances[i].status === 'Loaned') {
@@ -287,3 +246,19 @@ async function removeInstance(instance) {
 
     return true;
 }
+
+/**
+ * Module exports
+ * @public
+ */
+
+module.exports.create = create;
+module.exports.read = get;
+module.exports.get = get;
+module.exports.getAll = getAll;
+module.exports.update = updateBook;
+module.exports.updateInstance = updateInstance;
+module.exports.delete = remove;
+module.exports.remove = remove;
+module.exports.checkout = checkout;
+module.exports.returnBook = returnBook;

@@ -15,6 +15,7 @@
 //const validator = require('../validation/InputValidation');
 const Repository = require('../../data/RepositoryProvider').BooksRepository;
 const DocumentInstance = require('../models/documents/DocumentInstance.js');
+const config = require("../../util/config");
 const UserRepo = require('../../data/RepositoryProvider').UsersRepository;
 
 /**
@@ -58,7 +59,7 @@ module.exports.updateById = async function (id, fields) {
     if (fields.bestseller != null && fields.bestseller !== undefined) book.isBestseller = fields.bestseller;
     if (fields.publisher) book.publisher = fields.publisher;
     if (fields.keywords) book.keywords = fields.keywords;
-    if (fields.description) book.description=fields.description;
+    if (fields.description) book.description = fields.description;
     if (fields.image) book.image = fields.image;
     if (fields.published) book.published = fields.published;
 
@@ -69,20 +70,64 @@ module.exports.deleteById = async function (id) {
     return await Repository.delete(id);
 };
 
-module.exports.checkoutById = async function (bookId, userId) {
-    let book = await Repository.get(bookId);
-    let user = await UserRepo.get(userId);
+module.exports.checkoutById = async function (bookId, user) {
 
-    return await Repository.checkout(book, user);
+    // Getting the book
+    let book = await Repository.get(bookId);
+    if (book.err) return {err: book.err};
+
+    /*
+        Iterating through all the instances
+        to find out whether the current user already has a copy.
+        Also finds available copy.
+    */
+
+    let indexAvailable = -1;
+
+    for (let i = 0; i < book.instances.length; i++) {
+        let instance = book.instances[i];
+
+        // Searching for available copies
+        if (indexAvailable === -1 && instance.status === 'Available') {
+            indexAvailable = i;
+        }
+
+        if (instance.taker && instance.taker.id === user.id) return {err: config.errors.DOCUMENT_ALREADY_TAKEN}
+    }
+
+    if (indexAvailable === -1) return {err: config.errors.DOCUMENT_NOT_AVAILABLE};
+
+    /*
+        Marking the instance as loaned
+    */
+
+    let currentTime = Date.now(),
+        instance = book.instances[indexAvailable];
+
+    instance.status = config.statuses.LOANED;
+    instance.taker = user;
+    instance.takeDue = new Date(currentTime + config.DOCUMENT_RESERVATION_TIME);
+
+    // Applying business logic
+    let timeDue = currentTime;
+    timeDue += (user.type === config.userTypes.STUDENT)
+        ? (book.isBestseller)
+            ? config.CHECKOUT_TIME_STUDENT_BESTSELLER
+            : config.CHECKOUT_TIME_STUDENT_NOT_BESTSELLER
+        : config.CHECKOUT_TIME_FACULTY;
+
+    instance.dueBack = new Date(timeDue);
+
+    await Repository.updateInstance(instance);
+    return book;
 };
 
 /**
  * Marks the book with given id as returned by user
  */
 
-module.exports.returnById = async function (bookId, userId) {
+module.exports.returnById = async function (bookId, user) {
     let book = await Repository.get(bookId);
-    let user = await UserRepo.get(userId);
 
     return await Repository.returnBook(book, user);
 };

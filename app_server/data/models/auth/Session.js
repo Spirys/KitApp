@@ -16,7 +16,7 @@ const mongoose = require('mongoose');
  */
 
 const sessionSchema = new mongoose.Schema({
-    user        : {type: mongoose.Schema.ObjectId},
+    user        : {type: mongoose.Schema.ObjectId, ref: 'Patron'},
     token       : {type: String, required: true},
     expires     : {type: Number, default: Date.now()}
 });

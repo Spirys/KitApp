@@ -14,6 +14,7 @@ const BookResponseComposer = require('./formatting/BookResponse');
 const UserResponseComposer = require('./formatting/UserResponse');
 const AuthResponseComposer = require('./formatting/AuthResponse');
 const AuthorsResponseComposer = require('./formatting/AuthorsResponse');
+const ErrorResponseComposer = require('./formatting/ErrorResponse');
 
 /**
  * Module exports
@@ -28,5 +29,6 @@ module.exports = {
     book:  BookResponseComposer,
     user:  UserResponseComposer,
     auth:  AuthResponseComposer,
-    author: AuthorsResponseComposer
+    author: AuthorsResponseComposer,
+    error: ErrorResponseComposer
 };

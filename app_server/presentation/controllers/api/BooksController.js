@@ -11,10 +11,13 @@
  */
 
 const responseComposer = require('../../composers/ResponseComposer').book;
+const error = require('../../composers/ResponseComposer').error;
 const interactor = require('../../../domain/interactors/BooksInteractor');
 const usersInteractor = require('../../../domain/interactors/UsersInteractor');
-const defaultNumberOfBooks = require('../../../util/config').DEFAULT_DOCS_NUMBER;
-const defaultFields = require('../../../util/config').DEFAULT_BOOK_RESPONSE_FIELDS;
+
+const config = require('../../../util/config');
+const defaultNumberOfBooks = config.DEFAULT_DOCS_NUMBER;
+const defaultFields = config.DEFAULT_BOOK_RESPONSE_FIELDS;
 
 /**
  * Gets the locale from the request
@@ -99,13 +102,28 @@ module.exports.deleteById = async function (req, res) {
 };
 
 module.exports.checkoutById = async function (req, res) {
+
+    // Traversing request
     const bookId = req.params.id;
-    const userId = req.body.id;
     const locale = getLocale(req);
 
-    const book = await interactor.checkoutById(bookId, userId);
+    // Checking permissions
+    const user = await usersInteractor.verifyToken(req.body.token);
+    if (user.err) {
+        res.json(error(user.err, locale));
+        return
+    }
 
-    let response = responseComposer.format(book, true, defaultFields, locale, book.err);
+    // Checking out the book
+    const book = await interactor.checkoutById(bookId, user.user);
+    if (book.err) {
+        res.json(error(book.err, locale));
+        return
+    }
+
+    let response = responseComposer.format(book,
+        user.user.type === config.userTypes.LIBRARIAN,
+        defaultFields);
     res.json(response);
 };
 
@@ -118,10 +136,15 @@ module.exports.checkoutById = async function (req, res) {
 
 module.exports.returnById = async function (req, res) {
     const bookId = req.params.id;
-    const userId = req.body.id;
     const locale = getLocale(req);
 
-    const book = await interactor.returnById(bookId, userId);
+    const user = await usersInteractor.verifyToken(req.body.token);
+
+    if (user.err) {
+        res.json(error(user.err, locale))
+    }
+
+    const book = await interactor.returnById(bookId, user.user);
 
     let response = responseComposer.format(book, true, defaultFields, locale, book.err);
     res.json(response);

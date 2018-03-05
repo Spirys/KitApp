@@ -17,10 +17,13 @@ module.exports = {
     okCode: 'ok',
     errorCode: 'error',
     errors: {
-        'INTERNAL' : 'ERR1',
-        'ERROR2' : 'ERR2',
+        'INTERNAL' : 'INT',
+        'ERROR2' : 'ERR2', // Reserved errors
         'ERROR3' : 'ERR3',
-        'WRONG_LOGIN_PASSWORD' : 'ERR4',
-        'INVALID_TOKEN' : 'INV_TOK'
+        'WRONG_LOGIN_PASSWORD' : 'WLP',
+        'INVALID_TOKEN' : 'INV_TOK',
+        'DOCUMENT_NOT_FOUND' : 'DNF',
+        'DOCUMENT_ALREADY_TAKEN' : 'DAT',
+        'DOCUMENT_NOT_AVAILABLE' : 'DNA',
     }
 };

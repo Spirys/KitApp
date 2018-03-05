@@ -11,7 +11,6 @@
 
 const AuthenticationRepository = require('../../data/RepositoryProvider').AuthenticationRepository;
 
-
 /**
  * Module exports
  * @public
@@ -27,4 +26,8 @@ module.exports.logout = async function (session) {
 
 module.exports.createSession = async function (session, user) {
     return await AuthenticationRepository.createSession(session, user)
+};
+
+module.exports.verifyToken = async function (token) {
+    return await AuthenticationRepository.verifyToken(token)
 };

@@ -45,7 +45,7 @@ async function login(login, password) {
             response = {err: config.errors.WRONG_LOGIN_PASSWORD};
         } else {
             response = (user.password === password)
-                ? {user: userConverter(user)}
+                ? {user: userConverter(user.user)}
                 : {err: config.errors.WRONG_LOGIN_PASSWORD}
         }
     } catch (err) {
@@ -90,7 +90,7 @@ function update() {
 
 }
 
-async function createSession(user, session) {
+async function createSession(session, user) {
     let newSession = {
         user: user.innerId,
         token: session,
@@ -98,7 +98,7 @@ async function createSession(user, session) {
     };
 
     try {
-        let response = await Session.create(newSession);
+        let response = await SessionDB.create(newSession);
         if (!response) {
             return {err: config.errors.INTERNAL};
         } else {
