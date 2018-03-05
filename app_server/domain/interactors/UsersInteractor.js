@@ -24,3 +24,7 @@ module.exports.login = async function (login, password) {
 module.exports.logout = async function (session) {
     return await AuthenticationRepository.logout(session)
 };
+
+module.exports.createSession = async function (session, user) {
+    return await AuthenticationRepository.createSession(session, user)
+};

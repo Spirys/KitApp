@@ -16,7 +16,8 @@ const errors = require('./messages').errors;
  * @public
  */
 
-module.exports[errors.ERROR1] = 'Error 1 occurred';
+module.exports[errors.INTERNAL] = 'Internal error occurred';
 module.exports[errors.ERROR2] = 'Error 2 occurred';
 module.exports[errors.ERROR3] = 'Error 3 occurred';
 module.exports[errors.WRONG_LOGIN_PASSWORD] = 'Wrong login/password';
+module.exports[errors.INVALID_TOKEN] = 'Invalid token';

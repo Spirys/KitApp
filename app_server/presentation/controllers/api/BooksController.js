@@ -74,7 +74,7 @@ module.exports.deleteById = async function (req, res) {
 };
 
 module.exports.checkoutById = async function (req, res) {
-
+    
 };
 
 /**

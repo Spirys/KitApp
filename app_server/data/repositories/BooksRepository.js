@@ -70,9 +70,7 @@ async function get(id) {
         }
     }
 
-    let book = BookClass(bookDb);
-
-    return book;
+    return BookClass(bookDb);
 }
 
 async function search(query) {
@@ -214,7 +212,7 @@ async function checkout(book, user) {
             let instance = book.instances[i];
             instance.taker = user;
             instance.takeDue = date_now;
-            if (user.type === 'Student') {
+            if (user.type.toLowerCase() === 'student') {
                 if (book.isBestseller) {
                     instance.dueBack = date_now + config.DEFAULT_CHECKOUT_TIME_STUDENT_BESTSELLER;
                 } else {

@@ -12,12 +12,10 @@
 
 const express = require('express');
 const router = express.Router();
+const controller = require('../controllers/UserController');
 
 /* GET users listing. */
-router.get('/', function(req, res) {
-  res.send('respond with a resource');
-});
-
+router.get('/dashboard', controller.dashboard);
 
 /**
  * Module exports

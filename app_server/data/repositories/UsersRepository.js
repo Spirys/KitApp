@@ -41,9 +41,7 @@ async function get(id) {
         // found!
     }).exec();
 
-    let user = UserClass(userDb);
-
-    return user;
+    return UserClass(userDb);
 }
 
 async function update(user) {
@@ -84,3 +82,10 @@ async function remove(id) {
     }
     return false;
 }
+
+module.exports = {
+    get,
+    create,
+    update,
+    remove
+};
