@@ -141,7 +141,8 @@ module.exports.returnById = async function (req, res) {
     const user = await usersInteractor.verifyToken(req.body.token);
 
     if (user.err) {
-        res.json(error(user.err, locale))
+        res.json(error(user.err, locale));
+        return
     }
 
     const book = await interactor.returnById(bookId, user.user.id);
