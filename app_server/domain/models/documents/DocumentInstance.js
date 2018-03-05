@@ -20,7 +20,7 @@ class DocumentInstance {
 
     constructor(status, id, innerId) {
         this._status = status;
-        this._id=id;
+        this._id = id;
         this._innerId = innerId;
     }
 
@@ -32,7 +32,7 @@ class DocumentInstance {
         this._status = status;
     }
 
-    get id(){
+    get id() {
         return this._id;
     }
 
@@ -54,7 +54,7 @@ class DocumentInstance {
 
     set dueBack(date) {
         // Check whether an argument has a Date type
-        if (date.getDay) {
+        if (date == null || date === undefined || date.getDay) {
             this._dueBack = date;
             return true;
         } else return false;
@@ -66,7 +66,7 @@ class DocumentInstance {
 
     set takeDue(date) {
         // Check whether an argument has a Date type
-        if (date.getDay) {
+        if (date == null || date === undefined || date.getDay) {
             this._takeDue = date;
             return true;
         } else return false;

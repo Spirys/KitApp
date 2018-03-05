@@ -58,23 +58,55 @@ module.exports.search = async function (req, res) {
 };
 
 module.exports.new = async function (req, res) {
+    const fields = req.body.book;
+    const locale = getLocale(req);
 
+    const book = await interactor.new(fields);
+
+    let response = responseComposer.format(book, true, defaultFields, locale, book.err);
+    res.json(response);
 };
 
 module.exports.getById = async function (req, res) {
+    const id = req.params.id;
+    const locale = getLocale(req);
 
+    const book = await interactor.getById(id);
+
+    let response = responseComposer.format(book, true, defaultFields, locale, book.err);
+    res.json(response);
 };
 
 module.exports.updateById = async function (req, res) {
+    const id = req.params.id;
+    const locale = getLocale(req);
+    const fields = req.body;
 
+    const book = await interactor.updateById(id, fields);
+
+    let response = responseComposer.format(book, true, defaultFields, locale, book.err);
+    res.json(response);
 };
 
 module.exports.deleteById = async function (req, res) {
+    const id = req.params.id;
+    const locale = getLocale(req);
 
+    const book = await interactor.deleteById(id);
+
+    let response = responseComposer.format(book.book, true, defaultFields, locale, book.err);
+    res.json(response);
 };
 
 module.exports.checkoutById = async function (req, res) {
-    
+    const bookId = req.params.id;
+    const userId = req.body.id;
+    const locale = getLocale(req);
+
+    const book = await interactor.checkoutById(bookId, userId);
+
+    let response = responseComposer.format(book, true, defaultFields, locale, book.err);
+    res.json(response);
 };
 
 /**
@@ -85,7 +117,14 @@ module.exports.checkoutById = async function (req, res) {
  */
 
 module.exports.returnById = async function (req, res) {
+    const bookId = req.params.id;
+    const userId = req.body.id;
+    const locale = getLocale(req);
 
+    const book = await interactor.returnById(bookId, userId);
+
+    let response = responseComposer.format(book, true, defaultFields, locale, book.err);
+    res.json(response);
 };
 
 /**
