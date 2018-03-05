@@ -28,8 +28,8 @@ class Journal extends DocumentParent {
      * @param ISSN
      * @param keywords
      */
-    constructor(title, id, authors, cost, edition, ISSN, keywords) {
-        super(title, id);
+    constructor(title, id, innerId, authors, cost, edition, ISSN, keywords) {
+        super(title, id, innerId);
         this._authors = authors;
         this._cost = cost;
         this._edition = edition;
@@ -43,6 +43,14 @@ class Journal extends DocumentParent {
 
     set authors(value) {
         this._authors = value
+    }
+
+    get articles(){
+        return this._articles;
+    }
+
+    set articles(articles){
+        this._articles = articles;
     }
 
     get isBestseller() {

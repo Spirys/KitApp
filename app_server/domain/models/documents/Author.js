@@ -18,9 +18,11 @@ const Errors = require('../../Errors');
 
 class Author {
 
-    constructor(firstName, lastName) {
+    constructor(firstName, lastName, id, innerId) {
         this.firstName = firstName;
-        this.lastName = lastName
+        this.lastName = lastName;
+        this._id = id;
+        this._innerId = innerId;
     }
 
     get firstName() {
@@ -47,6 +49,14 @@ class Author {
         } else {
             throw new TypeError(Errors.NAME_INVALID)
         }
+    }
+
+    get id() {
+        return this._id;
+    }
+
+    get innerId() {
+        return this._innerId;
     }
 
     get birthDate() {

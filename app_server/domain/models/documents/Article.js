@@ -24,9 +24,11 @@ class Article {
      * @param name
      * @param authors
      */
-    constructor(name, authors) {
+    constructor(name, authors, id, innerId) {
         this.name = name;
         this._authors = authors;
+        this._id = id;
+        this._innerId = innerId;
     }
 
     get authors() {
@@ -47,6 +49,27 @@ class Article {
             this._name = name
         } else {
             throw new TypeError(Errors.TITLE_INVALID)
+        }
+    }
+
+    get id () {
+        return this._id;
+    }
+
+    get innerId(){
+        return this._innerId;
+    }
+
+    get published() {
+        return this._published;
+    }
+
+    set published(published) {
+        const valid = validator.validateDate(published);
+        if (valid) {
+            this._published = published;
+        } else {
+            throw new TypeError(Errors.TITLE_INVALID);
         }
     }
 }

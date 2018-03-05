@@ -18,9 +18,11 @@
  */
 
 class Patron {
-    constructor(firstName, lastName, type, birthDate, phone) {
+    constructor(firstName, lastName, id, innerId, type, birthDate, phone) {
         this._firstName = firstName;
         this._lastName = lastName;
+        this._id = id;
+        this._innerId = innerId;
         this._type = type;
         this._birthDate = birthDate;
         this._phone = phone;
@@ -42,6 +44,14 @@ class Patron {
         this._lastName = value;
     }
 
+    get id() {
+        return this._id;
+    }
+
+    get innerId(){
+        return this._innerId;
+    }
+
     get type() {
         return this._type;
     }
@@ -56,6 +66,14 @@ class Patron {
 
     set birthDate(value) {
         this._birthDate = value;
+    }
+
+    get email() {
+        return this._email;
+    }
+
+    set email(email){
+        this._email = email;
     }
 
     get phone() {

@@ -20,9 +20,10 @@ const validator = require('../../validation/SetterValidation.js');
  */
 
 class Document {
-    constructor(title, id) {
+    constructor(title, id, innerId) {
         this.title = title;
-        this._id = id
+        this._id = id;
+        this._innerId = innerId;
     }
 
     get title() {
@@ -39,6 +40,10 @@ class Document {
 
     get id() {
         return this._id
+    }
+
+    get innerId() {
+        return this._innerId;
     }
 
     get instances() {

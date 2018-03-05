@@ -18,8 +18,10 @@
 
 class DocumentInstance {
 
-    constructor(status) {
+    constructor(status, id, innerId) {
         this._status = status;
+        this._id=id;
+        this._innerId = innerId;
     }
 
     get status() {
@@ -28,6 +30,14 @@ class DocumentInstance {
 
     set status(status) {
         this._status = status;
+    }
+
+    get id(){
+        return this._id;
+    }
+
+    get innerId() {
+        return this._innerId;
     }
 
     get taker() {
@@ -46,6 +56,18 @@ class DocumentInstance {
         // Check whether an argument has a Date type
         if (date.getDay) {
             this._dueBack = date;
+            return true;
+        } else return false;
+    }
+
+    get takeDue() {
+        return this._takeDue;
+    }
+
+    set takeDue(date) {
+        // Check whether an argument has a Date type
+        if (date.getDay) {
+            this._takeDue = date;
             return true;
         } else return false;
     }

@@ -24,14 +24,15 @@ class Book extends DocumentParent {
      * Constructor for the book object
      * @param title
      * @param id
+     * @param innerId
      * @param authors
      * @param cost
      * @param edition
      * @param ISBN
      * @param keywords
      */
-    constructor(title, id, authors, cost, edition, ISBN, keywords) {
-        super(title, id);
+    constructor(title, id, innerId, authors, cost, edition, ISBN, keywords) {
+        super(title, id, innerId);
         this._authors = authors;
         this._cost = cost;
         this._edition = edition;
@@ -64,6 +65,10 @@ class Book extends DocumentParent {
         return this._cost
     }
 
+    set cost(value) {
+        this._cost = value;
+    }
+
     get description() {
         return this._description || ''
     }
@@ -82,6 +87,10 @@ class Book extends DocumentParent {
 
     get isbn() {
         return this._ISBN
+    }
+
+    set isbn(value) {
+        this._ISBN = value;
     }
 
     get image() {
