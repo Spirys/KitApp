@@ -56,4 +56,9 @@ module.exports.DEFAULT_DOCS_NUMBER = 25;
 module.exports.DEFAULT_BOOK_FIELDS = ['title', 'authors', 'cost', 'edition', 'id', 'publisher', 'isbn', 'keywords', 'description', 'available', 'loaned', 'reference'];
 module.exports.DEFAULT_BOOK_RESPONSE_FIELDS = ['id', 'authors', 'bestseller', 'cost', 'image', 'instances', 'title', 'edition', 'publisher', 'keywords'];
 
+module.exports.DEFAULT_CHECKOUT_TIME_STUDENT_NOT_BESTSELLER = 3 * 7 * 24 * 60 * 60 * 1000;
+module.exports.DEFAULT_CHECKOUT_TIME_STUDENT_BESTSELLER = 2 * 7 * 24 * 60 * 60 * 1000;
+module.exports.DEFAULT_CHECKOUT_TIME_FACULTY = 4 * 7 * 24 * 60 * 60 * 1000;
+
+// module.exports.mongoURI = 'mongodb://dev:12346@ds012058.mlab.com:12058/kitapp-tests';
 module.exports.mongoURI = 'mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp';
