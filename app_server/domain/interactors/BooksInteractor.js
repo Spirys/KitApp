@@ -12,7 +12,7 @@
  * @private
  */
 
-const validator = require('../validation/InputValidation');
+//const validator = require('../validation/InputValidation');
 const Repository = require('../../data/RepositoryProvider').BooksRepository;
 const DocumentInstance = require('../models/documents/DocumentInstance.js');
 
@@ -31,11 +31,11 @@ const DocumentInstance = require('../models/documents/DocumentInstance.js');
 
 // TODO: returns class
 module.exports.getAll = async function (page, length, fields) {
-    return await Repository.getAll(page, length, fields);
+    return await Repository.getAll(page, length);
 };
 
 module.exports.search = async function () {
-    
+
 };
 
 module.exports.new = async function (fields) {
@@ -43,14 +43,24 @@ module.exports.new = async function (fields) {
 };
 
 module.exports.getById = async function (id) {
-    // let book = await Repository.get(id);
-    // return classify(book);
     return await Repository.get(id);
 };
 
 module.exports.updateById = async function (id, fields) {
     let book = await Repository.get(id);
-    book.title = 'Book'; // and other ${fields}
+
+    // TODO: add authors
+    if (fields.title) book.title = fields.title;
+    if (fields.cost) book.cost = fields.cost;
+    if (fields.edition) book.edition = fields.edition;
+    if (fields.isbn) book.isbn = fields.isbn;
+    if (fields.bestseller != null && fields.bestseller !== undefined) book.isBestseller = fields.bestseller;
+    if (fields.publisher) book.publisher = fields.publisher;
+    if (fields.keywords) book.keywords = fields.keywords;
+    if (fields.description) book.description=fields.description;
+    if (fields.image) book.image = fields.image;
+    if (fields.published) book.published = fields.published;
+
     return await Repository.update(book);
 };
 
