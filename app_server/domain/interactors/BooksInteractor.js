@@ -162,6 +162,8 @@ module.exports.newInstance = async function (id, request) {
     inst.taker = request.taker;
 
     let book = await Repository.get(id);
+    if (book.err) return {err: book.err};
+
     book.addInstance(inst);
     return await Repository.update(book);
 };

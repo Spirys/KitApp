@@ -118,6 +118,7 @@ async function updateBook(book) {
     return book;
 }
 
+// TODO Place logic into the interactor
 async function create(query) {
     let book = await search({
         title: query.title,
@@ -154,32 +155,75 @@ async function create(query) {
             authors.push(author);
         }
         book.authors = authors;
+    } else {
+        book = book[0]
     }
 
-    if (query.available) {
-        for (let i = 0; i < query.available; i++) {
-            let instance = await createInstance('Available');
-            book.addInstance(instance);
-        }
-    }
+    // Set defaults if instance parameters are missing
+    let available, reference, maintenance;
 
-    if (query.reference) {
-        for (let i = 0; i < query.reference; i++) {
-            let instance = await createInstance('Reference');
-            book.addInstance(instance);
-        }
-    }
+    available = (query.available)
+        ? typeof query.available === 'number' ? query.available : 0
+        : (query.reference || query.maintenance) ? 0 : 1;
 
-    if (query.maintenance || 1) {
-        let count = query.maintenance ? query.maintenance : 1;
-        for (let i = 0; i < count; i++) {
-            let instance = await createInstance('Maintenance');
-            book.addInstance(instance);
-        }
-    }
+    reference = (query.reference)
+        ? typeof query.reference === 'number' ? query.reference : 0
+        : (available || query.maintenance) ? 0 : 1;
 
+    maintenance = (query.maintenance)
+        ? typeof query.maintenance === 'number' ? query.maintenance : 0
+        : (available || reference) ? 0 : 1;
+
+    await addInstances(book, available, reference, maintenance);
     await updateBook(book);
+    return book;
+}
 
+/**
+ * Asynchronously adds instances to the book
+ * @param book
+ * @param available
+ * @param reference
+ * @param maintenance
+ * @param next
+ * @return {Promise<void>}
+ */
+
+async function addInstances(book, available, reference, maintenance, next) {
+
+    const counter = [0];
+    const finish = available + reference + maintenance;
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    const checkFinished = () => (counter[0] === finish);
+
+    for (let i = 0; i < available; i++) {
+        createInstance('Available').then(value => {
+            book.addInstance(value);
+            counter[0]++;
+        });
+    }
+
+    for (let i = 0; i < reference; i++) {
+        createInstance('Reference').then(value => {
+            book.addInstance(value);
+            counter[0]++;
+        });
+    }
+
+    for (let i = 0; i < maintenance; i++) {
+        createInstance('Maintenance').then(value => {
+            book.addInstance(value);
+            counter[0]++;
+        });
+        // let instance = await createInstance('Maintenance');
+        // book.addInstance(instance);
+    }
+
+    while (!checkFinished()) await sleep(50);
     return book;
 }
 

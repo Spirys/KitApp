@@ -61,7 +61,24 @@ module.exports.search = async function (req, res) {
 };
 
 module.exports.new = async function (req, res) {
-    const fields = req.body.book;
+
+    let query = req.body;
+    const fields = {
+        title: query.title,
+        authors: query.authors,
+        cost: query.cost,
+        edition: query.edition,
+        publisher: query.publisher,
+        keywords: query.keywords,
+        bestseller: query.bestseller,
+        description: query.description,
+        isbn: query.isbn,
+        image: query.image,
+        published: query.published,
+        available: query.available,
+        reference: query.reference,
+        maintenance: query.maintenance,
+    };
     const locale = getLocale(req);
 
     const book = await interactor.new(fields);
@@ -135,19 +152,22 @@ module.exports.checkoutById = async function (req, res) {
  */
 
 module.exports.returnById = async function (req, res) {
-    const bookId = req.params.id;
-    const locale = getLocale(req);
-
-    const user = await usersInteractor.verifyToken(req.body.token);
+    const bookId = req.params.id,
+        locale = getLocale(req),
+        user = await usersInteractor.verifyToken(req.body.token);
 
     if (user.err) {
         res.json(error(user.err, locale));
         return
     }
 
-    const book = await interactor.returnById(bookId, user.user.id);
+    const book = await interactor.returnById(bookId, req.body.user || user.user.id);
 
-    let response = responseComposer.format(book, true, defaultFields, locale, book.err);
+    let response = responseComposer.format(book,
+        user.user.type === config.userTypes.LIBRARIAN,
+        defaultFields,
+        locale,
+        book.err);
     res.json(response);
 };
 

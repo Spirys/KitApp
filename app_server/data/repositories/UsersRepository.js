@@ -36,9 +36,6 @@ const UserModel = require('../../data/converters/class_to_model/users/PatronClas
 async function get(id) {
     let userDb = await UserDB.findOne({
         $where: `parseInt(this._id.valueOf().toString().substring(18), 16) === ${id}`
-    }, err => {
-        if (err) console.log(err);
-        // found!
     }).exec();
 
     return UserClass(userDb);
