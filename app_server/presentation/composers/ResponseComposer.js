@@ -25,10 +25,13 @@ const ErrorResponseComposer = require('./formatting/ErrorResponse');
  * Gets the needed response composer
  * @param type Specifies the response composer
  */
+
 module.exports = {
     book:  BookResponseComposer,
     user:  UserResponseComposer,
     auth:  AuthResponseComposer,
     author: AuthorsResponseComposer,
-    error: ErrorResponseComposer
+    error: ErrorResponseComposer,
+    sendJson: (res, data) => res.json(data),
+
 };

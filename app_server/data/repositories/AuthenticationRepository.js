@@ -73,7 +73,7 @@ async function verifyToken(token) {
                 err: config.errors.INVALID_TOKEN
             }
         } else {
-            response = {user: userConverter(session.user)};
+            response = userConverter(session.user);
         }
     } catch (err) {
         console.log(err);

@@ -25,3 +25,4 @@ module.exports[errors.DOCUMENT_NOT_FOUND] = 'Requested document not found';
 module.exports[errors.DOCUMENT_ALREADY_TAKEN] = 'Requested document is already taken by the user';
 module.exports[errors.DOCUMENT_NOT_AVAILABLE] = 'Requested document is not available';
 module.exports[errors.DOCUMENT_NOT_TAKEN] = 'Requested document is not taken by the user';
+module.exports[errors.USER_NOT_FOUND] = 'User was not found';

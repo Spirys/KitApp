@@ -181,15 +181,14 @@ async function create(query) {
 
 /**
  * Asynchronously adds instances to the book
- * @param book
- * @param available
- * @param reference
- * @param maintenance
- * @param next
- * @return {Promise<void>}
+ * @param book {Book} The book where to add copies
+ * @param available {number} how many available copies to add
+ * @param reference {number} how many reference copies
+ * @param maintenance {number} how many maintenance copies
+ * @return {Promise<Book>} the book with changed fields
  */
 
-async function addInstances(book, available, reference, maintenance, next) {
+async function addInstances(book, available, reference, maintenance) {
 
     const counter = [0];
     const finish = available + reference + maintenance;
@@ -219,8 +218,6 @@ async function addInstances(book, available, reference, maintenance, next) {
             book.addInstance(value);
             counter[0]++;
         });
-        // let instance = await createInstance('Maintenance');
-        // book.addInstance(instance);
     }
 
     while (!checkFinished()) await sleep(50);
@@ -229,23 +226,17 @@ async function addInstances(book, available, reference, maintenance, next) {
 
 async function remove(id) {
     let book = await get(id);
+    if (book.err) return {err: book.err};
 
-    if (book) {
-        for (let i = 0; i < book.instances.length; i++) {
-            await removeInstance(book.instances[i]);
-        }
-
-        await BookDB.remove({_id: book.innerId});
-
-        book.instances = [];
-        return {
-            success: true,
-            book
-        };
+    // TODO Run task in parallel
+    for (let i = 0; i < book.instances.length; i++) {
+        await removeInstance(book.instances[i]);
     }
-    return {
-        success: false
-    };
+
+    await BookDB.remove({_id: book.innerId});
+
+    book.instances = [];
+    return book;
 }
 
 async function createInstance(status) {

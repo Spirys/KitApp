@@ -9,8 +9,8 @@ module.exports = instance => {
     };
 
     inst.taker = (instance.taker) ? Patron(instance.taker) : undefined;
-    inst.take_due = (instance.takeDue) ? instance.takeDue : undefined;
-    inst.due_back = (instance.dueBack) ? instance.dueBack : undefined;
+    inst.take_due = instance.takeDue || undefined;
+    inst.due_back = instance.dueBack || undefined;
 
     return inst;
 };

@@ -22,11 +22,10 @@ module.exports.remove = remove;
  * @private
  */
 
-const UserDB = require('../models/users/Patron');
-
+const Users = require('../models/users/Patron');
 const UserClass = require('../../data/converters/model_to_class/user/PatronModelToClass');
-
 const UserModel = require('../../data/converters/class_to_model/users/PatronClassToModel');
+const errors = require('../../util/config').errors;
 
 /**
  * CRUD functions
@@ -34,28 +33,29 @@ const UserModel = require('../../data/converters/class_to_model/users/PatronClas
  */
 
 async function get(id) {
-    let userDb = await UserDB.findOne({
+    let user = await Users.findOne({
         $where: `parseInt(this._id.valueOf().toString().substring(18), 16) === ${id}`
     }).exec();
 
-    return UserClass(userDb);
+    return (user) ? UserClass(user) : {err: errors.USER_NOT_FOUND};
 }
 
 async function update(user) {
     let userModel = UserModel(user);
 
-    await UserDB.findByIdAndUpdate(user.innerId, user);
+    await Users.findByIdAndUpdate(user.innerId, userModel);
 
     return user;
 }
 
 async function create(query) {
-    let user = await get(null, query);
-    if (user) {
-        return user
-    }
+    // FIXME Buggy code! Never use!
+    // let user = await get(null, query);
+    // if (user) {
+    //     return user
+    // }
 
-    user = await UserDB.create({
+    return await Users.create({
         first_name: query.first_name,
         last_name: query.last_name,
         type: query.type,
@@ -67,17 +67,12 @@ async function create(query) {
         telegram: query.telegram,
         avatar: query.telegram
     });
-    return user;
 }
 
 async function remove(id) {
     let user = await get(id);
-    if (user) {
-        await UserDB.remove({_id: user._id});
-
-        return true;
-    }
-    return false;
+    if (user.err) return user;
+    await Users.remove({_id: user._id});
 }
 
 module.exports = {

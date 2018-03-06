@@ -25,3 +25,4 @@ module.exports[errors.DOCUMENT_NOT_FOUND] = 'Запрашиваемый доку
 module.exports[errors.DOCUMENT_ALREADY_TAKEN] = 'Запрашиваемый документ уже есть у пользователя';
 module.exports[errors.DOCUMENT_NOT_AVAILABLE] = 'Запрашиваемый документ нельзя взять';
 module.exports[errors.DOCUMENT_NOT_TAKEN] = 'Запрашиваемый документ не взят данным пользователем';
+module.exports[errors.USER_NOT_FOUND] = 'Пользователь не найден';
