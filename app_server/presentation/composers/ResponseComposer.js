@@ -15,6 +15,7 @@ const UserResponseComposer = require('./formatting/UserResponse');
 const AuthResponseComposer = require('./formatting/AuthResponse');
 const AuthorsResponseComposer = require('./formatting/AuthorsResponse');
 const ErrorResponseComposer = require('./formatting/ErrorResponse');
+const MediaResponseComposer = require('./formatting/MediaResponse');
 
 /**
  * Module exports
@@ -33,5 +34,5 @@ module.exports = {
     author: AuthorsResponseComposer,
     error: ErrorResponseComposer,
     sendJson: (res, data) => res.json(data),
-
+    media: MediaResponseComposer
 };
