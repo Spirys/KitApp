@@ -36,3 +36,11 @@ module.exports.createSession = async function (session, user) {
 module.exports.verifyToken = async function (token) {
     return await AuthenticationRepository.verifyToken(token)
 };
+
+module.exports.new = async function (fields) {
+    return await UsersRepository.create(fields);
+};
+
+module.exports.deleteById = async function (id) {
+    return await UsersRepository.delete(id);
+};

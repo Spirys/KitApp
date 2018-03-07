@@ -10,12 +10,12 @@
  * @private
  */
 
-const AuthController = require('../controllers/api/AuthController');
-const BooksController = require('../controllers/api/BooksController');
-const JournalsController = require('../controllers/api/JournalsController');
-const MediaController = require('../controllers/api/MediaController');
-const UsersController = require('../controllers/api/UsersController');
-const UserFilesController = require('../controllers/api/UserFilesController');
+const AuthController = require('./api/AuthController');
+const BooksController = require('./api/BooksController');
+const JournalsController = require('./api/JournalsController');
+const MediaController = require('./api/MediaController');
+const UsersController = require('./api/UsersController');
+const UserFilesController = require('./api/UserFilesController');
 
 /**
  * Module exports

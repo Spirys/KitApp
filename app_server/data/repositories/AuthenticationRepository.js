@@ -82,6 +82,25 @@ async function verifyToken(token) {
     return response;
 }
 
+async function createLogin(login, password, user) {
+    let _login = await LoginDB.findOne({login, password})
+        .populate('user')
+        .exec();
+
+    if (!_login) {
+        _login = await LoginDB.create({
+            login: login,
+            password: password,
+            user: user.innerId
+        });
+    }
+
+    return {
+        login: _login.login,
+        password: _login.password
+    }
+}
+
 function get() {
 
 }
@@ -117,3 +136,4 @@ module.exports.login = login;
 module.exports.logout = logout;
 module.exports.verifyToken = verifyToken;
 module.exports.createSession = createSession;
+module.exports.createLogin = createLogin;

@@ -224,18 +224,64 @@ async function addInstances(book, available, reference, maintenance) {
     return book;
 }
 
-async function remove(id) {
+async function remove(id, count = undefined, all = false) {
     let book = await get(id);
     if (book.err) return {err: book.err};
 
-    // TODO Run task in parallel
-    for (let i = 0; i < book.instances.length; i++) {
-        await removeInstance(book.instances[i]);
+    // FIXME: make better
+    if (book) {
+        if ((typeof count === 'number') || (count === undefined && all === false)) {
+            if (count === undefined) count = 1;
+            let c = 0;
+
+            for (let i = 0; i < book.instances.length, c < count; i++) {
+                if (book.instances[i].status === config.statuses.AVAILABLE) {
+                    await removeInstance(book.instances[i]);
+                    delete book.instances[i];
+                    i--;
+                    c++;
+                }
+            }
+
+            if (c < count) {
+                for (let i = 0; i < book.instances.length, c < count; i++) {
+                    if (book.instances[i].status === config.statuses.MAINTENANCE) {
+                        await removeInstance(book.instances[i]);
+                        delete book.instances[i];
+                        i--;
+                        c++;
+                    }
+                }
+
+                if (c < count) {
+                    for (let i = 0; i < book.instances.length, c < count; i++) {
+                        if (book.instances[i].status === config.statuses.REFERENCE) {
+                            await removeInstance(book.instances[i]);
+                            delete book.instances[i];
+                            i--;
+                            c++;
+                        }
+                    }
+                }
+            }
+        }
+        else if (all === true) {
+            for (let i = 0; i < book.instances.length; i++) {
+                if (book.instances[i].status !== config.statuses.AVAILABLE) {
+                    await removeInstance(book.instances[i]);
+                    delete book.instances[i];
+                    i--;
+                }
+            }
+        }
     }
 
-    await BookDB.remove({_id: book.innerId});
+    if (book.instances.length === 0) {
+        await BookDB.remove({_id: book.innerId});
+    } else {
+        await updateBook(book);
+    }
 
-    book.instances = [];
     return book;
 }
 
