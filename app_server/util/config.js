@@ -12,6 +12,14 @@
 const MESSAGES = require('./messages/messages');
 const MESSAGES_RU = require('./messages/messages_ru');
 const MESSAGES_EN = require('./messages/messages_en');
+const MESSAGES_DE = require('./messages/messages_de');
+const MESSAGES_ES = require('./messages/messages_es');
+const MESSAGES_FR = require('./messages/messages_fr');
+const MESSAGES_IT = require('./messages/messages_it');
+const MESSAGES_JA = require('./messages/messages_ja');
+const MESSAGES_KO = require('./messages/messages_ko');
+const MESSAGES_PT = require('./messages/messages_pt');
+const MESSAGES_ZH = require('./messages/messages_zh');
 
 /**
  * Module utilities
@@ -39,9 +47,20 @@ module.exports = MESSAGES;
  */
 
 module.exports.messages = function (locale) {
-    return locale && locale.toLowerCase
-        ? (locale.toLowerCase() === 'ru') ? MESSAGES_RU : MESSAGES_EN
-        : MESSAGES_EN
+    if (locale && locale.toLowerCase) {
+        switch(locale.toLowerCase()) {
+            case 'ru': return MESSAGES_RU;
+            case 'de': return MESSAGES_DE;
+            case 'es': return MESSAGES_ES;
+            case 'fr': return MESSAGES_FR;
+            case 'it': return MESSAGES_IT;
+            case 'ja': return MESSAGES_JA;
+            case 'ko': return MESSAGES_KO;
+            case 'pt': return MESSAGES_PT;
+            case 'zh': return MESSAGES_ZH;
+            default: return MESSAGES_EN;
+        }
+    } else return MESSAGES_EN
 };
 
 /**
@@ -105,6 +124,7 @@ module.exports.DEFAULT_USER_RESPONSE_FIELDS = ['name', 'id', 'type', 'birth_date
  * Database connection address
  * @public
  */
+
 module.exports.mongoURI = 'mongodb://dev:MLiF58v31DuOB6mRpJ2lNh9PY@ds046667.mlab.com:46667/kitapp-dev';
 // module.exports.mongoURI = 'mongodb://dev:12346@ds012058.mlab.com:12058/kitapp-tests';
 // module.exports.mongoURI = 'mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp';
