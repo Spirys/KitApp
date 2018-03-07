@@ -110,7 +110,8 @@ async function create(query) {
 async function remove(id) {
     let user = await get(id);
     if (user.err) return user;
-    await Users.remove({_id: user._id});
+    await Users.remove({_id: user.innerId});
+    return user
 }
 
 module.exports = {

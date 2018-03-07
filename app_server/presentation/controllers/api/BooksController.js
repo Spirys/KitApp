@@ -111,11 +111,13 @@ module.exports.updateById = async function (req, res) {
 
 module.exports.deleteById = async function (req, res) {
     const id = req.params.id;
+    const count = req.body.count;
+    const all = req.body.all;
     const locale = getLocale(req);
 
-    const book = await interactor.deleteById(id);
+    const book = await interactor.deleteById(id, count, all);
 
-    let response = responseComposer.format(book.book, true, defaultFields, locale, book.err);
+    let response = responseComposer.format(book, true, defaultFields, locale, book.err);
     sendJson(res, response);
 };
 

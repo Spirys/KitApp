@@ -87,6 +87,6 @@ module.exports.deleteById = async function (req, res) {
 
     const user = await interactor.deleteById(id);
 
-    let response = responseComposer.format(user.user, true, defaultFields, locale, user.err);
+    let response = responseComposer.format(user, true, defaultFields, locale, user.err);
     sendJson(res, response);
 };

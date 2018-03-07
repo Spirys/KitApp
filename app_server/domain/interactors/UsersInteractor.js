@@ -42,5 +42,5 @@ module.exports.new = async function (fields) {
 };
 
 module.exports.deleteById = async function (id) {
-    return await UsersRepository.delete(id);
+    return await UsersRepository.remove(id);
 };

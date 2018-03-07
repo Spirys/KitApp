@@ -1,10 +1,10 @@
 'use strict';
 
-const Book = require('../documents/BookClassToModel');
-const Journal = require('../documents/JournalClassToModel');
-const Media = require('../documents/MediaClassToModel');
+// const Book = require('../documents/BookClassToModel');
+// const Journal = require('../documents/JournalClassToModel');
+// const Media = require('../documents/MediaClassToModel');
 
-module.exports = patron => {
+module.exports = function (patron) {
     let user = {
         _id: patron.innerId,
         first_name: patron.firstName,
@@ -22,7 +22,7 @@ module.exports = patron => {
     user.address = (patron.address) ? patron.address : undefined;
 
     let taken_documents = [];
-    if (patron.takenDocuments){
+    if (patron.takenDocuments) {
         for (let i = 0; i < patron.takenDocuments.length; i++) {
             // let
         }

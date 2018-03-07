@@ -230,34 +230,34 @@ async function remove(id, count = undefined, all = false) {
 
     // FIXME: make better
     if (book) {
-        if ((typeof count === 'number') || (count === undefined && all === false)) {
+        if ((typeof count === 'number') || (count === undefined && (all === false || all === undefined))) {
             if (count === undefined) count = 1;
             let c = 0;
 
-            for (let i = 0; i < book.instances.length, c < count; i++) {
+            for (let i = 0; i < book.instances.length && c < count; i++) {
                 if (book.instances[i].status === config.statuses.AVAILABLE) {
                     await removeInstance(book.instances[i]);
-                    delete book.instances[i];
+                    book.instances.splice(i, 1);
                     i--;
                     c++;
                 }
             }
 
             if (c < count) {
-                for (let i = 0; i < book.instances.length, c < count; i++) {
+                for (let i = 0; i < book.instances.length && c < count; i++) {
                     if (book.instances[i].status === config.statuses.MAINTENANCE) {
                         await removeInstance(book.instances[i]);
-                        delete book.instances[i];
+                        book.instances.splice(i, 1);
                         i--;
                         c++;
                     }
                 }
 
                 if (c < count) {
-                    for (let i = 0; i < book.instances.length, c < count; i++) {
+                    for (let i = 0; i < book.instances.length && c < count; i++) {
                         if (book.instances[i].status === config.statuses.REFERENCE) {
                             await removeInstance(book.instances[i]);
-                            delete book.instances[i];
+                            book.instances.splice(i ,1);
                             i--;
                             c++;
                         }
@@ -267,9 +267,9 @@ async function remove(id, count = undefined, all = false) {
         }
         else if (all === true) {
             for (let i = 0; i < book.instances.length; i++) {
-                if (book.instances[i].status !== config.statuses.AVAILABLE) {
+                if (book.instances[i].status !== config.statuses.LOANED) {
                     await removeInstance(book.instances[i]);
-                    delete book.instances[i];
+                    book.instances.splice(i, 1);
                     i--;
                 }
             }

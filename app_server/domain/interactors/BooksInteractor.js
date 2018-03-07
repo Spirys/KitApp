@@ -94,8 +94,8 @@ module.exports.updateById = async function (id, fields) {
     return await Repository.update(book);
 };
 
-module.exports.deleteById = async function (id) {
-    return await Repository.delete(id);
+module.exports.deleteById = async function (id, count, all) {
+    return await Repository.delete(id, count, all);
 };
 
 module.exports.reserveById = async function (bookId, user) {
