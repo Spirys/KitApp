@@ -31,11 +31,11 @@ module.exports = book => {
         keywords: book.keywords
     };
 
-    if (book.isBestseller != null || book.isBestseller !== undefined) bookModel.bestseller = book.isBestseller;
-    if (book.description) bookModel.description = book.description;
-    if (book.image) bookModel.image = book.image;
-    if (book.publisher) bookModel.publisher = book.publisher;
-    if (book.published) bookModel.published = book.published;
+    bookModel.bestseller = (book.isBestseller != null || book.isBestseller !== undefined) ? book.isBestseller : undefined;
+    bookModel.description = (book.description) ? book.description : undefined;
+    bookModel.image = (book.image) ? book.image : undefined;
+    bookModel.publisher = (book.publisher) ? book.publisher : undefined;
+    bookModel.published = (book.published) ? book.published : undefined;
 
     return bookModel;
 };

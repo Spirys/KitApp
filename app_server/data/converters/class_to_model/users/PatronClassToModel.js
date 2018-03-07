@@ -1,5 +1,9 @@
 'use strict';
 
+const Book = require('../documents/BookClassToModel');
+const Journal = require('../documents/JournalClassToModel');
+const Media = require('../documents/MediaClassToModel');
+
 module.exports = patron => {
     let user = {
         _id: patron.innerId,
@@ -10,11 +14,20 @@ module.exports = patron => {
         phone: patron.phone
     };
 
-    if (patron.email) user.email = patron.email;
-    if (patron.occupation) user.occupation = patron.occupation;
-    if (patron.about) user.about = patron.about;
-    if (patron.telegram) user.telegram = patron.telegram;
-    if (patron.avatar) user.avatar = patron.avatar;
+    user.email = (patron.email) ? patron.email : undefined;
+    user.occupation = (patron.occupation) ? patron.occupation : undefined;
+    user.about = (patron.about) ? patron.about : undefined;
+    user.telegram = (patron.telegram) ? patron.telegram : undefined;
+    user.avatar = (patron.avatar) ? patron.avatar : undefined;
+    user.address = (patron.address) ? patron.address : undefined;
+
+    let taken_documents = [];
+    if (patron.takenDocuments){
+        for (let i = 0; i < patron.takenDocuments.length; i++) {
+            // let
+        }
+    }
+
 
     return user;
 };

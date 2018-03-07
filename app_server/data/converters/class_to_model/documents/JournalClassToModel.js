@@ -40,11 +40,11 @@ module.exports = journal => {
         instances: instances
     };
 
-    if (journal.isBestseller != null || journal.isBestseller !== undefined) jou.bestseller = journal.isBestseller;
-    if (journal.description) jou.description = journal.description;
-    if (journal.image) jou.image = journal.image;
-    if (journal.publisher) jou.publisher = journal.publisher;
-    if (journal.published) jou.issue.date = journal.published;
+    jou.bestseller = (journal.isBestseller != null || journal.isBestseller !== undefined) ? journal.isBestseller : undefined;
+    jou.description = (journal.description) ? journal.description : undefined;
+    jou.image = (journal.image) ? journal.image : undefined;
+    jou.publisher = (journal.publisher) ? journal.publisher : undefined;
+    jou.issue.date = (journal.published) ? journal.published : undefined;
 
     return jou;
 };

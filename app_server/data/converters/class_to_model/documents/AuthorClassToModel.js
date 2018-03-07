@@ -7,8 +7,8 @@ module.exports = author => {
         last_name: author.lastName
     };
 
-    if (author.birthDate) aut.birth_date = author.birthDate;
-    if (author.deathDate) aut.death_date = author.deathDate;
+    aut.birth_date = (author.birthDate) ? author.birth_date : undefined;
+    aut.death_date = (author.deathDate) ? author.death_date : undefined;
 
     return aut;
 };

@@ -33,7 +33,7 @@ module.exports = book => {
     if (book.description) bookClass.description = book.description;
     if (book.image) bookClass.image = book.image;
     if (book.publisher) bookClass.publisher = book.publisher;
-    if (book.published) bookClass.published = book.published;
+    if (book.published) bookClass.published = new Date(book.published);
 
     return bookClass;
 };

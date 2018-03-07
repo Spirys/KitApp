@@ -18,7 +18,7 @@ module.exports = article => {
         authors: authors
     };
 
-    if (article.published) art.published = article.published;
+    art.published = (article.published) ? article.published : undefined;
 
     return art;
 };
