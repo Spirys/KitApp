@@ -18,6 +18,7 @@ const virtualSetter = require('../VirtualSetter');
  * @private
  */
 
+// WTF
 const patronRawModel = {
     first_name: {type: String, required: true},
     last_name: {type: String, required: true},
@@ -28,7 +29,12 @@ const patronRawModel = {
     occupation: String,
     about: String,
     telegram: String,
-    avatar: String
+    avatar: String,
+    address: String,
+    taken_documents: [{
+        kind: String,
+        doc: {type: mongoose.Schema.ObjectId, refPath: 'taken_documents.kind'}
+    }]
 };
 
 const patronSchema = mongoose.Schema(patronRawModel);

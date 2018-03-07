@@ -17,6 +17,7 @@
  * @private
  */
 
+// WTF
 class Patron {
     constructor(firstName, lastName, id, innerId, type, birthDate, phone) {
         this._firstName = firstName;
@@ -114,6 +115,22 @@ class Patron {
 
     set avatar(value) {
         this._avatar = value;
+    }
+
+    get address() {
+        return this._address;
+    }
+
+    set address(value) {
+        this._address = value;
+    }
+
+    get takenDocuments() {
+        return this._takenDocuments;
+    }
+
+    set takenDocuments(value) {
+        this._takenDocuments = value;
     }
 }
 
