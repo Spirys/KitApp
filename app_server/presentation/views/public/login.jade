@@ -16,8 +16,8 @@ html
                                         br
                                         .offer.animated.fadeInLeft
                                             h1.title
-                                                | Kitapp LMS
-                                    p.animated.fadeIn Innopolis University LMS
+                                                | Kitapp
+                                    p.animated.fadeIn= messages.LMS_DESCRIPTION_SHORT
                         // Form Panel
                         .col-lg-6.bg-white
                             .form.d-flex.align-items-center
@@ -28,16 +28,16 @@ html
                                             label.label-material(for='login-username') E-mail
                                         .form-group
                                             input#login-password.input-material(type='password', name='password', required='')
-                                            label.label-material(for='login-password') Password
+                                            label.label-material(for='login-password')=messages.PASSWORD
                                         .checkbox.mb-3
                                             label
                                                 input(value='remember-me', name='remember', type='checkbox')
-                                                | &nbsp;Remember me
+                                                | &nbsp;#{messages.REMEMBER_ME}
                                         div(id='error')
-                                        button#button-login.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
-                                    a.forgot-pass(href='#') Forgot password?
+                                        button#button-login.btn.btn-lg.btn-primary.btn-block(type='submit')=messages.SIGN_IN
+                                    a.forgot-pass(href='#')=messages.FORGOT_PASSWORD
                                     br
-                                    a.support(href='mailto:it@innopolis.ru') Have issues?
+                                    a.support(href='mailto:it@innopolis.ru')=messages.ISSUES
             .copyrights.text-center
                 p
                     | Kitapp, 2018

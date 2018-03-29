@@ -27,5 +27,16 @@ module.exports = {
         'DOCUMENT_NOT_AVAILABLE' : 'DNA',
         'DOCUMENT_NOT_TAKEN' : 'DNT',
         'USER_NOT_FOUND' : 'UNF',
+    },
+    general: {
+        'PASSWORD': 'PASSWORD',
+        'LMS_DESCRIPTION_SHORT': 'LMS_DESCRIPTION_SHORT',
+    },
+    login: {
+        'REMEMBER_ME': 'REMEMBER_ME',
+        'SIGN_IN': 'SIGN_IN',
+        'REGISTER': 'REGISTER',
+        'FORGOT_PASSWORD': 'FORGOT_PASSWORD',
+        'ISSUES': 'ISSUES',
     }
 };
