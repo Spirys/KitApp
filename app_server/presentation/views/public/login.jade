@@ -1,0 +1,52 @@
+include ../mixins
+doctype html
+html
+    +head("Login")
+    body
+        .page.login-page
+            .container.d-flex.align-items-center
+                .form-holder.has-shadow
+                    .row
+                        // Logo & Information Panel
+                        .col-lg-6
+                            .info.d-flex.align-items-center
+                                .content
+                                    .logo
+                                        img.logo.animated.fadeInUp(src='images/logo.png', alt='Kitapp')
+                                        br
+                                        .offer.animated.fadeInLeft
+                                            h1.title
+                                                | Kitapp LMS
+                                    p.animated.fadeIn Innopolis University LMS
+                        // Form Panel
+                        .col-lg-6.bg-white
+                            .form.d-flex.align-items-center
+                                .content
+                                    form#login-form.form-signin(method='post')
+                                        .form-group
+                                            input#login-username.input-material(type='email', name='email', required='')
+                                            label.label-material(for='login-username') E-mail
+                                        .form-group
+                                            input#login-password.input-material(type='password', name='password', required='')
+                                            label.label-material(for='login-password') Password
+                                        .checkbox.mb-3
+                                            label
+                                                input(value='remember-me', name='remember', type='checkbox')
+                                                | &nbsp;Remember me
+                                        div(id='error')
+                                        button#button-login.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
+                                    a.forgot-pass(href='#') Forgot password?
+                                    br
+                                    a.support(href='mailto:it@innopolis.ru') Have issues?
+            .copyrights.text-center
+                p
+                    | Kitapp, 2018
+                    br
+                    | Design by&nbsp;
+                    a.external(href='https://bootstrapious.com/admin-templates') Bootstrapious
+                    // Please do not remove the backlink to us unless you support further theme's development at https://bootstrapious.com/donate. It is part of the license conditions. Thank you for understanding :)
+        // Javascript files
+        +java-script()
+        script(src='../js/jquery.md5.js')
+        script(src='../js/validation.min.js')
+        script(src='../js/login.js')

@@ -1,0 +1,284 @@
+link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
+
+mixin sidebar(active_item)
+    nav.side-navbar
+        // Sidebar Header
+        .sidebar-header.d-flex.align-items-center
+            .avatar
+                a(href="user-card.html")
+                    img#sidebar-avatar.img-fluid.rounded-circle(src='images/avatar-1.jpg')
+            .title
+                h1#sidebar-username.h4 Elon Musk
+                p#sidebar-usertype Librarian
+        br
+        // Sidebar Navidation Menus
+        +sidebar_list(active_item)
+
+mixin sidebar_list(active_item)
+    ul.list-unstyled
+        +sidebar_list_item('dashboard.html', 'dashboard', active_item) Dashboard
+        +sidebar_list_item('catalog.html', 'book', active_item) Catalog
+        +sidebar_list_item('user-card.html', 'id-card', active_item) User Card
+        +sidebar_list_item('database.html', 'database', active_item) Database
+        +sidebar_list_item('readers.html', 'users', active_item) Readers
+
+        
+
+mixin sidebar_list_item(href, icon, active_item)
+    if active_item == href
+        li(class="active")
+            a(href=href)
+                i&attributes(attributes)(class=`fa ${icon.replace(/(\S+\b)/g, 'fa-$1')}`)
+                block
+    else
+        li
+            a(href=href)
+                i&attributes(attributes)(class=`fa ${icon.replace(/(\S+\b)/g, 'fa-$1')}`)
+                block
+
+
+mixin main-navbar()
+            header.header
+                nav.navbar
+                    .container-fluid
+                        .navbar-holder.d-flex.align-items-center.justify-content-between
+                            // Navbar Header
+                            .navbar-header
+                                .offer.animated.fadeInRight
+                                    // Navbar Brand
+                                    a.navbar-brand(href='dashboard.html')
+                                        .brand-text.brand-big
+                                            strong Kitapp
+                                            span LMS
+                                        .brand-text.brand-small
+                                            strong Kitapp
+                                    // Toggle Button
+                                    a#toggle-btn.menu-btn.active(href='#')
+                                        span
+                                        span
+                                        span
+                            // Navbar Menu
+                            ul.nav-menu.list-unstyled.d-flex.flex-md-row.align-items-md-center
+                                // Notifications
+                                li.nav-item.dropdown
+                                    a#notifications.nav-link(rel='nofollow', data-target='#', href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                                        i.fa.fa-bell-o
+                                        span.badge.bg-red 3
+                                    ul.dropdown-menu(aria-labelledby='notifications')
+                                        li
+                                            a.dropdown-item(rel='nofollow', href='dashboard.html')
+                                                .notification
+                                                    .notification-content
+                                                        i.fa.fa-info.bg-green
+                                                        | The electronic library system "IPR-books"
+                                                    .notification-time
+                                                        small 1 minute ago
+
+                                        li
+                                            a.dropdown-item(rel='nofollow', href='user-card.html')
+                                                .notification
+                                                    .notification-content
+                                                        i.fa.fa-book.bg-red
+                                                        | Outstanding request for book "Kolobok" by Folklor
+                                                    .notification-time
+                                                        small 7 hours ago
+                                        li
+                                            a.dropdown-item(rel='nofollow', href='dashboard.html')
+                                                .notification
+                                                    .notification-content
+                                                        i.fa.fa-calendar.bg-blue
+                                                        | International Women’s Day
+                                                    .notification-time
+                                                        small 1 day ago
+                                        li
+                                            a.dropdown-item(rel='nofollow', href='#')
+                                                .notification
+                                                    .notification-content
+                                                        i.fa.fa-upload.bg-orange
+                                                        | Server Rebooted
+                                                    .notification-time
+                                                        small 2 days ago
+                                        li
+                                            a.dropdown-item.all-notifications.text-center(rel='nofollow', href='#')
+                                                strong view all notifications 
+                                // Logout
+                                li.nav-item
+                                    a#logout.nav-link.logout(href='login.html')
+                                        | Logout
+                                        i.fa.fa-sign-out
+
+mixin head(page_title)
+    head
+        title #{page_title} | Kitapp
+        meta(charset='utf-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge')
+        meta(name='description', content='')
+        meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+        meta(name='robots', content='all,follow')
+        // Bootstrap CSS
+        link(rel='stylesheet', href='css/bootstrap.min.css')
+        // Font Awesome CSS
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
+        // Animate CSS
+        link(rel='stylesheet', href='css/animate.css')
+        // Fontastic Custom icon font
+        link(rel='stylesheet', href='css/fontastic.css')
+        // Google fonts - Poppins
+        link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Poppins:300,400,700')
+        // theme stylesheet
+        link#theme-blue(rel='stylesheet', href='css/style.default.css')
+        // Custom stylesheet - for your changes
+        link(rel='stylesheet', href='css/custom.css')
+        // Favfa fa
+        link(rel='shortcut icon', href='images/favicon.ico')
+        // Tweaks for older IEs
+        //if lt IE 9
+            script(src='https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js')
+            script(src='https://oss.maxcdn.com/respond/1.4.2/respond.min.js')
+            script(src='js/myscripts.js')
+
+mixin footer()
+    footer.main-footer
+        .container-fluid
+            .row
+                .col-sm-4
+                    p Kitapp © 2018
+                .col-sm-4
+                    p Innopolis University, aud. 504b
+                .col-sm-4.text-right
+                    p
+                        | Design by 
+                        a.external(href='https://bootstrapious.com/admin-templates') Bootstrapious
+                        // Please do not remove the backlink to us unless you support further theme's development at https://bootstrapious.com/donate. It is part of the license conditions. Thank you for understanding :)
+
+
+mixin java-script()
+    // Javascript files
+    script(src='https://code.jquery.com/jquery-3.2.1.min.js')
+    //script(src='vendor/popper.js/umd/popper.min.js')
+    //script(src='vendor/bootstrap/js/bootstrap.min.js')
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js", integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q", crossorigin="anonymous")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js", integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl", crossorigin="anonymous")
+    script(src='vendor/jquery.cookie/jquery.cookie.js')
+    //script(src='vendor/chart.js/Chart.min.js')
+    script(src='vendor/jquery-validation/jquery.validate.min.js')
+    //script(src='js/charts-home.js')
+    // Main File
+    script(src='js/front.js')
+
+
+mixin reader-row(config)
+    tr
+        th#id(scope='row')
+            a(href='user-card.html') #{config.id}
+        th#name #{config.first_name}
+        th#surname #{config.last_name}
+        td#type #{config.type}
+        td#e-mail #{config.email}
+        td#telegram #{config.telegram}
+        td#actions
+            button.btn.btn-dark(type='button', data-toggle='modal', data-target='#myModal2') Edit
+
+mixin catalog-document(config)
+    .card
+        .card-body
+            .row
+                .col-lg-2
+                    #doc-image.image.has-shadow
+                        img.img-fluid(src='images/#{config.image}', alt='...')
+                .col-lg-8.m-auto
+                    h2#title #{config.title}
+                    for author in config.authors
+                        h4#author #{author.first_name} #{author.last_name}
+                    small#description #{config.description}
+                    br
+                    button#document-type.btn.btn-sm.bg-blue(type='button') ##{config.type}
+                    if (config.available)
+                        button#availability.btn.btn-sm.bg-green(type='button') #available
+                    else
+                        button#availability.btn.btn-sm.bg-green(type='button') #not_available
+                    if (config.bestseller)
+                        button#bestseller.btn.btn-sm.bg-orange(type='button') #bestseller
+                    else
+                        button#bestseller.btn.btn-sm.bg-orange(type='button') #not_bestseller
+                .right-col.col-lg-2.m-auto
+                    a(href="document.html")
+                        button#details.btn.btn-secondary.book-btn(href="document.html" type='button') DETAILS
+                    button#reserve.btn.btn-info.book-btn(type='button') RESERVE
+
+mixin user-card-row(row_number, title, author, type, status)
+    tr
+        th#row-number(scope='row') #{row_number}
+        th#title
+            a(href='document.html') #{title}
+        td#author #{author}
+        td#type #{type}
+        td#status #{status}
+
+mixin database-row(id, name, surname, type, title, status)
+    tr
+        th#row(scope='row')
+            a(href='user-card.html') #{id}
+        th#name #{name}
+        th#surname #{surname}
+        td#user-type #{type}
+        td
+            a#document(href='document.html') #{title}
+        td#status #{status}
+        td
+            if status=="Reserved"
+                button#give-out.btn.btn-dark(type='button') Give out
+            else if status=="Returned"
+
+            else
+                button#returned.btn.btn-success(type='button') Return
+                button#outstanding-request.btn.btn-warning(type='button') Request
+                block
+            
+mixin edit-reader()
+    #myModal2.modal.fade
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5.modal-title Edit reader
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') ×
+                .modal-body
+                    p Please edit the info about the new reader
+                    form
+                        .form-group
+                            label First name
+                            input#create_first_name.form-control(type='text', placeholder='First name', value="Elon")
+                        .form-group
+                            label Last name
+                            input#create_last_name.form-control(type='text', placeholder='Last name' value="Musk")
+                        .form-group
+                            label Birth date
+                            input#create_birth_date.form-control(type='date', placeholder='Birth date', value='1990-01-01')
+                        .form-group
+                            label E-mail address
+                            input#create_email.form-control(type='email', aria-describedby='emailHelp', placeholder='Email', value='qwe@innopolis.ru')
+                            small#new-email.form-text.text-muted
+                                | The password and login will be sent to this email
+                        .form-group
+                            label Address
+                            input#create_address.form-control(type='text', placeholder='Address', value="Universitetskaya str, 1")
+                        .form-group
+                            label Phone number
+                            input#create_phone.form-control(type='number', placeholder='Phone number', value='901234567')
+                        .form-group
+                            label Occupation
+                            input#create_occupation.form-control(type='text', placeholder='Phone number', value='none')
+                        .form-group
+                            label Telegram alias
+                            input#create_telegram.form-control(type='tel', placeholder='Telegram alias', value='@elonmusk')
+                        .form-group
+                            label(for='user-type') Select type of user:
+                            select#user-type.form-control
+                                option Student
+                                option Faculty
+                                option Librarian
+                .modal-footer
+                    button.btn.btn-danger(type='button') Delete user
+                    button.btn.btn-primary(type='button') Save changes
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close

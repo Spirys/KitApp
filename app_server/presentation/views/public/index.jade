@@ -1,3 +1,5 @@
 h1 It works!
 p Messages:
-    =JSON.stringify(messages)
+ul
+    - for (var i in messages)
+        li Internal error value: #{i}. Message: #{messages[i]}
