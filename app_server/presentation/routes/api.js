@@ -35,7 +35,7 @@ router.put('/books/:id/instances/:instanceId', apiProvider.booksController.updat
 router.delete('/books/:id/instances/:instanceId', apiProvider.booksController.deleteInstanceById);
 
 /**
- * Router configuration for books
+ * Router configuration for media
  * @private
  */
 
@@ -63,6 +63,7 @@ router.delete('/media/:id/instances/:instanceId', apiProvider.mediaController.de
 
 router.post('/login', apiProvider.authController.login);
 router.post('/logout', apiProvider.authController.logout);
+// router.post('/signup', apiProvider.authController.signUp);
 
 /**
  * Router configuration for users

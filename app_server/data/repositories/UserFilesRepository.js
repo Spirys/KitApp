@@ -22,7 +22,6 @@ module.exports.remove = remove;
  * @private
  */
 
-const mongoose = require('mongoose');
 
 /**
  * CRUD functions

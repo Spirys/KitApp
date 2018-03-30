@@ -16,72 +16,27 @@ const Errors = require('../../Errors');
  * Author model
  */
 
-class Author {
+const Author = {
+    name: 'Author',
+    primaryKey: 'id',
+    properties: {
+        id: 'int',
 
-    constructor(firstName, lastName, id, innerId) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this._id = id;
-        this._innerId = innerId;
-    }
+        first_name: {type: 'string', indexed: true},
+        last_name: {type: 'string', indexed: true},
 
-    get firstName() {
-        return this._firstName
-    }
+        books: {type: 'linkingObjects', objectType: 'Book', property: 'authors'},
+        journals: {type: 'linkingObjects', objectType: 'Journal', property: 'issue.editors'},
+        articles: {type: 'linkingObjects', objectType: 'Article', property: 'authors'},
+        media: {type: 'linkingObjects', objectType: 'Media', property: 'authors'},
 
-    set firstName(name) {
-        const valid = validator.validateString(name);
-        if (valid) {
-            this._firstName = name
-        } else {
-            throw new TypeError(Errors.NAME_INVALID)
-        }
+        middle_name: 'string?',
+        birth_date: 'string?',
+        death_date: 'string?'
     }
-
-    get lastName() {
-        return this._lastName
-    }
-
-    set lastName(name) {
-        const valid = validator.validateString(name);
-        if (valid) {
-            this._lastName = name
-        } else {
-            throw new TypeError(Errors.NAME_INVALID)
-        }
-    }
-
-    get id() {
-        return this._id;
-    }
-
-    get innerId() {
-        return this._innerId;
-    }
-
-    get birthDate() {
-        return this._birthDate
-    }
-
-    set birthDate(value) {
-        if (validator.validateDate(value)) {
-            this._birthDate = value
-        } else {
-            throw new TypeError(Errors.INVALID_DATE)
-        }
-    }
-
-    get deathDate() {
-        return this._deathDate
-    }
-
-    set deathDate(value) {
-        if (validator.validateDate(value)) {
-            this._deathDate = value
-        } else {
-            throw new TypeError(Errors.INVALID_DATE)
-        }
-    }
-}
+};
+// greek question mark
+// happy debugging!
+// ;
 
 module.exports = Author;

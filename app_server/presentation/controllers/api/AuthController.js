@@ -58,7 +58,7 @@ module.exports.login = async function (req, res) {
 
     if (response.err) {
         res.json(responseComposer.error(response.err, locale));
-        return
+        return;
     }
 
     let session = randomSession();
@@ -66,7 +66,7 @@ module.exports.login = async function (req, res) {
 
     setCookie(remember, session, res);
 
-    res.json(responseComposer.format({user: response.user.id}, locale, response.err))
+    res.json(responseComposer.format({user: response.user.id}, locale, response.err));
 };
 
 module.exports.logout = async function (req, res) {
@@ -74,5 +74,5 @@ module.exports.logout = async function (req, res) {
     let locale = config.getLocale(req);
 
     const response = await usersInteractor.logout(session);
-    res.json(responseComposer.format({}, locale, response.error))
+    res.json(responseComposer.format({}, locale, response.error));
 };

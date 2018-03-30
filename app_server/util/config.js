@@ -60,7 +60,7 @@ module.exports.messages = function (locale) {
             case 'zh': return MESSAGES_ZH;
             default: return MESSAGES_EN;
         }
-    } else return MESSAGES_EN
+    } else return MESSAGES_EN;
 };
 
 /**
@@ -113,6 +113,7 @@ module.exports.userTypes = {
  */
 
 module.exports.DEFAULT_DOCS_NUMBER = 25;
+module.exports.DEFAULT_USERS_NUMBER = 25;
 module.exports.DEFAULT_BOOK_REQ_FIELDS = ['title', 'authors', 'cost', 'edition', 'id', 'publisher', 'isbn', 'keywords', 'description', 'available', 'loaned', 'reference'];
 module.exports.DEFAULT_BOOK_RESPONSE_FIELDS = ['id', 'authors', 'bestseller', 'cost', 'image', 'instances', 'title', 'edition', 'publisher', 'keywords'];
 module.exports.DEFAULT_AUTHOR_RESPONSE_FIELDS = ['id', 'name', 'birth_date', 'death_date'];
@@ -125,6 +126,16 @@ module.exports.DEFAULT_USER_RESPONSE_FIELDS = ['name', 'id', 'type', 'birth_date
  * @public
  */
 
+module.exports.realm = {
+    url: 'kitapp-dev.us1a.cloud.realm.io',
+    // for what? IDK
+    apiToken: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJSZWFsbSIsIk5vdGlmaWVyIjp0cnVlLCJTeW5jIjp0cnVlLCJpYXQiOjE1MTI2NTY3Nzh9.iKhiNXtCT5HtEZc0SKlNnZOaCU8XSpbVYCyGm6RKgw3_tQogN5Ln5oG7bfFTBNJKi0zbjKVJcFGtBhxus27BWYgdVUTH_AHswfEY4BuaRKWK1dvUPn1mx7Fp7lQHnCPwp_nvhaqDAu5h7k3w2qIrbZfojAFhOHip_TbYHN4sI_EE7xO97IXv3Ya7bbKUZnuI_W1qWrQHw3pGH8TNyRTDaqS-xk7ko-S7iNm4HLTrt9562gbMItB_yHC2_7w7jOqd8ZRxPhpehEb6sWbQxyOFzOreClmC1JB_9mYlFmb1QsgqhY-VIKvdpUca98h_0zsEcyaVqGYalpbqb6Un7vAQ6w',
+    // one way to log in
+    user: 'dev',
+    password: '12346',
+    // another way
+    userToken: ''
+};
 module.exports.mongoURI = 'mongodb://dev:MLiF58v31DuOB6mRpJ2lNh9PY@ds046667.mlab.com:46667/kitapp-dev';
 // module.exports.mongoURI = 'mongodb://dev:12346@ds012058.mlab.com:12058/kitapp-tests';
 // module.exports.mongoURI = 'mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp';
