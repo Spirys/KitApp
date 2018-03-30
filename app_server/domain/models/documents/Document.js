@@ -20,56 +20,38 @@ const validator = require('../../validation/SetterValidation.js');
  */
 
 class Document {
-    constructor(title, id, innerId) {
-        this.title = title;
-        this._id = id;
-        this._innerId = innerId;
+    constructor(title, id) {
+        this.setTitle(title);
+        this.id = id;
+        this.setInstances([]);
     }
 
-    get title() {
-        return this._title
-    }
-
-    set title(title) {
+    setTitle(title) {
         if (validator.validateString(title)) {
-            this._title = title
+            this.title = title;
         } else {
-            throw new TypeError(Errors.TITLE_INVALID)
+            throw new TypeError(Errors.TITLE_INVALID);
         }
     }
 
-    get id() {
-        return this._id
-    }
-
-    get innerId() {
-        return this._innerId;
-    }
-
-    get instances() {
-        if (!this._instances || !this._instances.push) {
-            return []
-        } else return this._instances
-    }
-
-    set instances(newInstances) {
+    setInstances(newInstances) {
         if (Array.isArray(newInstances)) {
-            this._instances = [];
+            this.instances = [];
             for (let i = 0; i < newInstances.length; i++) {
                 if (newInstances[i] instanceof DocumentInstance) {
-                    this.instances.push(newInstances[i])
+                    this.instances.push(newInstances[i]);
                 }
             }
         } else {
-            throw new TypeError(Errors.INSTANCES_NOT_ARRAY)
+            throw new TypeError(Errors.INSTANCES_NOT_ARRAY);
         }
     }
 
     addInstance(newInstance) {
         if (newInstance instanceof DocumentInstance) {
-            this.instances.push(newInstance)
+            this.instances.push(newInstance);
         } else {
-            throw new TypeError(Errors.NEW_INSTANCE_WRONG_TYPE)
+            throw new TypeError(Errors.NEW_INSTANCE_WRONG_TYPE);
         }
     }
 }

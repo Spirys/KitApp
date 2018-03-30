@@ -17,7 +17,7 @@ const interactor = require('../../../domain/interactors/MediaInteractor');
 const usersInteractor = require('../../../domain/interactors/UsersInteractor');
 
 const config = require('../../../util/config');
-const defaultNumberOfMedia = config.DEFAULT_MEDIA_NUMBER;
+const defaultNumberOfMedia = config.DEFAULT_DOCS_NUMBER;
 const defaultFields = config.DEFAULT_MEDIA_RESPONSE_FIELDS;
 
 /**
@@ -57,6 +57,7 @@ module.exports.getAll = async function (req, res) {
     sendJson(res, response);
 };
 
+// TODO
 module.exports.search = async function (req, res) {
 
 };
@@ -135,7 +136,7 @@ module.exports.checkoutById = async function (req, res) {
     let user = await usersInteractor.verifyToken(token);
     if (user.err) {
         sendJson(res, error(user.err, locale));
-        return
+        return;
     }
     const isLibrarian = user.type === config.userTypes.LIBRARIAN;
 
@@ -144,7 +145,7 @@ module.exports.checkoutById = async function (req, res) {
         user = await usersInteractor.getById(userId);
         if (user.err) {
             sendJson(res, error(user.err, locale));
-            return
+            return;
         }
 
         // Checking out the media
@@ -156,7 +157,7 @@ module.exports.checkoutById = async function (req, res) {
 
     if (media.err) {
         sendJson(res, error(media.err, locale));
-        return
+        return;
     }
 
     let response = responseComposer.format(media, isLibrarian, defaultFields);
@@ -177,7 +178,7 @@ module.exports.returnById = async function (req, res) {
 
     if (user.err) {
         sendJson(res, error(user.err, locale));
-        return
+        return;
     }
 
     const media = await interactor.returnById(mediaId, req.body.user || user.id);

@@ -37,6 +37,7 @@ router.get('/docs', PublicController.docs);
 
 router.get('/login', PublicController.login);
 router.get('/auth', PublicController.login);
+//router.get('/signup', PublicController.signUp);
 
 /**
  * Module exports

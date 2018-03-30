@@ -17,7 +17,7 @@ const moment = require('moment');
  * @private
  */
 function stringValidation (s) {
-    return !!(s && typeof s === 'string')
+    return !!(s && typeof s === 'string');
 }
 
 /**
@@ -27,8 +27,12 @@ function stringValidation (s) {
  */
 
 function validateDate(date) {
-    return moment(date, 'DD-MM-YYYY').isValid()
+    return moment(date, 'DD-MM-YYYY').isValid();
     // return (/^\d{2}-\d{2}-\d{4}$/.test(date))
+}
+
+function validateYear(year) {
+    return moment(date, 'YYYY').isValid();
 }
 
 // TODO Write author validation
@@ -40,3 +44,4 @@ function validateDate(date) {
 
 module.exports.validateString = stringValidation;
 module.exports.validateDate = validateDate;
+module.exports.validateYear = validateYear;

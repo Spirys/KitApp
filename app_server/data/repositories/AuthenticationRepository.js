@@ -10,22 +10,60 @@
  * @public
  */
 
-module.exports.read = get;
-module.exports.get = get;
+module.exports.read = getLogin;
+module.exports.getLogin = getLogin;
+module.exports.getSession = getSession;
 module.exports.update = update;
-module.exports.delete = remove;
-module.exports.remove = remove;
+module.exports.delete = removeLogin;
+module.exports.remove = removeLogin;
 
 /**
  * Module dependencies
  * @private
  */
 
-const LoginDB = require('../models/auth/Login');
-const SessionDB = require('../models/auth/Session');
-const usersRepository = require('./UsersRepository.js');
-const userConverter = require('../converters/model_to_class/user/PatronModelToClass');
+// const LoginDB = require('../models/auth/Login');
+// const SessionDB = require('../models/auth/Session');
+const usersRepo = require('./UsersRepository.js');
+// const userConverter = require('../converters/model_to_class/user/PatronModelToClass');
 const config = require('../../util/config');
+
+
+const Realm = require('realm');
+const User = require('../../domain/models/users/User');
+const Login = require('../../domain/models/auth/Login');
+const Session = require('../../domain/models/auth/Session');
+
+// realm session
+let realm;
+
+async function init() {
+    realm = await Realm.open({
+        sync: {
+            url: `realms://${config.realm.url}/~/users`,
+            user: Realm.Sync.User.current
+        },
+        schema: [User, Login, Session]
+    });
+}
+
+async function check_init() {
+    if (realm === undefined || realm.isClosed) {
+        await init();
+    }
+}
+
+async function getLogin(login) {
+    await check_init();
+
+    return realm.objectForPrimaryKey('Login', login);
+}
+
+async function getSession(token) {
+    await check_init();
+
+    return realm.objectForPrimaryKey('Session', token);
+}
 
 /**
  * CRUD functions
@@ -33,76 +71,88 @@ const config = require('../../util/config');
  */
 
 async function login(login, password) {
+    await check_init();
     let response = {};
     try {
-        let user = await LoginDB.findOne({login})
-            .select('user password')
-            .populate('user')
-            .exec();
+        let _login = await getLogin(login);
 
-        if (!user) {
+        if (!_login) {
             // The user is absent in database
             response = {err: config.errors.WRONG_LOGIN_PASSWORD};
         } else {
-            response = (user.password === password)
-                ? {user: userConverter(user.user)}
-                : {err: config.errors.WRONG_LOGIN_PASSWORD}
+            response = (_login.password === password)
+                ? {user: _login.user}
+                : {err: config.errors.WRONG_LOGIN_PASSWORD};
         }
     } catch (err) {
         console.error(err);
-        response = {err: err.message}
+        response = {err: err.message};
     }
     return response;
 }
 
-function logout(token) {
-    return {id: 1, err: null}
-}
-
-async function verifyToken(token) {
+async function logout(token) {
+    await check_init();
     let response = {};
 
     try {
-        let session = await SessionDB.findOne({token: token})
-            .select('token user')
-            .populate('user')
-            .exec();
+        let session = await getSession(token);
+
+        if (!session) {
+            response = {err: config.errors.INVALID_TOKEN};
+        } else {
+            realm.write(() => {
+                realm.delete(session);
+            });
+
+            response = {code: 'ok'};
+        }
+    } catch (err) {
+        console.log(err);
+        response = {err: err.message};
+    }
+    return response;
+}
+
+async function verifyToken(token) {
+    await check_init();
+    let response = {};
+
+    try {
+        let session = await getSession(token);
 
         if (!session) {
             response = {
                 err: config.errors.INVALID_TOKEN
-            }
+            };
         } else {
-            response = userConverter(session.user);
+            response = session.user;
         }
     } catch (err) {
         console.log(err);
-        response = {err: err.message}
+        response = {err: err.message};
     }
     return response;
 }
 
 async function createLogin(login, password, user) {
-    let _login = await LoginDB.findOne({login, password})
-        .populate('user')
-        .exec();
+    await check_init();
+    let _login = await getLogin(login);
 
     if (!_login) {
-        _login = await LoginDB.create({
-            login: login,
-            password: password,
-            user: user.innerId
+        realm.write(() => {
+            _login = realm.create('Login', {
+                login: login,
+                password: password,
+                user: user
+            });
         });
     }
 
     return {
         login: _login.login,
         password: _login.password
-    }
-}
-
-function get() {
-
+    };
 }
 
 function update() {
@@ -110,26 +160,42 @@ function update() {
 }
 
 async function createSession(session, user) {
+    await check_init();
     let newSession = {
-        user: user.innerId,
+        user: user,
         token: session,
-        expires: Date.now() + config.COOKIE_EXPIRES
+        expires: new Date(Date.now() + config.COOKIE_EXPIRES)
     };
 
     try {
-        let response = await SessionDB.create(newSession);
+        let response;
+        realm.write(() => {
+            response = realm.create('Session', newSession);
+        });
+
         if (!response) {
             return {err: config.errors.INTERNAL};
         } else {
             return {code: config.okCode, session};
         }
     } catch (err) {
-        return {err: err.toString()};
+        return {err: err.message};
     }
 }
 
-function remove() {
+async function removeLogin(login) {
+    await check_init();
+    let _login = await getLogin(login);
 
+    if (!_login) {
+        return {err: config.errors.USER_NOT_FOUND};
+    } else {
+        realm.write(() => {
+            realm.delete(_login);
+        });
+
+        return {code: 'ok'};
+    }
 }
 
 module.exports.login = login;

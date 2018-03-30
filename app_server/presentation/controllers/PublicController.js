@@ -41,3 +41,7 @@ module.exports.landing = function (req, res) {
 module.exports.login = function (req, res) {
     res.render('public/login', {messages: getMessages(req)})
 };
+
+// module.exports.signUp = function (req, res) {
+//     res.render('public/singup', {messages: getMessages(req)})
+// };

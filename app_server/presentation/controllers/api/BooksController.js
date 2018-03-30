@@ -57,6 +57,7 @@ module.exports.getAll = async function (req, res) {
     sendJson(res, response);
 };
 
+// TODO
 module.exports.search = async function (req, res) {
 
 };
@@ -111,11 +112,9 @@ module.exports.updateById = async function (req, res) {
 
 module.exports.deleteById = async function (req, res) {
     const id = req.params.id;
-    const count = req.body.count;
-    const all = req.body.all;
     const locale = getLocale(req);
 
-    const book = await interactor.deleteById(id, count, all);
+    const book = await interactor.deleteById(id);
 
     let response = responseComposer.format(book, true, defaultFields, locale, book.err);
     sendJson(res, response);
@@ -140,7 +139,7 @@ module.exports.checkoutById = async function (req, res) {
     let user = await usersInteractor.verifyToken(token);
     if (user.err) {
         sendJson(res, error(user.err, locale));
-        return
+        return;
     }
     const isLibrarian = user.type === config.userTypes.LIBRARIAN;
 
@@ -149,7 +148,7 @@ module.exports.checkoutById = async function (req, res) {
         user = await usersInteractor.getById(userId);
         if (user.err) {
             sendJson(res, error(user.err, locale));
-            return
+            return;
         }
 
         // Checking out the book
@@ -161,7 +160,7 @@ module.exports.checkoutById = async function (req, res) {
 
     if (book.err) {
         sendJson(res, error(book.err, locale));
-        return
+        return;
     }
 
     let response = responseComposer.format(book, isLibrarian, defaultFields);
@@ -182,7 +181,7 @@ module.exports.returnById = async function (req, res) {
 
     if (user.err) {
         sendJson(res, error(user.err, locale));
-        return
+        return;
     }
 
     const book = await interactor.returnById(bookId, req.body.user || user.id);

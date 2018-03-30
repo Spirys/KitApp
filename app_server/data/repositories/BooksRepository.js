@@ -14,20 +14,32 @@
 
 const config = require('../../util/config');
 
-const BookDB = require('../models/documents/Book');
-const BookInstanceDB = require('../models/documents/DocumentInstance');
-const UserDB = require('../models/users/Patron');
+// const AuthorRepo = require('./AuthorsRepository');
+// const UserRepo = require('./UsersRepository');
 
-const AuthorRepo = require('./AuthorsRepository');
-const UserRepo = require('./UsersRepository');
+const Realm = require('realm');
+const Book = require('../../domain/models/documents/Book');
+const BookInstance = require('../../domain/models/documents/DocumentInstance').book;
+const Author = require('../../domain/models/documents/Author');
+const errors = require('../../util/config').errors;
 
-const BookClass = require('../converters/model_to_class/documents/BookModelToClass');
-const AuthorClass = require('../../domain/models/documents/Author');
-const BookInstanceClass = require('../converters/model_to_class/documents/DocumentInstanceModelToClass');
-const UserClass = require('../../domain/models/users/Patron');
+let realm;
 
-const BookModel = require('../converters/class_to_model/documents/BookClassToModel');
-const BookInstanceModel = require('../converters/class_to_model/documents/DocumentInstanceClassToModel');
+async function init() {
+    realm = await Realm.open({
+        sync: {
+            url: `realms://${config.realm.url}/~/documents`,
+            user: Realm.Sync.User.current
+        },
+        schema: [Book, Author, BookInstance]
+    });
+}
+
+async function check_init() {
+    if (realm === undefined || realm.isClosed) {
+        await init();
+    }
+}
 
 /**
  * CRUD functions
@@ -35,129 +47,57 @@ const BookInstanceModel = require('../converters/class_to_model/documents/Docume
  */
 
 async function get(id) {
+    await check_init();
 
-    const query = {
-        $where: `parseInt(this._id.valueOf().toString().substring(18), 16) === ${id}`
-    };
+    let book = realm.objectForPrimaryKey('Book', id);
 
-    let book = await BookDB.findOne(query)
-        .populate('instances')
-        .populate('authors')
-        .exec();
-
-    if (!book) {
-        return {err: config.errors.DOCUMENT_NOT_FOUND}
-    }
-
-    if (book.instances) {
-        for (let i = 0; i < book.instances.length; i++) {
-            if (book.instances[i].taker) {
-                await UserDB.populate(book.instances[i], {
-                    path: 'taker'
-                });
-            }
-        }
-    }
-
-    return BookClass(book);
+    return book ? book : {err: errors.DOCUMENT_NOT_FOUND};
 }
 
+// TODO
 async function search(query) {
-    let books = await BookDB.find(query)
-        .populate('authors')
-        .populate('instances')
-        .exec();
-
-    let bookClasses = [];
-    for (let i = 0; i < books.length; i++) {
-        let b = books[i];
-
-        for (let j = 0; j < b.instances.length; j++) {
-            if (b.instances[j].taker) {
-                await UserDB.populate(b.instances[j], {
-                    path: 'taker'
-                });
-            }
-        }
-        bookClasses.push(BookClass(b));
-    }
-
-    return bookClasses;
+    // let books = await BookDB.find(query)
+    //     .populate('authors')
+    //     .populate('instances')
+    //     .exec();
+    //
+    // let bookClasses = [];
+    // for (let i = 0; i < books.length; i++) {
+    //     let b = books[i];
+    //
+    //     for (let j = 0; j < b.instances.length; j++) {
+    //         if (b.instances[j].taker) {
+    //             await UserDB.populate(b.instances[j], {
+    //                 path: 'taker'
+    //             });
+    //         }
+    //     }
+    //     bookClasses.push(BookClass(b));
+    // }
+    //
+    // return bookClasses;
 }
 
 async function getAll(page, length) {
-    let books = await BookDB.find()
-        .skip((page - 1) * length)
-        .limit(length)
-        .populate('authors')
-        .populate('instances')
-        .exec();
+    await check_init();
+    let books = realm.objects('Book').slice((page - 1) * length + 1, length + 1);
 
-    let bookClasses = [];
-    for (let i = 0; i < books.length; i++) {
-        let b = books[i];
-
-        for (let j = 0; j < b.instances.length; j++) {
-            if (b.instances[j].taker) {
-                await UserDB.populate(b.instances[j], {
-                    path: 'taker'
-                });
-            }
-        }
-        bookClasses.push(BookClass(b));
-    }
-
-    return bookClasses;
+    return books;
 }
 
+// TODO
 async function updateBook(book) {
-    let bookModel = BookModel(book);
-
-    await BookDB.findByIdAndUpdate(book.innerId, bookModel).exec();
-
-    return book;
+    // let bookModel = BookModel(book);
+    //
+    // await BookDB.findByIdAndUpdate(book.innerId, bookModel).exec();
+    //
+    // return book;
 }
 
 // TODO Place logic into the interactor
 async function create(query) {
-    let book = await search({
-        title: query.title,
-        edition: query.edition,
-        publisher: query.publisher
-    });
-
-    if (book.length === 0) {
-        let bookDb = await BookDB.create({
-            title: query.title,
-            authors: [],
-            instances: [],
-            cost: query.cost,
-            edition: query.edition,
-            publisher: query.publisher,
-            keywords: query.keywords,
-            bestseller: query.bestseller,
-            description: query.description,
-            isbn: query.isbn,
-            image: query.image,
-            published: query.published
-        });
-
-        book = BookClass(bookDb);
-
-        let authors = [];
-        for (let i = 0; i < query.authors.length; i++) {
-            let author = await AuthorRepo.search(query.authors[i]);
-            if (author.length === 0) {
-                author = await AuthorRepo.create(query.authors[i]);
-            } else {
-                author = author[0];
-            }
-            authors.push(author);
-        }
-        book.authors = authors;
-    } else {
-        book = book[0]
-    }
+    await check_init();
+    let book;
 
     // Set defaults if instance parameters are missing
     let available, reference, maintenance;
@@ -174,137 +114,165 @@ async function create(query) {
         ? typeof query.maintenance === 'number' ? query.maintenance : 0
         : (available || reference) ? 0 : 1;
 
-    await addInstances(book, available, reference, maintenance);
-    await updateBook(book);
+    let books = realm.objects('Book')
+        .filtered('title == $0 AND edition == $1 AND publisher == $2 AND published CONTAINS[c] $3',
+            query.title, query.edition, query.publisher, query.published);
+
+    // FIXME: split 'write' block to many
+    realm.write(() => {
+        if (books.length === 0) {
+            let id = realm.objects('Book').max('id') + 1 || 0;
+            book = realm.create('Book', {
+                id: id,
+                title: query.title,
+                // authors: [],
+                // instances: [],
+                cost: query.cost,
+                edition: query.edition,
+                publisher: query.publisher,
+                keywords: query.keywords,
+                bestseller: query.bestseller,
+                description: query.description,
+                isbn: query.isbn,
+                image: query.image,
+                published: query.published
+            });
+
+            let autId = realm.objects('Author').max('id') + 1 || 0;
+            let authors = realm.objects('Author');
+
+            for (let i = 0; i < query.authors; i++) {
+                let author = authors.filtered('first_name == $0 AND last_name == $1',
+                    query.authors[i].first_name, query.authors[i].last_name);
+
+                if (author.length === 0) {
+                    book.authors.push({
+                        id: autId,
+                        first_name: query.first_name,
+                        last_name: query.last_name,
+
+                        middle_name: query.middle_name,
+                        birth_date: query.birth_date,
+                        death_date: query.death_date
+                    });
+                    autId++;
+                } else {
+                    book.authors.push(author[0]);
+                }
+            }
+        } else {
+            book = books[0];
+        }
+
+        let instId = realm.objects('BookInstance').max('id') + 1 || 0;
+        for (let i = 0; i < available; i++) {
+            book.instances.push({
+                id: instId,
+                status: 'Available'
+            });
+            instId++;
+        }
+
+        for (let i = 0; i < reference; i++) {
+            book.instances.push({
+                id: instId,
+                status: 'Reference'
+            });
+            instId++;
+        }
+
+        for (let i = 0; i < maintenance; i++) {
+            book.instances.push({
+                id: instId,
+                status: 'Maintenance'
+            });
+            instId++;
+
+        }
+    });
+
+
     return book;
 }
 
-/**
- * Asynchronously adds instances to the book
- * @param book {Book} The book where to add copies
- * @param available {number} how many available copies to add
- * @param reference {number} how many reference copies
- * @param maintenance {number} how many maintenance copies
- * @return {Promise<Book>} the book with changed fields
- */
 
 async function addInstances(book, available, reference, maintenance) {
+    await check_init();
 
-    const counter = [0];
-    const finish = available + reference + maintenance;
-
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    const checkFinished = () => (counter[0] === finish);
-
+    let id = realm.objects('BookInstances').max('id') + 1 || 0;
     for (let i = 0; i < available; i++) {
-        createInstance('Available').then(value => {
-            book.addInstance(value);
-            counter[0]++;
+        realm.write(() => {
+            book.instances.push({
+                id: id,
+                status: 'Available'
+            });
         });
+        id++;
     }
 
     for (let i = 0; i < reference; i++) {
-        createInstance('Reference').then(value => {
-            book.addInstance(value);
-            counter[0]++;
+        realm.write(() => {
+            book.instances.push({
+                id: id,
+                status: 'Reference'
+            });
         });
+        id++;
     }
 
     for (let i = 0; i < maintenance; i++) {
-        createInstance('Maintenance').then(value => {
-            book.addInstance(value);
-            counter[0]++;
+        realm.write(() => {
+            book.instances.push({
+                id: id,
+                status: 'Maintenance'
+            });
         });
+        id++;
     }
 
-    while (!checkFinished()) await sleep(50);
     return book;
 }
 
-async function remove(id, count = undefined, all = false) {
+async function remove(id) {
+    await check_init();
     let book = await get(id);
     if (book.err) return {err: book.err};
 
-    // FIXME: make better
-    if (book) {
-        if ((typeof count === 'number') || (count === undefined && (all === false || all === undefined))) {
-            if (count === undefined) count = 1;
-            let c = 0;
-
-            for (let i = 0; i < book.instances.length && c < count; i++) {
-                if (book.instances[i].status === config.statuses.AVAILABLE) {
-                    await removeInstance(book.instances[i]);
-                    book.instances.splice(i, 1);
-                    i--;
-                    c++;
-                }
-            }
-
-            if (c < count) {
-                for (let i = 0; i < book.instances.length && c < count; i++) {
-                    if (book.instances[i].status === config.statuses.MAINTENANCE) {
-                        await removeInstance(book.instances[i]);
-                        book.instances.splice(i, 1);
-                        i--;
-                        c++;
-                    }
-                }
-
-                if (c < count) {
-                    for (let i = 0; i < book.instances.length && c < count; i++) {
-                        if (book.instances[i].status === config.statuses.REFERENCE) {
-                            await removeInstance(book.instances[i]);
-                            book.instances.splice(i ,1);
-                            i--;
-                            c++;
-                        }
-                    }
-                }
-            }
-        }
-        else if (all === true) {
-            for (let i = 0; i < book.instances.length; i++) {
-                if (book.instances[i].status !== config.statuses.LOANED) {
-                    await removeInstance(book.instances[i]);
-                    book.instances.splice(i, 1);
-                    i--;
-                }
-            }
-        }
-    }
-
-    if (book.instances.length === 0) {
-        await BookDB.remove({_id: book.innerId});
-    } else {
-        await updateBook(book);
-    }
+    realm.write(() => {
+        realm.delete(book.instances);
+        realm.delete(book);
+    });
 
     return book;
 }
 
 async function createInstance(status) {
-    let instance = await BookInstanceDB.create({
-        status: status
+    await check_init();
+    let instance;
+    realm.write(() => {
+        instance = realm.create('BookInstance', {
+            status: status
+        });
     });
-
-    return BookInstanceClass(instance);
-}
-
-async function updateInstance(instance) {
-    let instanceModel = BookInstanceModel(instance);
-
-    await BookInstanceDB.findByIdAndUpdate(instance.innerId, instanceModel).exec();
 
     return instance;
 }
 
-async function removeInstance(instance) {
-    let instanceModel = BookInstanceModel(instance);
+// TODO
+async function updateInstance(instance) {
+    // let instanceModel = BookInstanceModel(instance);
+    //
+    // await BookInstanceDB.findByIdAndUpdate(instance.innerId, instanceModel).exec();
+    //
+    // return instance;
+}
 
-    await BookInstanceDB.remove({_id: instance.innerId});
+async function removeInstance(instance) {
+    await check_init();
+
+    realm.write(() => {
+        realm.delete(instance);
+    });
 
     return true;
 }

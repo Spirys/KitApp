@@ -64,6 +64,7 @@ module.exports.getAll = async function (page, length) {
     return await Repository.getAll(page, length);
 };
 
+// TODO
 module.exports.search = async function () {
 
 };
@@ -82,13 +83,13 @@ module.exports.updateById = async function (id, fields) {
     // TODO: add authors
     if (fields.title) media.title = fields.title;
     if (fields.cost) media.cost = fields.cost;
-    if (typeof fields.bestseller === 'boolean') media.isBestseller = fields.bestseller;
+    if (typeof fields.bestseller === 'boolean') media.bestseller = fields.bestseller;
     if (fields.keywords) media.keywords = fields.keywords;
     if (fields.description) media.description = fields.description;
     if (fields.image) media.image = fields.image;
     if (fields.published) media.published = fields.published;
 
-    return await Repository.update(media);
+    return media;
 };
 
 module.exports.deleteById = async function (id) {
@@ -112,19 +113,18 @@ module.exports.reserveById = async function (mediaId, user) {
 
     instance.status = config.statuses.RESERVED;
     instance.taker = user;
-    instance.takeDue = new Date(currentTime + config.DOCUMENT_RESERVATION_TIME);
+    instance.take_due = new Date(currentTime + config.DOCUMENT_RESERVATION_TIME);
 
     // Applying business logic
     let timeDue = currentTime;
     timeDue += (user.type === config.userTypes.STUDENT)
-        ? (media.isBestseller)
+        ? (media.bestseller)
             ? config.CHECKOUT_TIME_STUDENT_BESTSELLER
             : config.CHECKOUT_TIME_STUDENT_NOT_BESTSELLER
         : config.CHECKOUT_TIME_FACULTY;
 
-    instance.dueBack = new Date(timeDue);
+    instance.due_back = new Date(timeDue);
 
-    await Repository.updateInstance(instance);
     return media;
 };
 
@@ -151,14 +151,13 @@ module.exports.checkoutById = async function (mediaId, user) {
     // Applying business logic
     let timeDue = currentTime;
     timeDue += (user.type === config.userTypes.STUDENT)
-        ? (media.isBestseller)
+        ? (media.bestseller)
             ? config.CHECKOUT_TIME_STUDENT_BESTSELLER
             : config.CHECKOUT_TIME_STUDENT_NOT_BESTSELLER
         : config.CHECKOUT_TIME_FACULTY;
 
-    instance.dueBack = new Date(timeDue);
+    instance.due_back = new Date(timeDue);
 
-    await Repository.updateInstance(instance);
     return media;
 };
 
@@ -179,10 +178,8 @@ module.exports.returnById = async function (mediaId, userId) {
 
     instance.status = 'Available';
     instance.taker = undefined;
-    instance.dueBack = undefined;
-    instance.takeDue = undefined;
-
-    await Repository.updateInstance(instance);
+    instance.due_back = undefined;
+    instance.take_due = undefined;
 
     return media;
 };
@@ -198,14 +195,14 @@ module.exports.getAllInstances = async function (media) {
 
 module.exports.newInstance = async function (id, request) {
     const inst = new DocumentInstance(request.status);
-    inst.dueBack = request.due_back;
+    inst.due_back = request.due_back;
     inst.taker = request.taker;
 
     let media = await Repository.get(id);
     if (media.err) return {err: media.err};
 
     media.addInstance(inst);
-    return await Repository.update(media);
+    return media;
 };
 
 module.exports.getInstanceById = async function () {

@@ -41,7 +41,7 @@ function findAvailable(book, user) {
             indexAvailable = i;
         }
 
-        if (instance.taker && instance.taker.id === user.id) return {err: config.errors.DOCUMENT_ALREADY_TAKEN}
+        if (instance.taker && instance.taker.id === user.id) return {err: config.errors.DOCUMENT_ALREADY_TAKEN};
     }
 
     if (indexAvailable === -1) return {err: config.errors.DOCUMENT_NOT_AVAILABLE};
@@ -84,18 +84,18 @@ module.exports.updateById = async function (id, fields) {
     if (fields.cost) book.cost = fields.cost;
     if (fields.edition) book.edition = fields.edition;
     if (fields.isbn) book.isbn = fields.isbn;
-    if (typeof fields.bestseller === 'boolean') book.isBestseller = fields.bestseller;
+    if (typeof fields.bestseller === 'boolean') book.bestseller = fields.bestseller;
     if (fields.publisher) book.publisher = fields.publisher;
     if (fields.keywords) book.keywords = fields.keywords;
     if (fields.description) book.description = fields.description;
     if (fields.image) book.image = fields.image;
     if (fields.published) book.published = fields.published;
 
-    return await Repository.update(book);
+    return book;
 };
 
-module.exports.deleteById = async function (id, count, all) {
-    return await Repository.delete(id, count, all);
+module.exports.deleteById = async function (id) {
+    return await Repository.delete(id);
 };
 
 module.exports.reserveById = async function (bookId, user) {
@@ -115,19 +115,18 @@ module.exports.reserveById = async function (bookId, user) {
 
     instance.status = config.statuses.RESERVED;
     instance.taker = user;
-    instance.takeDue = new Date(currentTime + config.DOCUMENT_RESERVATION_TIME);
+    instance.take_due = new Date(currentTime + config.DOCUMENT_RESERVATION_TIME);
 
     // Applying business logic
     let timeDue = currentTime;
     timeDue += (user.type === config.userTypes.STUDENT)
-        ? (book.isBestseller)
+        ? (book.bestseller)
             ? config.CHECKOUT_TIME_STUDENT_BESTSELLER
             : config.CHECKOUT_TIME_STUDENT_NOT_BESTSELLER
         : config.CHECKOUT_TIME_FACULTY;
 
-    instance.dueBack = new Date(timeDue);
+    instance.due_back = new Date(timeDue);
 
-    await Repository.updateInstance(instance);
     return book;
 };
 
@@ -154,14 +153,13 @@ module.exports.checkoutById = async function (bookId, user) {
     // Applying business logic
     let timeDue = currentTime;
     timeDue += (user.type === config.userTypes.STUDENT)
-        ? (book.isBestseller)
+        ? (book.bestseller)
             ? config.CHECKOUT_TIME_STUDENT_BESTSELLER
             : config.CHECKOUT_TIME_STUDENT_NOT_BESTSELLER
         : config.CHECKOUT_TIME_FACULTY;
 
-    instance.dueBack = new Date(timeDue);
+    instance.due_back = new Date(timeDue);
 
-    await Repository.updateInstance(instance);
     return book;
 };
 
@@ -182,10 +180,8 @@ module.exports.returnById = async function (bookId, userId) {
 
     instance.status = 'Available';
     instance.taker = undefined;
-    instance.dueBack = undefined;
-    instance.takeDue = undefined;
-
-    await Repository.updateInstance(instance);
+    instance.due_back = undefined;
+    instance.take_due = undefined;
 
     return book;
 };
@@ -201,14 +197,14 @@ module.exports.getAllInstances = async function (book) {
 
 module.exports.newInstance = async function (id, request) {
     const inst = new DocumentInstance(request.status);
-    inst.dueBack = request.due_back;
+    inst.due_back = request.due_back;
     inst.taker = request.taker;
 
     let book = await Repository.get(id);
     if (book.err) return {err: book.err};
 
     book.addInstance(inst);
-    return await Repository.update(book);
+    return book;
 };
 
 module.exports.getInstanceById = async function () {
