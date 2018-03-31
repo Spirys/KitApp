@@ -22,8 +22,8 @@ const JournalInstance = {
     properties: {
         id: 'int',
         status: {type: 'string', indexed: true},
-        journal: {type: 'linkedObjects', objectType: 'Journal', property: 'instances'},
-        taker: {type: 'linkedObjects', objectType: 'User', property: 'journals'},
+        journal: {type: 'linkingObjects', objectType: 'Journal', property: 'instances'},
+        taker: 'User',
         due_back: 'date?',
         take_due: 'date?'
     }

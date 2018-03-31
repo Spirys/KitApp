@@ -13,12 +13,20 @@
 const responseComposer = require('../../composers/ResponseComposer').book;
 const sendJson = require('../../composers/ResponseComposer').sendJson;
 const error = require('../../composers/ResponseComposer').error;
+
 const interactor = require('../../../domain/interactors/BooksInteractor');
 const usersInteractor = require('../../../domain/interactors/UsersInteractor');
+
+const val = require('../../../domain/validation/InputValidation');
 
 const config = require('../../../util/config');
 const defaultNumberOfBooks = config.DEFAULT_DOCS_NUMBER;
 const defaultFields = config.DEFAULT_BOOK_RESPONSE_FIELDS;
+
+/**
+ * Module functions
+ * @private
+ */
 
 /**
  * Gets the locale from the request
@@ -39,8 +47,8 @@ function getLocale(req) {
 module.exports.getAll = async function (req, res) {
 
     // Traversing request
-    const page = req.query.page || 1;
-    const length = req.query.length || defaultNumberOfBooks;
+    const page = val.numberOrDefault(req.query.page, 1);
+    const length = val.numberOrDefault(req.query.length, defaultNumberOfBooks);
     const fields = (typeof req.query.fields === 'string')
         ? req.query.fields.split(',')
         : defaultFields;
@@ -81,6 +89,7 @@ module.exports.new = async function (req, res) {
         reference: query.reference,
         maintenance: query.maintenance,
     };
+
     const locale = getLocale(req);
 
     const book = await interactor.new(fields);

@@ -1,18 +1,9 @@
 /*!
  * Book
- * Copyright(c) 2018 Marsel Shaihin
+ * Copyright(c) 2018 KitApp project
  */
 
 'use strict';
-
-/**
- * Module dependencies
- * @private
- */
-
-const BookInstance = require("./DocumentInstance").book;
-const Errors = require('../../Errors');
-const validator = require('../../validation/SetterValidation');
 
 /**
  * A book model
@@ -41,11 +32,5 @@ const Book = {
         keywords: 'string?[]'
     }
 };
-
-/**
- * Module exports a {@link Book} class
- * @type {Book}
- * @public
- */
 
 module.exports = Book;

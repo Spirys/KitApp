@@ -1,19 +1,12 @@
 /*
- * The patron model
- * Copyright (c) 2018 Marsel Shaihin
+ * The user model
+ * Copyright (c) 2018 KitApp project
  */
 
 'use strict';
 
 /**
- * Module dependencies
- * @private
- */
-
-
-/**
  * The model for User
- * @see Patron#constructor
  * @private
  */
 
@@ -27,9 +20,9 @@ const User = {
         last_name: {type: 'string', indexed: true},
         type: {type: 'string', indexed: true},
 
-        books: {type: 'linkedObjects', objectType: 'BookInstance', property: 'taker'},
-        journals: {type: 'linkedObjects', objectType: 'JournalInstance', property: 'taker'},
-        media: {type: 'linkedObjects', objectType: 'MediaInstance', property: 'taker'},
+        books: {type: 'linkingObjects', objectType: 'BookInstance', property: 'taker'},
+        journals: {type: 'linkingObjects', objectType: 'JournalInstance', property: 'taker'},
+        media: {type: 'linkingObjects', objectType: 'MediaInstance', property: 'taker'},
 
         birth_date: 'string?',
         email: 'string',
@@ -41,11 +34,5 @@ const User = {
         address: 'string?'
     }
 };
-
-/**
- * Module exports a {@link Patron} class
- * @type {Patron}
- * @public
- */
 
 module.exports = User;

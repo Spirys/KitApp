@@ -1,17 +1,9 @@
 /*!
  * Journal
- * Copyright(c) 2018 Marsel Shaihin
+ * Copyright(c) 2018 KitApp project
  */
 
 'use strict';
-
-/**
- * Module dependencies
- * @private
- */
-
-const JournalInstance = require('./DocumentInstance').journal;
-const Errors = require('../../Errors');
 
 /**
  * A journal model
@@ -28,11 +20,9 @@ const Journal = {
 
         bestseller: {type: 'bool', default: false},
 
-        issue: {
-            editors: 'Author[]',
-            date: 'string'
-        },
-        instances: 'JournalInstances[]',
+        issue_editors: 'Author[]',
+        issue_date: 'string',
+        instances: 'JournalInstance[]',
         articles: 'Article[]',
 
         cost: 'int?',

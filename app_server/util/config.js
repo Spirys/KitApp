@@ -136,6 +136,6 @@ module.exports.realm = {
     // another way
     userToken: ''
 };
-module.exports.mongoURI = 'mongodb://dev:MLiF58v31DuOB6mRpJ2lNh9PY@ds046667.mlab.com:46667/kitapp-dev';
+// module.exports.mongoURI = 'mongodb://dev:MLiF58v31DuOB6mRpJ2lNh9PY@ds046667.mlab.com:46667/kitapp-dev';
 // module.exports.mongoURI = 'mongodb://dev:12346@ds012058.mlab.com:12058/kitapp-tests';
 // module.exports.mongoURI = 'mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp';

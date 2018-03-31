@@ -22,8 +22,8 @@ const BookInstance = {
     properties: {
         id: 'int',
         status: {type: 'string', indexed: true},
-        book: {type: 'linkedObjects', objectType: 'Book', property: 'instances'},
-        taker: {type: 'linkedObjects', objectType: 'User', property: 'books'},
+        book: {type: 'linkingObjects', objectType: 'Book', property: 'instances'},
+        taker: 'User',
         due_back: 'date?',
         take_due: 'date?'
     }

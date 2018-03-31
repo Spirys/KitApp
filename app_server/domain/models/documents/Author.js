@@ -1,6 +1,6 @@
 /*!
  * Author
- * Copyright(c) 2018 Marsel Shaihin
+ * Copyright(c) 2018 KitApp project
  */
 
 'use strict';
@@ -8,9 +8,6 @@
 /**
  * Module dependencies
  */
-
-const validator = require('../../validation/SetterValidation.js');
-const Errors = require('../../Errors');
 
 /**
  * Author model
@@ -26,7 +23,7 @@ const Author = {
         last_name: {type: 'string', indexed: true},
 
         books: {type: 'linkingObjects', objectType: 'Book', property: 'authors'},
-        journals: {type: 'linkingObjects', objectType: 'Journal', property: 'issue.editors'},
+        journals: {type: 'linkingObjects', objectType: 'Journal', property: 'issue_editors'},
         articles: {type: 'linkingObjects', objectType: 'Article', property: 'authors'},
         media: {type: 'linkingObjects', objectType: 'Media', property: 'authors'},
 

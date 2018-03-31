@@ -183,6 +183,8 @@ module.exports.returnById = async function (bookId, userId) {
     instance.due_back = undefined;
     instance.take_due = undefined;
 
+    // TODO: update query for this book
+
     return book;
 };
 

@@ -1,17 +1,8 @@
-/*
- * Copyright (c) 2018 Marsel Shaihin
+/*!
+ * Copyright (c) 2018 KitApp project
  */
 
 'use strict';
-
-/**
- * Module dependencies
- * @private
- */
-
-const DocumentParent = require('./Document');
-const Errors = require('../../Errors');
-const validator = require('../../validation/SetterValidation');
 
 /**
  * A Media model

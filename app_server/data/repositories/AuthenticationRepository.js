@@ -22,36 +22,8 @@ module.exports.remove = removeLogin;
  * @private
  */
 
-// const LoginDB = require('../models/auth/Login');
-// const SessionDB = require('../models/auth/Session');
-const usersRepo = require('./UsersRepository.js');
-// const userConverter = require('../converters/model_to_class/user/PatronModelToClass');
 const config = require('../../util/config');
-
-
-const Realm = require('realm');
-const User = require('../../domain/models/users/User');
-const Login = require('../../domain/models/auth/Login');
-const Session = require('../../domain/models/auth/Session');
-
-// realm session
-let realm;
-
-async function init() {
-    realm = await Realm.open({
-        sync: {
-            url: `realms://${config.realm.url}/~/users`,
-            user: Realm.Sync.User.current
-        },
-        schema: [User, Login, Session]
-    });
-}
-
-async function check_init() {
-    if (realm === undefined || realm.isClosed) {
-        await init();
-    }
-}
+const realm = require('../db').realm;
 
 async function getLogin(login) {
     await check_init();

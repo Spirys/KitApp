@@ -80,9 +80,7 @@ async function search(query) {
 
 async function getAll(page, length) {
     await check_init();
-    let books = realm.objects('Book').slice((page - 1) * length + 1, length + 1);
-
-    return books;
+    return realm.objects('Book').slice((page - 1) * length + 1, length + 1);
 }
 
 // TODO
@@ -187,7 +185,6 @@ async function create(query) {
                 status: 'Maintenance'
             });
             instId++;
-
         }
     });
 

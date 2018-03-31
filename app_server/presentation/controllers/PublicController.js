@@ -43,5 +43,5 @@ module.exports.login = function (req, res) {
 };
 
 // module.exports.signUp = function (req, res) {
-//     res.render('public/singup', {messages: getMessages(req)})
+//     res.render('public/register', {messages: getMessages(req)})
 // };
