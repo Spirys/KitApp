@@ -26,30 +26,10 @@ module.exports.remove = remove;
 const LoginRepo = require('./AuthenticationRepository');
 const errors = require('../../util/config').errors;
 
-const Realm = require('realm');
+const realm = require('../db').realm;
 const config = require('../../util/config');
 const User = require('../../domain/models/users/User');
 const Login = require('../../domain/models/auth/Login');
-const Session = require('../../domain/models/auth/Session');
-
-// realm session
-let realm;
-
-async function init() {
-    realm = await Realm.open({
-        sync: {
-            url: `realms://${config.realm.url}/~/users`,
-            user: Realm.Sync.User.current
-        },
-        schema: [User, Login, Session]
-    });
-}
-
-async function check_init() {
-    if (realm === undefined || realm.isClosed) {
-        await init();
-    }
-}
 
 /**
  * CRUD functions
@@ -57,17 +37,13 @@ async function check_init() {
  */
 
 async function get(id) {
-    await check_init();
     let user = realm.objectForPrimaryKey('User', id);
 
-    return user ? user : {err: errors.USER_NOT_FOUND};
+    return user || {err: errors.USER_NOT_FOUND};
 }
 
 async function getAll(page, length) {
-    await check_init();
-    let users = realm.objects('User').slice((page - 1) * length + 1, length + 1);
-
-    return users;
+    return realm.objects('User').slice((page - 1) * length + 1, length + 1);
 }
 
 // TODO:
@@ -93,7 +69,6 @@ async function update(user) {
 }
 
 async function create(query) {
-    await check_init();
     let user = undefined;
 
     let id = realm.objects('User').max('id') + 1 || 0;
@@ -115,7 +90,7 @@ async function create(query) {
             occupation: query.occupation,
             about: query.about,
             telegram: query.telegram,
-            avatar: query.telegram,
+            avatar: query.avatar,
             address: query.address
         });
 
@@ -126,7 +101,6 @@ async function create(query) {
 }
 
 async function remove(id) {
-    await check_init();
     let user = get(id);
 
     if (user.err) {

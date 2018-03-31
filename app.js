@@ -40,7 +40,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/users', users); // TODO change the routing
+app.use('/', users);
 app.use('/api', api);
 
 // catch 404 and forward to error handler

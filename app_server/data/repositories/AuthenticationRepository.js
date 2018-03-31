@@ -24,6 +24,12 @@ module.exports.remove = removeLogin;
 
 const config = require('../../util/config');
 const realm = require('../db').realm;
+const logger = require('../../util/Logger');
+
+/**
+ * Module functions
+ * @private
+ */
 
 async function getLogin(login) {
     return realm.objectForPrimaryKey('Login', login);
@@ -52,7 +58,7 @@ async function login(login, password) {
                 : {err: config.errors.WRONG_LOGIN_PASSWORD};
         }
     } catch (err) {
-        console.error(err);
+        logger.error(err);
         response = {err: err.message};
     }
     return response;
@@ -74,7 +80,7 @@ async function logout(token) {
             response = {code: 'ok'};
         }
     } catch (err) {
-        console.log(err);
+        logger.error(err);
         response = {err: err.message};
     }
     return response;
@@ -91,10 +97,10 @@ async function verifyToken(token) {
                 err: config.errors.INVALID_TOKEN
             };
         } else {
-            response = session.user;
+            response = session.user || {err: config.errors.INVALID_TOKEN};
         }
     } catch (err) {
-        console.log(err);
+        logger.error(err);
         response = {err: err.message};
     }
     return response;
@@ -142,6 +148,7 @@ async function createSession(session, user) {
             return {code: config.okCode, session};
         }
     } catch (err) {
+        logger.error(err);
         return {err: err.message};
     }
 }

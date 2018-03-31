@@ -37,6 +37,14 @@ module.exports.createSession = async function (session, user) {
     return await AuthenticationRepository.createSession(session, user);
 };
 
+/**
+ * Verifies the token.
+ * @public
+ * @param token
+ * @return {Promise<err|user>} The function returns either {err} with description
+ *      or {user} if authentication was successful
+ */
+
 module.exports.verifyToken = async function (token) {
     return await AuthenticationRepository.verifyToken(token);
 };
@@ -47,6 +55,8 @@ module.exports.new = async function (fields) {
 
 module.exports.updateById = async function (id, fields) {
     let user = await UsersRepository.get(id);
+
+    // TODO Wrap with write transaction and iteration over defined fields
 
     if (fields.first_name) user.first_name = fields.first_name;
     if (fields.last_name) user.last_name = fields.last_name;

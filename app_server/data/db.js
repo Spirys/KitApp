@@ -108,3 +108,50 @@ module.exports.init = async function () {
     await init();
     module.exports.realm = realm;
 };
+
+/**
+ * Miscellaneous functions
+ * @private
+ */
+
+function wipe() {
+    let sessions = realm.objects('Session');
+    let logins = realm.objects('Login');
+    let users = realm.objects('User');
+
+    realm.write(() => {
+        for (let session of sessions) {
+            realm.delete(session)
+        }
+        for (let login of logins) {
+            realm.delete(login)
+        }
+        for (let user of users) {
+            realm.delete(user)
+        }
+
+        logger.info('Wipe complete')
+    });
+}
+
+async function createUser(login, password, first_name, last_name) {
+    const UserRepo = require('./RepositoryProvider').UsersRepository;
+
+    await UserRepo.create({
+        first_name: first_name,
+        last_name: last_name,
+        type: 'Student',
+
+        birth_date: '01-01-2018',
+        email: login,
+        phone: '1234567890',
+        occupation: 'Nah, occupation',
+        about: 'About me, blah blah blah',
+        telegram: 'j_snow',
+        address: 'Some address',
+
+        password: password // '5f4dcc3b5aa765d61d8327deb882cf99'
+    });
+
+    logger.info('User was created');
+}

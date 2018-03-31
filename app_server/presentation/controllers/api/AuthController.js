@@ -20,7 +20,8 @@ const config = require('../../../util/config');
 
 function setCookie(remember, session, response) {
     let cookie = {
-        domain: '.kitapptatar.ru',
+        // domain: '.kitapptatar.ru',
+        // domain: 'localhost:3000' // todo change when in production!
     };
     if (config.COOKIE_HTTPS_ONLY) cookie.secure = true;
     if (remember) {

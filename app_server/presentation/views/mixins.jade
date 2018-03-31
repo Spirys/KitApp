@@ -1,6 +1,6 @@
 link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
 
-mixin sidebar(active_item)
+mixin sidebar(active_item, user)
     nav.side-navbar
         // Sidebar Header
         .sidebar-header.d-flex.align-items-center
@@ -8,24 +8,24 @@ mixin sidebar(active_item)
                 a(href="user-card.html")
                     img#sidebar-avatar.img-fluid.rounded-circle(src='images/avatar-1.jpg')
             .title
-                h1#sidebar-username.h4 Elon Musk
-                p#sidebar-usertype Librarian
+                h1#sidebar-username.h4=user.first_name+' '+user.last_name
+                p#sidebar-usertype=user.type
         br
         // Sidebar Navidation Menus
         +sidebar_list(active_item)
 
 mixin sidebar_list(active_item)
     ul.list-unstyled
-        +sidebar_list_item('dashboard.html', 'dashboard', active_item) Dashboard
-        +sidebar_list_item('catalog.html', 'book', active_item) Catalog
-        +sidebar_list_item('user-card.html', 'id-card', active_item) User Card
-        +sidebar_list_item('database.html', 'database', active_item) Database
-        +sidebar_list_item('readers.html', 'users', active_item) Readers
+        +sidebar_list_item('dashboard', 'dashboard', active_item) Dashboard
+        +sidebar_list_item('catalog', 'book', active_item) Catalog
+        +sidebar_list_item('user-card', 'id-card', active_item) User Card
+        +sidebar_list_item('database', 'database', active_item) Database
+        +sidebar_list_item('readers', 'users', active_item) Readers
 
         
 
 mixin sidebar_list_item(href, icon, active_item)
-    if active_item == href
+    if active_item === href
         li(class="active")
             a(href=href)
                 i&attributes(attributes)(class=`fa ${icon.replace(/(\S+\b)/g, 'fa-$1')}`)
@@ -46,7 +46,7 @@ mixin main-navbar()
                             .navbar-header
                                 .offer.animated.fadeInRight
                                     // Navbar Brand
-                                    a.navbar-brand(href='dashboard.html')
+                                    a.navbar-brand(href='dashboard')
                                         .brand-text.brand-big
                                             strong Kitapp
                                             span LMS
@@ -66,7 +66,7 @@ mixin main-navbar()
                                         span.badge.bg-red 3
                                     ul.dropdown-menu(aria-labelledby='notifications')
                                         li
-                                            a.dropdown-item(rel='nofollow', href='dashboard.html')
+                                            a.dropdown-item(rel='nofollow', href='dashboard')
                                                 .notification
                                                     .notification-content
                                                         i.fa.fa-info.bg-green
@@ -75,7 +75,7 @@ mixin main-navbar()
                                                         small 1 minute ago
 
                                         li
-                                            a.dropdown-item(rel='nofollow', href='user-card.html')
+                                            a.dropdown-item(rel='nofollow', href='user-card')
                                                 .notification
                                                     .notification-content
                                                         i.fa.fa-book.bg-red
@@ -83,7 +83,7 @@ mixin main-navbar()
                                                     .notification-time
                                                         small 7 hours ago
                                         li
-                                            a.dropdown-item(rel='nofollow', href='dashboard.html')
+                                            a.dropdown-item(rel='nofollow', href='dashboard')
                                                 .notification
                                                     .notification-content
                                                         i.fa.fa-calendar.bg-blue
@@ -103,7 +103,7 @@ mixin main-navbar()
                                                 strong view all notifications 
                                 // Logout
                                 li.nav-item
-                                    a#logout.nav-link.logout(href='login.html')
+                                    a#logout.nav-link.logout(href='logout')
                                         | Logout
                                         i.fa.fa-sign-out
 
@@ -226,9 +226,9 @@ mixin database-row(id, name, surname, type, title, status)
             a#document(href='document.html') #{title}
         td#status #{status}
         td
-            if status=="Reserved"
+            if status==="Reserved"
                 button#give-out.btn.btn-dark(type='button') Give out
-            else if status=="Returned"
+            else if status==="Returned"
 
             else
                 button#returned.btn.btn-success(type='button') Return

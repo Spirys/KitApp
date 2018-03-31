@@ -80,7 +80,7 @@ module.exports.getLocale = function (req) {
 
 // Security concerns
 module.exports.COOKIE_NAME = '_sessionId';
-module.exports.COOKIE_HTTPS_ONLY = true;
+module.exports.COOKIE_HTTPS_ONLY = false; // todo change when in production!
 module.exports.COOKIE_EXPIRES = WEEK;
 
 /**

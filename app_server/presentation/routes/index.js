@@ -12,6 +12,7 @@
 const express = require('express');
 const router = express.Router();
 const PublicController = require('../controllers/PublicController');
+const UserController = require('../controllers/UserController');
 
 /**
  * GET home page. Loads the landing page
@@ -38,6 +39,14 @@ router.get('/docs', PublicController.docs);
 router.get('/login', PublicController.login);
 router.get('/auth', PublicController.login);
 //router.get('/signup', PublicController.signUp);
+
+/**
+ * User routes
+ */
+
+
+
+
 
 /**
  * Module exports
