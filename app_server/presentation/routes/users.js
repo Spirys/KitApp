@@ -16,10 +16,10 @@ const UserController = require('../controllers/UserController');
 
 /* GET users listing. */
 router.get('/dashboard', UserController.dashboard);
-router.get('/catalog', UserController.dashboard);
-router.get('/user-card', UserController.dashboard);
-router.get('/database', UserController.dashboard);
-router.get('/readers', UserController.dashboard);
+router.get('/catalog', UserController.catalog);
+router.get('/user-card', UserController.userCard);
+router.get('/database', UserController.database);
+router.get('/readers', UserController.readers);
 
 router.get('/logout', UserController.logout);
 

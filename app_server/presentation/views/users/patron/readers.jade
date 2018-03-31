@@ -1,0 +1,104 @@
+include ../../mixins
+doctype html
+html
+    +head("Readers")
+    body
+        .page
+            // Main Navbar
+            +main-navbar()
+            .page-content.d-flex.align-items-stretch
+                // Side Navbar
+                nav.side-navbar
+                    // Sidebar Header
+                    +sidebar("readers", user)
+                .content-inner
+                    // Page Header
+                    header.page-header
+                        .container-fluid
+                            h2.no-margin-bottom Readers
+                    section.tables
+                        .container-fluid
+                            .row
+                                .col-lg-12
+                                    .card
+                                        .card-header.d-flex.align-items-center
+                                            h3.h4 Readers
+                                        .card-dropdown
+                                            .dropdown
+                                                button#database-dropdown-menu.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                                                    i.fa.fa-ellipsis-v
+                                                .dropdown-menu.dropdown-menu-right.has-shadow(aria-labelledby='readers-dropdown-menu')
+                                                    button#add-new-entry.dropdown-item.remove(type='button', href='#', data-toggle='modal', data-target='#myModal')
+                                                        i.fa.fa-plus
+                                                        | Add new entry
+                                        #myModal.modal.fade
+                                            .modal-dialog(role='document')
+                                                .modal-content
+                                                    .modal-header
+                                                        h5.modal-title Add new reader
+                                                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                                            span(aria-hidden='true') ×
+                                                    .modal-body
+                                                        p Please fill out the info about the new reader
+                                                        form
+                                                            .form-group
+                                                                label First name
+                                                                input#create_first_name.form-control(type='text', placeholder='First name')
+                                                            .form-group
+                                                                label Last name
+                                                                input#create_last_name.form-control(type='text', placeholder='Last name')
+                                                            .form-group
+                                                                label Birth date
+                                                                input#create_birth_date.form-control(type='date', placeholder='Birth date')
+                                                            .form-group
+                                                                label E-mail address
+                                                                input#create_email.form-control(type='email', aria-describedby='emailHelp', placeholder='Email', value='@innopolis.ru')
+                                                                small#new-email.form-text.text-muted
+                                                                    | The password
+                                                                    | and login will be sent to this email
+                                                            .form-group
+                                                                label Address
+                                                                input#create_address.form-control(type='text', placeholder='Address')
+                                                            .form-group
+                                                                label Phone number
+                                                                input#create_phone.form-control(type='number', placeholder='Phone number')
+                                                            .form-group
+                                                                label Occupation
+                                                                input#create_occupation.form-control(type='text', placeholder='Phone number', value='none')
+                                                            .form-group
+                                                                label Telegram alias
+                                                                input#create_telegram.form-control(type='tel', placeholder='Telegram alias')
+                                                            .form-group
+                                                                label(for='user-type') Select type of user:
+                                                                select#user-type.form-control
+                                                                    option Student
+                                                                    option Faculty
+                                                                    option Visiting Professor
+                                                                    option Librarian
+
+                                                    .modal-footer
+                                                        button#save-changes.btn.btn-primary(type='button')
+                                                            | Save changes
+                                                        button#close.btn.btn-secondary(type='button', data-dismiss='modal')
+                                                            | Close
+                                        .card-body
+                                            .table-responsive
+                                                table.table.table-striped.table-hover
+                                                    thead
+                                                        tr
+                                                            th#id-0 ID
+                                                            th#name-0 First name
+                                                            th#surname-0 Last name
+                                                            th#type-0 Type
+                                                            th#e-mail-0 E-mail
+                                                            th#telegram-0 Telegram
+                                                            th#actions-0 Actions
+                                                    tbody
+                                                        -readers = [{id: 51015451, first_name: "Elon", last_name: "Musk", type: "student", birth_date: "11-11-2000", phone: 89191234567, occupation: "", about: "", email:"qwe@innopolis.ru", telegram: "@elonmusk", avatar: ""}, {id: 98756544, first_name: "Steve", last_name: "Jobs", type: "student", birth_date: "11-11-2000", phone: 89191234567, occupation: "", about: "", email:"qwe@innopolis.ru", telegram: "@sadsad", avatar: ""}, {id: 12345354, first_name: "Charles", last_name: "Darwin", type: "faculty", birth_date: "11-11-2000", phone: 89191234567, occupation: "", about: "", email:"qwe@innopolis.ru", telegram: "@sadsad", avatar: ""}];
+                                                        for reader in readers
+                                                            +reader-row(reader)
+                                                        +edit-reader()
+                    // Page Footer
+                    +footer()
+        // Javascript files
+        +java-script()

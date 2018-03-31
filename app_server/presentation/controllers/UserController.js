@@ -37,16 +37,80 @@ async function verifyToken(req, res) {
  * @public
  */
 
+/**
+ * /dashboard handler
+ * @public
+ */
+
 module.exports.dashboard = async function (req, res) {
     const user = await verifyToken(req, res);
     if (!user) return;
 
     if (user.type === config.userTypes.LIBRARIAN) {
-        res.render('users/patron/dashboard', {user})
+        res.render('users/librarian/dashboard', {user})
     } else {
         res.render('users/patron/dashboard', {user})
     }
 };
+
+module.exports.catalog = async function (req, res) {
+    const user = await verifyToken(req, res);
+    if (!user) return;
+
+    if (user.type === config.userTypes.LIBRARIAN) {
+        res.render('users/librarian/catalog', {user})
+    } else {
+        res.render('users/patron/catalog', {user})
+    }
+};
+
+module.exports.userCard = async function (req, res) {
+    const user = await verifyToken(req, res);
+    if (!user) return;
+
+    if (user.type === config.userTypes.LIBRARIAN) {
+        res.render('users/librarian/user-card', {user})
+    } else {
+        res.render('users/patron/user-card', {user})
+    }
+};
+
+/**
+ * /database handler
+ * @public
+ */
+
+module.exports.database = async function (req, res) {
+    const user = await verifyToken(req, res);
+    if (!user) return;
+
+    if (user.type === config.userTypes.LIBRARIAN) {
+        res.render('users/librarian/database', {user})
+    } else {
+        res.render('errors/no-access', {user, section: 'database'})
+    }
+};
+
+/**
+ * /readers handler
+ * @public
+ */
+
+module.exports.readers = async function (req, res) {
+    const user = await verifyToken(req, res);
+    if (!user) return;
+
+    if (user.type === config.userTypes.LIBRARIAN) {
+        res.render('users/librarian/readers', {user})
+    } else {
+        res.render('errors/no-access', {user, section: 'readers'})
+    }
+};
+
+/**
+ * /logout handler
+ * @public
+ */
 
 module.exports.logout = async function (req, res) {
     const user = await verifyToken(req, res);

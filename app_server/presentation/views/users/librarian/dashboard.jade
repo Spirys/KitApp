@@ -1,0 +1,76 @@
+include ../../mixins
+doctype html
+html
+    +head("Dashboard")
+    body
+        .page
+            // Main Navbar
+            +main-navbar()
+            .page-content.d-flex.align-items-stretch
+                // Side Navbar
+                +sidebar('dashboard', user)
+                .content-inner
+                    // Page Header
+                    header.page-header
+                        .container-fluid
+                            h2.no-margin-bottom Dashboard
+                    section.welcome
+                        .container-fluid
+                            .card
+                                .card-header.d-flex.align-items-center
+                                    h3.h4 Welcome to Innopolis University Library!
+                                .card-body
+                                    p
+                                        b Schedule: 
+                                        | Monday, Wednesday, Friday (except holidays), 13:00 — 17:30
+                                    p
+                                        b Location: 
+                                        | IU, 504b
+                    
+                    section.news
+                        .container-fluid
+                            .card
+                                .card-header.d-flex.align-items-center
+                                    h3.h4 The electronic library system "IPR-books"
+                                .card-body
+                                    .row
+                                        .col-lg-4
+                                            .offer.animated.fadeInLeft
+                                                #doc-image-1.image.has-shadow(class="offer animated fadeInLeft")
+                                                    img.img-fluid(src='images/ipr_books.jpg', alt='...')
+                                        .col-lg-8
+                                            p 
+                                                | The electronic library system "IPR-books" is more than 
+                                                b 127 000 
+                                                | publications in various disciplines and about 700 journals.
+                                            p 
+                                                | To get started, you need to go through the local network of the University through the link 
+                                                a(href="http://www.iprbookshop.ru")
+                                                    www.iprbookshop.ru
+                                                | , enter your login: 
+                                                b innopolis
+                                                | , password 
+                                                b 4CfFEmWp
+                                                |  and go through a personal registration.
+
+                    section.news
+                        .container-fluid
+                            .card
+                                .card-header.d-flex.align-items-center
+                                    h3.h4 International Women’s Day
+                                .card-body
+                                    .row
+                                        .col-lg-4
+                                            .offer.animated.fadeInLeft
+                                                #doc-image-2.image.has-shadow(class="offer animated fadeInLeft")
+                                                    img.img-fluid(src='images/8march.jpg', alt='...')
+                                        .col-lg-8
+                                            p Please consider the working hours of the University staff members during the upcoming International Women’s Day (March 8):
+                                            p March 8-9, Thu-Fri — holidays.
+                                            b Innopolis University library will not work at these days. 
+                                            br
+                                            b Next working day is March 12, Mon
+                    // Page Footer
+                    +footer()
+        // Javascript files
+        +java-script()

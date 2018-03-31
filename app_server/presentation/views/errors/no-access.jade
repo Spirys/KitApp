@@ -1,0 +1,31 @@
+include ../mixins
+doctype html
+html
+    +head("Dashboard")
+    body
+        .page
+            // Main Navbar
+            +main-navbar()
+            .page-content.d-flex.align-items-stretch
+                // Side Navbar
+                +sidebar(section, user)
+                .content-inner
+                    // Page Header
+                    header.page-header
+                        .container-fluid
+                            h2.no-margin-bottom Dashboard
+
+                    section.news
+                        .container-fluid
+                            .card
+                                .card-header.d-flex.align-items-center
+                                    h3.h4.text-danger Denied
+                                .card-body
+                                    .row
+                                        .col-lg-8
+                                            p
+                                                b No access
+                    // Page Footer
+                    +footer()
+        // Javascript files
+        +java-script()

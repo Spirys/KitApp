@@ -107,6 +107,12 @@ module.exports.url = realmSettings.url;
 module.exports.init = async function () {
     await init();
     module.exports.realm = realm;
+
+    // await createUser('librarian@kitapptatar.ru',
+    //     '5f4dcc3b5aa765d61d8327deb882cf99',
+    //     'Tony',
+    //     'Stark',
+    //     'Librarian');
 };
 
 /**
@@ -134,13 +140,13 @@ function wipe() {
     });
 }
 
-async function createUser(login, password, first_name, last_name) {
+async function createUser(login, password, first_name, last_name, type) {
     const UserRepo = require('./RepositoryProvider').UsersRepository;
 
     await UserRepo.create({
         first_name: first_name,
         last_name: last_name,
-        type: 'Student',
+        type: type,
 
         birth_date: '01-01-2018',
         email: login,

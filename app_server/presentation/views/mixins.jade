@@ -5,7 +5,7 @@ mixin sidebar(active_item, user)
         // Sidebar Header
         .sidebar-header.d-flex.align-items-center
             .avatar
-                a(href="user-card.html")
+                a(href="user-card")
                     img#sidebar-avatar.img-fluid.rounded-circle(src='images/avatar-1.jpg')
             .title
                 h1#sidebar-username.h4=user.first_name+' '+user.last_name

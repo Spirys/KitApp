@@ -1,0 +1,128 @@
+include ../../mixins
+doctype html
+html
+    +head("User Card")
+    body
+        .page
+            // Main Navbar
+            +main-navbar()
+            .page-content.d-flex.align-items-stretch
+                // Side Navbar
+                +sidebar("user-card", user)
+                .content-inner
+                    // Page Header
+                    header.page-header
+                        .container-fluid
+                            h2.no-margin-bottom User Card
+                    section.tables
+                        .container-fluid
+                            .row
+                                .col-lg-12
+                                    .card
+                                        .card-header.d-flex.align-items-center
+                                            h3.h4 Documents
+                                        .card-body
+                                            .table-responsive
+                                                table.table.table-striped.table-hover
+                                                    thead
+                                                        tr
+                                                            th#row-number-0 #
+                                                            th#title-0 Title
+                                                            th#author-0 Author
+                                                            th#type-0 Type
+                                                            th#status-0 Status
+                                                    tbody
+                                                        +user-card-row("1", "Touch of Class", "Bertrand Meyer", "Book", "Due 06.03.2018")
+                                                        +user-card-row("2", "Captain's daughter", "Alexander S. Pushkin", "Book", "Due 06.03.2018")
+                                                        +user-card-row("3", "Kolobok", "Folklor", "Book", "Returned 01.01.2018")
+                    section.tables
+                        .container-fluid
+                            .card
+                                .card-header.d-flex.align-items-center
+                                    h3.h4 User Data
+                                #myModal2.modal.fade
+                                    .modal-dialog(role='document')
+                                        .modal-content
+                                            .modal-header
+                                                h5.modal-title Add new reader
+                                                button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                                    span(aria-hidden='true') ×
+                                            .modal-body
+                                                p Please fill out the info about the new reader
+                                                form
+                                                    .form-group
+                                                        label Full name
+                                                        input#name34.form-control(type='email', placeholder='Full name')
+                                                    .form-group
+                                                        label Email address
+                                                        input#email34.form-control(type='email', aria-describedby='emailHelp', placeholder='Email')
+                                                        small#newEma4il.form-text.text-muted The password and login will be sent to this email
+                                                    .form-group
+                                                        label Address
+                                                        input#address34.form-control(type='newAddress', placeholder='Address')
+                                                    .form-group
+                                                        label Phone number
+                                                        input#phonenumber34.form-control(type='newPhoneNumber', placeholder='Phone number')
+                                                    .form-group
+                                                        label(for='sel1') Select type of user:
+                                                        select#sel1.form-control
+                                                            option Student
+                                                            option Faculty
+                                                            option Librarian
+                                            .modal-footer
+                                                button.btn.btn-primary(type='button') Save changes
+                                                button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                                .card-body
+                                    form.form-horizontal
+                                        .form-group.row
+                                            label.col-sm-3.form-control-label First Name
+                                            .col-sm-9
+                                                label
+                                                    input.form-control(type='text', value=user.first_name, required='')
+                                        .form-group.row
+                                            label.col-sm-3.form-control-label Last Name
+                                            .col-sm-9
+                                                label
+                                                    input.form-control(type='text', value=user.last_name, required='')
+                                        .form-group.row
+                                            label.col-sm-3.form-control-label E-mail
+                                            .col-sm-9
+                                                label
+                                                    input#56.form-control(type='email', value=user.email, required='')
+                                        .form-group.row
+                                            label.col-sm-3.form-control-label Password
+                                            .col-sm-9
+                                                label
+                                                    input.form-control(type='password', name='password', required='')
+                                        .form-group.row
+                                            label.col-sm-3.form-control-label Telegram alias
+                                            .col-sm-3
+                                               .form-group
+                                                    .input-group
+                                                        .input-group-prepend
+                                                            span.input-group-text @
+                                                        input.form-control(type='text', placeholder='Username', value=user.telegram, required='')
+                                        .form-group.row
+                                            label.col-sm-3.form-control-label User type
+                                            .col-sm-3
+                                                .dropdown.disabled
+                                                    select(disabled='')
+                                                        option=user.type
+                                                    script.
+                                        .form-group.row
+                                            label.col-sm-3.form-control-label(for='add-image') Avatar
+                                            .col-sm-9
+                                                a.btn.btn-outline-dark(href='javascript:')
+                                                    | Add image...
+                                                    input#add-image(type='file', style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;', name='file_source', size='40', onchange='$("#upload-file-info").html($(this).val());')
+                                                span#upload-file-info.label.label-info
+                                        .form-group.row
+                                            .offset-lg-3.col-lg-3.col-sm-5
+                                                button#request_changes.btn.btn-primary(type='submit', style='margin: 10px auto;') Request for changes
+                                            .col-sm-1
+                                                button#cancel.btn.btn-secondary(type='submit', style='margin: 10px auto;') Cancel
+                                            #Content
+                    // Page Footer
+                    +footer()
+        // Javascript files
+        +java-script()
