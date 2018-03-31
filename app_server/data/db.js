@@ -7,6 +7,7 @@
 
 const Realm = require('realm');
 const realmSettings = require('../util/config').realm;
+const logger = require('../util/Logger');
 
 /*
     Schemas
@@ -26,26 +27,22 @@ const BookInstance = require('../domain/models/documents/DocumentInstances/BookI
 const JournalInstance = require('../domain/models/documents/DocumentInstances/JournalInstance');
 const MediaInstance = require('../domain/models/documents/DocumentInstances/MediaInstance');
 
-// Time manager
-const moment = require('moment');
-
 /**
  * Module functions
  * @private
  */
 
 let realm;
-let initialised = false;
 
 async function init() {
-    // for (let uId in Realm.Sync.User.all) {
-    //     if (Realm.Sync.User.all.hasOwnProperty(uId)) {
-    //         Realm.Sync.User.all[uId].logout();
-    //     }
-    // }
-    //
-    // // Realm.Sync.setFeatureToken(realmSettings.apiToken);
-    // await Realm.Sync.User.login(`https://${realmSettings.url}`, realmSettings.user, realmSettings.password);
+    for (let uId in Realm.Sync.User.all) {
+        if (Realm.Sync.User.all.hasOwnProperty(uId)) {
+            Realm.Sync.User.all[uId].logout();
+        }
+    }
+
+    // Realm.Sync.setFeatureToken(realmSettings.apiToken);
+    await Realm.Sync.User.login(`https://${realmSettings.url}`, realmSettings.user, realmSettings.password);
 
     realm = await Realm.open({
         sync: {
@@ -59,11 +56,7 @@ async function init() {
         deleteRealmIfMigrationNeeded: true
     });
 
-    console.log(moment().format('[\[]DD/MM/YYYY HH:mm:ss[\]] [Realm initialization completed]'));
-}
-
-if (!initialised) {
-    init().then(() => initialised = true).catch(e => console.error(e));
+    logger.info('Realm initialization completed');
 }
 
 /**
@@ -71,11 +64,11 @@ if (!initialised) {
  * @param msg a message to be logged
  * @param callback a function to be executed
  */
-const smoothShutdown = function (msg, callback) {
+function smoothShutdown (msg, callback) {
     if (realm) realm.close();
-    console.log(moment().format(`[\[]DD/MM/YYYY HH:mm:ss[\]] [Shutting down. Reason: ${msg}]`));
+    logger.info(`Shutting down. Reason: ${msg}`);
     callback();
-};
+}
 
 /**
  * On app termination
@@ -110,4 +103,8 @@ process.once('SIGUSR2', function () {
  */
 
 module.exports.url = realmSettings.url;
-module.exports.realm = realm;
+
+module.exports.init = async function () {
+    await init();
+    module.exports.realm = realm;
+};

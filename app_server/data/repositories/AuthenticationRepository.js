@@ -26,14 +26,10 @@ const config = require('../../util/config');
 const realm = require('../db').realm;
 
 async function getLogin(login) {
-    await check_init();
-
     return realm.objectForPrimaryKey('Login', login);
 }
 
 async function getSession(token) {
-    await check_init();
-
     return realm.objectForPrimaryKey('Session', token);
 }
 
@@ -43,7 +39,6 @@ async function getSession(token) {
  */
 
 async function login(login, password) {
-    await check_init();
     let response = {};
     try {
         let _login = await getLogin(login);
@@ -64,7 +59,6 @@ async function login(login, password) {
 }
 
 async function logout(token) {
-    await check_init();
     let response = {};
 
     try {
@@ -87,7 +81,6 @@ async function logout(token) {
 }
 
 async function verifyToken(token) {
-    await check_init();
     let response = {};
 
     try {
@@ -108,7 +101,6 @@ async function verifyToken(token) {
 }
 
 async function createLogin(login, password, user) {
-    await check_init();
     let _login = await getLogin(login);
 
     if (!_login) {
@@ -132,7 +124,6 @@ function update() {
 }
 
 async function createSession(session, user) {
-    await check_init();
     let newSession = {
         user: user,
         token: session,
@@ -156,7 +147,6 @@ async function createSession(session, user) {
 }
 
 async function removeLogin(login) {
-    await check_init();
     let _login = await getLogin(login);
 
     if (!_login) {
