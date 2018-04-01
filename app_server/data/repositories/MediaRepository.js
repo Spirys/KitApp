@@ -29,28 +29,10 @@ const config = require('../../util/config');
 // const MediaModel = require('../converters/class_to_model/documents/MediaClassToModel');
 // const MediaInstanceModel = require('../converters/class_to_model/documents/DocumentInstanceClassToModel');
 
-const Realm = require('realm');
+const realm = require('../db').realm;
 const Media = require('../../domain/models/documents/Media');
 const MediaInstance = require('../../domain/models/documents/DocumentInstance').media;
 const Author = require('../../domain/models/documents/Author');
-
-let realm;
-
-async function init() {
-    realm = await Realm.open({
-        sync: {
-            url: `realms://${config.realm.url}`,
-            user: Realm.Sync.User.current
-        },
-        schema: [Media, MediaInstance, Author]
-    });
-}
-
-async function check_init() {
-    if (realm === undefined || realm.isClosed) {
-        await init();
-    }
-}
 
 /**
  * CRUD functions
@@ -58,7 +40,6 @@ async function check_init() {
  */
 
 async function get(id) {
-    await check_init();
     let media = realm.objectForPrimaryKey('Media', id);
 
     if (!media) {
@@ -93,10 +74,7 @@ async function search(query) {
 }
 
 async function getAll(page, length) {
-    await check_init();
-    let medias = realm.objects('Media').slice((page - 1) * length + 1, length + 1);
-
-    return mediaClasses;
+    return realm.objects('Media').slice((page - 1) * length + 1, length + 1);
 }
 
 // TODO
@@ -109,7 +87,6 @@ async function updateMedia(media) {
 }
 
 async function create(query) {
-    await check_init();
     let media;
 
     // Set defaults if instance parameters are missing
@@ -127,10 +104,9 @@ async function create(query) {
         ? typeof query.maintenance === 'number' ? query.maintenance : 0
         : (available || reference) ? 0 : 1;
 
-    let medias = realm.objects('Book')
+    let medias = realm.objects('Media')
         .filtered('title == $0', query.title);
 
-    // FIXME: split one 'write' block to many
     realm.write(() => {
         if (medias.length === 0) {
             let id = realm.objects('Media').max('id') + 1 || 0;
@@ -200,6 +176,7 @@ async function create(query) {
         }
     });
 
+    // FIXME Incorrect usage of callback!
     return media;
 }
 
@@ -213,9 +190,9 @@ async function create(query) {
  */
 
 async function addInstances(media, available, reference, maintenance) {
-    await check_init();
+    let id = realm.objects('MediaInstance').max('id') + 1 || 0;
 
-    let id = realm.objects('MediaInstances').max('id') + 1 || 0;
+    // TODO Single transaction
     for (let i = 0; i < available; i++) {
         realm.write(() => {
             media.instances.push({
@@ -250,7 +227,6 @@ async function addInstances(media, available, reference, maintenance) {
 }
 
 async function remove(id) {
-    await check_init();
     let media = await get(id);
     if (media.err) return {err: media.err};
 
@@ -270,6 +246,7 @@ async function createInstance(status) {await check_init();
         });
     });
 
+    // FIXME Incorrect usage of callback
     return instance;
 }
 

@@ -55,7 +55,7 @@ module.exports.getAll = async function (req, res) {
     const locale = getLocale(req);
 
     // Getting the books
-    const books = await interactor.getAll(page, length);
+    const books = interactor.getAll(page, length);
 
     let response = responseComposer.formatMultiple(books, true, fields, page, length, locale, books.err);
 
@@ -73,6 +73,8 @@ module.exports.search = async function (req, res) {
 module.exports.new = async function (req, res) {
 
     let query = req.body;
+
+    // Todo write validation
     const fields = {
         title: query.title,
         authors: query.authors,
@@ -80,7 +82,7 @@ module.exports.new = async function (req, res) {
         edition: query.edition,
         publisher: query.publisher,
         keywords: query.keywords,
-        bestseller: query.bestseller,
+        bestseller: query.bestseller || false,
         description: query.description,
         isbn: query.isbn,
         image: query.image,
@@ -92,7 +94,7 @@ module.exports.new = async function (req, res) {
 
     const locale = getLocale(req);
 
-    const book = await interactor.new(fields);
+    const book = interactor.new(fields);
 
     let response = responseComposer.format(book, true, defaultFields, locale, book.err);
     sendJson(res, response);

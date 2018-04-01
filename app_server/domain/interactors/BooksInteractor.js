@@ -13,6 +13,7 @@
  */
 
 const Repository = require('../../data/RepositoryProvider').BooksRepository;
+const AuthorsRepository = require('../../data/RepositoryProvider').AuthorsRepository;
 const DocumentInstance = require('../models/documents/DocumentInstance.js');
 const config = require("../../util/config");
 
@@ -24,7 +25,7 @@ const config = require("../../util/config");
 /**
  * Finds the available copy of the book and also checks whether a user has a copy
  * @param book {Book}
- * @param [user]
+ * @param [user] {User}
  * @return {*}
  */
 
@@ -49,6 +50,48 @@ function findAvailable(book, user) {
 }
 
 /**
+ * Adds instances to the book
+ * @param book {Book} An object where to add instances
+ * @param startId {number} The id from which to start enumerating instances
+ * @param available {number} The amount of available copies to add
+ * @param reference {number} The amount of reference copies to add
+ * @param maintenance {number} The amount of maintenance copies to add
+ */
+
+function addInstances(book, startId, available, reference, maintenance) {
+    addInstancesFunc(book, startId, available, reference, maintenance)()
+}
+
+/**
+ * Wraps the parameters into a function which can be applied later
+ * @see addInstances
+ * @return {function()}
+ */
+
+function addInstancesFunc(book, startId, available, reference, maintenance) {
+    return () => {
+        for (let i = 0; i < available; i++) {
+            book.instances.push({
+                id: ++startId,
+                status: config.statuses.AVAILABLE
+            })
+        }
+        for (let i = 0; i < reference; i++) {
+            book.instances.push({
+                id: ++startId,
+                status: config.statuses.REFERENCE
+            })
+        }
+        for (let i = 0; i < maintenance; i++) {
+            book.instances.push({
+                id: ++startId,
+                status: config.statuses.MAINTENANCE
+            })
+        }
+    }
+}
+
+/**
  * Module exports
  * @public
  */
@@ -60,24 +103,87 @@ function findAvailable(book, user) {
  * @return {Promise<Array<Book>>}
  */
 
-module.exports.getAll = async function (page, length) {
-    return await Repository.getAll(page, length);
+module.exports.getAll = function (page, length) {
+    return Repository.getAll(page, length);
 };
 
 module.exports.search = async function () {
 
 };
 
-module.exports.new = async function (fields) {
-    return await Repository.create(fields);
+module.exports.new = function (query) {
+
+    /*
+        Set defaults if instance parameters are missing
+    */
+
+    let book,
+
+    available = (query.available)
+        ? typeof query.available === 'number' ? query.available : 0
+        : (query.reference || query.maintenance) ? 0 : 1,
+
+    reference = (query.reference)
+        ? typeof query.reference === 'number' ? query.reference : 0
+        : (available || query.maintenance) ? 0 : 1,
+
+    maintenance = (query.maintenance)
+        ? typeof query.maintenance === 'number' ? query.maintenance : 0
+        : (available || reference) ? 0 : 1,
+
+    books = Repository.searchExact({
+        title: query.title,
+        edition: query.edition,
+        publisher: query.publisher
+    });
+
+    /*
+        Update the existing book, add number of instances
+     */
+    if (books.length) {
+        book = books[0];
+        Repository.write(addInstancesFunc(book, Repository.maxInstanceId(), available, reference, maintenance))
+    }
+
+    /*
+        Create a new book
+     */
+    else {
+        let id = Repository.maxId() + 1;
+
+        book = Object.assign({}, query);
+        book.id = id;
+        book.authors = [];
+
+        // Find the requested authors or create them
+        for (let author of query.authors) {
+            // let [first_name, last_name] = author.trim().split(' ');
+            book.authors.push(AuthorsRepository.findOrCreate({
+                first_name: author.first_name,
+                last_name: author.last_name
+                // middle_name: author.middle_name,
+                // birth_date: author.birth_date,
+                // death_date: author.death_date
+            }));
+        }
+
+        /*
+            Fill the instances
+         */
+
+        book.instances = [];
+        addInstances(book, Repository.maxInstanceId(), available, reference, maintenance);
+
+        Repository.create(book);
+    }
+
+    return book
 };
 
-module.exports.getById = async function (id) {
-    return await Repository.get(id);
-};
+module.exports.getById = (id) => Repository.get(id) || {err: errors.DOCUMENT_NOT_FOUND};
 
 module.exports.updateById = async function (id, fields) {
-    let book = await Repository.get(id);
+    let book = Repository.get(id);
 
     // TODO: add authors
     if (fields.title) book.title = fields.title;

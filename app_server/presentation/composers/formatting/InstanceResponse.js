@@ -64,7 +64,7 @@ function format(instance, librarian, fields) {
                     sel = instance[field];
             }
 
-            if (typeof sel !== 'undefined') response[field] = sel;
+            if (typeof sel !== 'undefined' && sel !== null) response[field] = sel;
         }
     }
     return response

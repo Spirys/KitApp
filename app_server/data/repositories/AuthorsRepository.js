@@ -18,43 +18,20 @@ module.exports.get = get;
 module.exports.update = update;
 module.exports.delete = remove;
 module.exports.remove = remove;
-module.exports.search = search;
+module.exports.searchExact = searchExact;
+module.exports.findOrCreate = findOrCreate;
+module.exports.maxId = () => realm.objects('Author').max('id') || 0;
+
 
 /**
  * Module dependencies
  * @private
  */
 
-// const AuthorDB = require('../models/documents/Author');
-// const AuthorClass = require('../converters/model_to_class/documents/AuthorModelToClass');
-// const AuthorModel = require('../converters/class_to_model/documents/AuthorClassToModel');
-
-const config = require('../../util/config');
-const errors = config.errors;
-const Realm = require('realm');
+const defaultFields = require('../../util/config').DEFAULT_AUTHOR_RESPONSE_FIELDS;
+const realm = require('../db').realm;
 const Author = require('../../domain/models/documents/Author');
-const Book = require('../../domain/models/documents/Book');
-const Journal = require('../../domain/models/documents/Journal');
-const Media = require('../../domain/models/documents/Media');
-const Article = require('../../domain/models/documents/Article');
 
-let realm;
-
-async function init() {
-    realm = await Realm.open({
-        sync: {
-            url: `realms://${config.realm.url}/~/documents`,
-            user: Realm.Sync.User.current
-        },
-        schema: [Author]
-    });
-}
-
-async function check_init() {
-    if (realm === undefined || realm.isClosed) {
-        await init();
-    }
-}
 
 /**
  * CRUD functions
@@ -62,22 +39,46 @@ async function check_init() {
  */
 
 async function get(id) {
-    await check_init();
-    let author = realm.objectForPrimaryKey('Author', id);
-
-    return author;
+    return realm.objectForPrimaryKey('Author', id);
 }
 
-// TODO
-async function search(query) {
-    // let authors = await AuthorDB.find(query).exec();
-    //
-    // let authorClasses = [];
-    // authors.forEach(aut => {
-    //     authorClasses.push(AuthorClass(aut));
-    // });
-    //
-    // return authorClasses;
+
+/**
+ * Searches for the authors which match the criterion
+ * @param query {*} A JSON. Every resulting object will contain the specified fields with specified values.<br>
+ *      E.g. passing <code>{first_name: 'John'}</code>
+ *      will result in all authors with first name of 'John'
+ * @return {Realm.Results<Author>}
+ */
+
+function searchExact(query) {
+    let searchFields = [], searchParams = [];
+
+    // Validate fields
+    for (let item in query) {
+        if (query.hasOwnProperty(item) && defaultFields.includes(item)) {
+            searchFields.push(item);
+            searchParams.push(query[item])
+        }
+    }
+
+    if (searchFields.length) {
+        let searchQuery = searchFields[0] + ' == $0';
+
+        for (let i = 1; i < searchFields.length; i++) {
+            searchQuery += ' AND ' + searchFields[i] + ' == $' + i
+        }
+
+        return realm.objects('Author')
+            .filtered(searchQuery, ...searchParams);
+
+    } else return realm.objects('Author');
+}
+
+function findOrCreate(query) {
+    let author = searchExact(query);
+    if (author.length) return author[0];
+    else return create(query)
 }
 
 // TODO
@@ -89,25 +90,16 @@ async function update(author) {
     // return author;
 }
 
-async function create(query) {
-    await check_init();
-    let author;
+function create(query) {
+    query.id = realm.objects('Author').max('id') + 1 || 0;
     realm.write(() => {
-        let id = realm.objects('Author').max('id') + 1 || 0;
-        author = realm.create('Author', {
-            id: id,
-            first_name: query.first_name,
-            last_name: query.last_name,
-            middle_name: query.middle_name,
-            birth_date: query.birth_date,
-            death_date: query.death_date
-        });
+        realm.create('Author', query);
     });
-    return author;
+
+    return realm.objectForPrimaryKey('Author', query.id);
 }
 
 async function remove(id) {
-    await check_init();
     let author = await get(id);
     if (author) {
         realm.write(() => {
