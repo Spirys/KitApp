@@ -24,8 +24,8 @@ const MediaInstance = {
         status: {type: 'string', indexed: true},
         media: {type: 'linkingObjects', objectType: 'Media', property: 'instances'},
         taker: 'User',
-        due_back: 'date?',
-        take_due: 'date?'
+        due_back: 'string?',
+        take_due: 'string?'
     }
 };
 

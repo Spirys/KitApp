@@ -44,7 +44,7 @@ module.exports = MESSAGES;
 /**
  * Provides messages by locales. By default all messages are in 'EN' locale
  * @param locale {string} Code of the locale in ISO 639-1 format
- * @return {*}
+ * @return {MESSAGES}
  */
 
 module.exports.messages = function (locale) {
@@ -94,6 +94,18 @@ module.exports.DOCUMENT_RESERVATION_TIME = 3 * DAY;
 module.exports.CHECKOUT_TIME_STUDENT_NOT_BESTSELLER = 3 * WEEK;
 module.exports.CHECKOUT_TIME_STUDENT_BESTSELLER = 2 * WEEK;
 module.exports.CHECKOUT_TIME_FACULTY = 4 * WEEK;
+
+/**
+ * Short date format ('DD-MM-YYYY')
+ * @type {string}
+ */
+module.exports.DATE_FORMAT = 'DD-MM-YYYY';
+
+/**
+ * Extended date format ('DD-MM-YYYY HH:mm')
+ * @type {string}
+ */
+module.exports.DATE_FORMAT_EXT = 'DD-MM-YYYY HH:mm';
 
 module.exports.statuses = {
     AVAILABLE: 'Available',
@@ -146,6 +158,3 @@ module.exports.realm = {
     // another way
     userToken: ''
 };
-// module.exports.mongoURI = 'mongodb://dev:MLiF58v31DuOB6mRpJ2lNh9PY@ds046667.mlab.com:46667/kitapp-dev';
-// module.exports.mongoURI = 'mongodb://dev:12346@ds012058.mlab.com:12058/kitapp-tests';
-// module.exports.mongoURI = 'mongodb://innoproject:YASFbay5kpjQ@ds046677.mlab.com:46677/kitapp';

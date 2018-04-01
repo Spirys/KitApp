@@ -10,8 +10,10 @@
  */
 
 const responseComposer = require('../../composers/ResponseComposer').auth;
+const sendJson = require('../../composers/ResponseComposer').sendJson;
 const usersInteractor = require('../../../domain/interactors/UsersInteractor');
 const config = require('../../../util/config');
+const logger = require('../../../util/Logger');
 
 /**
  * Module functions
@@ -20,8 +22,7 @@ const config = require('../../../util/config');
 
 function setCookie(remember, session, response) {
     let cookie = {
-        // domain: '.kitapptatar.ru',
-        // domain: 'localhost:3000' // todo change when in production!
+        // domain: '.kitapptatar.ru',// todo change when in production!
     };
     if (config.COOKIE_HTTPS_ONLY) cookie.secure = true;
     if (remember) {
@@ -55,25 +56,30 @@ module.exports.login = async function (req, res) {
         responseComposer.error(config.errors.WRONG_LOGIN_PASSWORD, locale);
     }
 
-    const response = await usersInteractor.login(login, password);
+    const response = usersInteractor.login(login, password);
 
     if (response.err) {
-        res.json(responseComposer.error(response.err, locale));
+        sendJson(res, responseComposer.error(response.err, locale));
         return;
     }
 
     let session = randomSession();
-    await usersInteractor.createSession(session, response.user);
+    usersInteractor.createSession(session, response.user);
 
     setCookie(remember, session, res);
 
-    res.json(responseComposer.format({user: response.user.id}, locale, response.err));
+    logger.info(`User ${response.user.id} logged in. Session: ${session}`);
+
+    sendJson(res, responseComposer.format({user: response.user.id}, locale, response.err));
 };
 
 module.exports.logout = async function (req, res) {
-    let session = req.body.token || req.cookies[config.COOKIE_NAME];
-    let locale = config.getLocale(req);
+    const session = req.body.token || req.cookies[config.COOKIE_NAME];
+    const locale = config.getLocale(req);
 
-    const response = await usersInteractor.logout(session);
-    res.json(responseComposer.format({}, locale, response.error));
+    const response = usersInteractor.logout(session);
+
+    if (!response.err) logger.info(`User ${response.id} logged out. Session ${session} removed`);
+
+    sendJson(res, responseComposer.format({}, locale, response.err));
 };

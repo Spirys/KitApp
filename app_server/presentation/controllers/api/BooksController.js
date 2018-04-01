@@ -117,11 +117,11 @@ module.exports.getById = async function (req, res) {
 };
 
 module.exports.updateById = async function (req, res) {
-    const id = req.params.id;
+    const id = val.number(req.params.id);
     const locale = getLocale(req);
     const fields = req.body;
 
-    const book = await interactor.updateById(id, fields);
+    const book = interactor.updateById(id, fields);
 
     let response = responseComposer.format(book, true, defaultFields, locale, book.err);
     sendJson(res, response);
@@ -147,32 +147,32 @@ module.exports.deleteById = async function (req, res) {
 module.exports.checkoutById = async function (req, res) {
 
     // Traversing request
-    const bookId = req.params.id,
+    const bookId = val.number(req.params.id),
         locale = getLocale(req),
         token = req.body.token,
         userId = req.body.user;
 
     // Checking permissions
-    let user = await usersInteractor.verifyToken(token);
+    let user = usersInteractor.verifyToken(token);
     if (user.err) {
         sendJson(res, error(user.err, locale));
-        return;
+        return
     }
     const isLibrarian = user.type === config.userTypes.LIBRARIAN;
 
     let book;
     if (isLibrarian) {
-        user = await usersInteractor.getById(userId);
+        user = usersInteractor.getById(userId);
         if (user.err) {
             sendJson(res, error(user.err, locale));
             return;
         }
 
         // Checking out the book
-        book = await interactor.checkoutById(bookId, user);
+        book = interactor.checkoutById(bookId, user);
     } else {
         // Reserving the book
-        book = await interactor.reserveById(bookId, user);
+        book = interactor.reserveById(bookId, user);
     }
 
     if (book.err) {
@@ -194,14 +194,14 @@ module.exports.checkoutById = async function (req, res) {
 module.exports.returnById = async function (req, res) {
     const bookId = req.params.id,
         locale = getLocale(req),
-        user = await usersInteractor.verifyToken(req.body.token);
+        user = usersInteractor.verifyToken(req.body.token);
 
     if (user.err) {
         sendJson(res, error(user.err, locale));
-        return;
+        return
     }
 
-    const book = await interactor.returnById(bookId, req.body.user || user.id);
+    const book = interactor.returnById(bookId, req.body.user || user.id);
 
     let response = responseComposer.format(book,
         user.type === config.userTypes.LIBRARIAN,

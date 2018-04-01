@@ -6,8 +6,10 @@
  */
 
 const Realm = require('realm');
-const realmSettings = require('../util/config').realm;
+const config = require('../util/config');
 const logger = require('../util/Logger');
+const realmSettings = config.realm;
+const moment = require('moment');
 
 /*
     Schemas
@@ -45,14 +47,15 @@ async function init() {
     await Realm.Sync.User.login(`https://${realmSettings.url}`, realmSettings.user, realmSettings.password);
 
     realm = await Realm.open({
-        sync: {
-            url: `realms://${realmSettings.url}/~/users`,
-            user: Realm.Sync.User.current
-        },
+        // sync: {
+        //     url: `realms://${realmSettings.url}/~/kitapp`,
+        //     user: Realm.Sync.User.current
+        // },
         schema: [Author, User, Login, Session,
             Book, BookInstance,
             Journal, Article, JournalInstance,
             Media, MediaInstance],
+
         deleteRealmIfMigrationNeeded: true
     });
 
@@ -64,7 +67,7 @@ async function init() {
  * @param msg a message to be logged
  * @param callback a function to be executed
  */
-function smoothShutdown (msg, callback) {
+function smoothShutdown(msg, callback) {
     if (realm) realm.close();
     logger.info(`Shutting down. Reason: ${msg}`);
     callback();
@@ -108,11 +111,21 @@ module.exports.init = async function () {
     await init();
     module.exports.realm = realm;
 
+    // wipe();
+    //
     // await createUser('librarian@kitapptatar.ru',
     //     '5f4dcc3b5aa765d61d8327deb882cf99',
     //     'Tony',
     //     'Stark',
-    //     'Librarian');
+    //     'Librarian',
+    //     'i_am_librarian');
+    //
+    // await createUser('test@kitapptatar.ru',
+    //     '5f4dcc3b5aa765d61d8327deb882cf99',
+    //     'John',
+    //     'Snow',
+    //     'Student',
+    //     'j_snow');
 };
 
 /**
@@ -140,23 +153,23 @@ function wipe() {
     });
 }
 
-async function createUser(login, password, first_name, last_name, type) {
+async function createUser(login, password, first_name, last_name, type, telegram) {
     const UserRepo = require('./RepositoryProvider').UsersRepository;
 
     await UserRepo.create({
-        first_name: first_name,
-        last_name: last_name,
-        type: type,
+        first_name,
+        last_name,
+        type,
 
         birth_date: '01-01-2018',
         email: login,
         phone: '1234567890',
         occupation: 'Nah, occupation',
         about: 'About me, blah blah blah',
-        telegram: 'j_snow',
+        telegram,
         address: 'Some address',
 
-        password: password // '5f4dcc3b5aa765d61d8327deb882cf99'
+        password // '5f4dcc3b5aa765d61d8327deb882cf99'
     });
 
     logger.info('User was created');

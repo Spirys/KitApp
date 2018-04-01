@@ -8,9 +8,11 @@
  */
 
 const UsersInteractor = require('../../domain/interactors/UsersInteractor');
-const config = require('../../util/config');
 const BooksInteractor = require('../../domain/interactors/BooksInteractor');
 const responseComposer = require('../composers/ResponseComposer').book;
+
+const config = require('../../util/config');
+const logger = require('../../util/Logger');
 
 /**
  * Module functions
@@ -74,7 +76,6 @@ module.exports.catalog = async function (req, res) {
         books = BooksInteractor.getAll(1, 25);
 
     books = responseComposer.formatMultiple(books, isLibrarian).books;
-    console.log(books);
 
     if (isLibrarian) {
         res.render('users/librarian/catalog', {user, messages, books})
@@ -135,9 +136,9 @@ module.exports.readers = async function (req, res) {
  */
 
 module.exports.logout = async function (req, res) {
-    const user = await verifyToken(req, res);
-    if (!user) return;
+    const session = req.cookies[config.COOKIE_NAME];
+    const response = UsersInteractor.logout(session);
 
-    await UsersInteractor.logout(req.cookies[config.COOKIE_NAME]);
+    if (!response.err) logger.info(`User ${response.id} logged out. Session ${session} removed`);
     res.redirect('login')
 };

@@ -15,8 +15,10 @@
 const Repository = require('../../data/RepositoryProvider').BooksRepository;
 const AuthorsRepository = require('../../data/RepositoryProvider').AuthorsRepository;
 const DocumentInstance = require('../models/documents/DocumentInstance.js');
+
 const config = require('../../util/config');
 const logger = require('../../util/Logger');
+const moment = require('moment');
 
 /**
  * Module functions
@@ -93,6 +95,23 @@ function addInstancesFunc(book, startId, available, reference, maintenance) {
 }
 
 /**
+ * Calculates the time in which the document must be returned
+ * @param userType {string} The type of the user
+ * @param bestseller {boolean} Whether the book is bestseller or not
+ * @return {string} String in {@link config.DATE_FORMAT_EXT extended date format}
+ */
+
+function timeDue(userType, bestseller) {
+    return moment()
+        .add((userType === config.userTypes.STUDENT)
+            ? (bestseller)
+                ? config.CHECKOUT_TIME_STUDENT_BESTSELLER
+                : config.CHECKOUT_TIME_STUDENT_NOT_BESTSELLER
+            : config.CHECKOUT_TIME_FACULTY, 'ms')
+        .format(config.DATE_FORMAT_EXT)
+}
+
+/**
  * Module exports
  * @public
  */
@@ -104,9 +123,7 @@ function addInstancesFunc(book, startId, available, reference, maintenance) {
  * @return {Array<Book>}
  */
 
-module.exports.getAll = function (page, length) {
-    return Repository.getAll(page, length);
-};
+module.exports.getAll = (page, length) => Repository.getAll(page, length);
 
 module.exports.search = async function () {
 
@@ -120,23 +137,23 @@ module.exports.new = function (query) {
 
     let book,
 
-    available = (query.available)
-        ? typeof query.available === 'number' ? query.available : 0
-        : (query.reference || query.maintenance) ? 0 : 1,
+        available = (query.available)
+            ? typeof query.available === 'number' ? query.available : 0
+            : (query.reference || query.maintenance) ? 0 : 1,
 
-    reference = (query.reference)
-        ? typeof query.reference === 'number' ? query.reference : 0
-        : (available || query.maintenance) ? 0 : 1,
+        reference = (query.reference)
+            ? typeof query.reference === 'number' ? query.reference : 0
+            : (available || query.maintenance) ? 0 : 1,
 
-    maintenance = (query.maintenance)
-        ? typeof query.maintenance === 'number' ? query.maintenance : 0
-        : (available || reference) ? 0 : 1,
+        maintenance = (query.maintenance)
+            ? typeof query.maintenance === 'number' ? query.maintenance : 0
+            : (available || reference) ? 0 : 1,
 
-    books = Repository.searchExact({
-        title: query.title,
-        edition: query.edition,
-        publisher: query.publisher
-    });
+        books = Repository.searchExact({
+            title: query.title,
+            edition: query.edition,
+            publisher: query.publisher
+        });
 
     /*
         Update the existing book, add number of instances
@@ -201,31 +218,41 @@ module.exports.getById = (id) => {
     }
 };
 
-module.exports.updateById = async function (id, fields) {
+module.exports.updateById = function (id, fields) {
     let book = Repository.get(id);
 
     // TODO: add authors
-    if (fields.title) book.title = fields.title;
-    if (fields.cost) book.cost = fields.cost;
-    if (fields.edition) book.edition = fields.edition;
-    if (fields.isbn) book.isbn = fields.isbn;
-    if (typeof fields.bestseller === 'boolean') book.bestseller = fields.bestseller;
-    if (fields.publisher) book.publisher = fields.publisher;
-    if (fields.keywords) book.keywords = fields.keywords;
-    if (fields.description) book.description = fields.description;
-    if (fields.image) book.image = fields.image;
-    if (fields.published) book.published = fields.published;
 
-    return book;
+    const action = () => {
+        if (fields.title) book.title = fields.title;
+        if (fields.cost) book.cost = fields.cost;
+        if (fields.edition) book.edition = fields.edition;
+        if (fields.isbn) book.isbn = fields.isbn;
+        if (typeof fields.bestseller === 'boolean') book.bestseller = fields.bestseller;
+        if (fields.publisher) book.publisher = fields.publisher;
+        if (fields.keywords) book.keywords = fields.keywords;
+        if (fields.description) book.description = fields.description;
+        if (fields.image) book.image = fields.image;
+        if (fields.published) book.published = fields.published;
+    };
+
+    try {
+        Repository.write(action);
+        return book
+    } catch (error) {
+        logger.error(error);
+        return {err: config.errors.INTERNAL}
+    }
+
 };
 
 module.exports.deleteById = async function (id) {
     return await Repository.delete(id);
 };
 
-module.exports.reserveById = async function (bookId, user) {
-    let book = await Repository.get(bookId);
-    if (book.err) return {err: book.err};
+module.exports.reserveById = function (bookId, user) {
+    let book = Repository.get(bookId);
+    if (!book) return {err: config.errors.DOCUMENT_NOT_FOUND};
 
     // Finding an available copy
     let indexAvailable = findAvailable(book, user);
@@ -235,31 +262,33 @@ module.exports.reserveById = async function (bookId, user) {
         Marking the instance as reserved
     */
 
-    let currentTime = Date.now(),
-        instance = book.instances[indexAvailable];
-
-    instance.status = config.statuses.RESERVED;
-    instance.taker = user;
-    instance.take_due = new Date(currentTime + config.DOCUMENT_RESERVATION_TIME);
+    let instance = book.instances[indexAvailable];
 
     // Applying business logic
-    let timeDue = currentTime;
-    timeDue += (user.type === config.userTypes.STUDENT)
-        ? (book.bestseller)
-            ? config.CHECKOUT_TIME_STUDENT_BESTSELLER
-            : config.CHECKOUT_TIME_STUDENT_NOT_BESTSELLER
-        : config.CHECKOUT_TIME_FACULTY;
+    let dueBack = timeDue(user.type, book.bestseller);
 
-    instance.due_back = new Date(timeDue);
+    const action = () => {
+        instance.status = config.statuses.RESERVED;
+        instance.taker = user;
+        instance.take_due = moment().add(config.DOCUMENT_RESERVATION_TIME, 'ms').format(config.DATE_FORMAT_EXT);
 
-    return book;
+        instance.due_back = dueBack;
+    };
+
+    try {
+        Repository.write(action);
+        return book
+    } catch (error) {
+        logger.error(error);
+        return {err: error.message}
+    }
 };
 
 module.exports.checkoutById = async function (bookId, user) {
 
     // Getting the book
-    let book = await Repository.get(bookId);
-    if (book.err) return {err: book.err};
+    let book = Repository.get(bookId);
+    if (!book) return {err: book.err};
 
     // Finding an available copy
     let indexAvailable = findAvailable(book, user);
@@ -269,48 +298,56 @@ module.exports.checkoutById = async function (bookId, user) {
         Marking the instance as loaned
     */
 
-    let currentTime = Date.now(),
-        instance = book.instances[indexAvailable];
-
-    instance.status = config.statuses.LOANED;
-    instance.taker = user;
+    let instance = book.instances[indexAvailable];
 
     // Applying business logic
-    let timeDue = currentTime;
-    timeDue += (user.type === config.userTypes.STUDENT)
-        ? (book.bestseller)
-            ? config.CHECKOUT_TIME_STUDENT_BESTSELLER
-            : config.CHECKOUT_TIME_STUDENT_NOT_BESTSELLER
-        : config.CHECKOUT_TIME_FACULTY;
+    let dueBack = timeDue(user.type, book.bestseller);
 
-    instance.due_back = new Date(timeDue);
+    const action = () => {
+        instance.status = config.statuses.LOANED;
+        instance.taker = user;
+        instance.due_back = dueBack;
+    };
 
-    return book;
+    try {
+        Repository.write(action);
+        return book
+    } catch (error) {
+        logger.error(error);
+        return {err: error.message}
+    }
 };
 
 /**
  * Marks the book with given id as returned by user
+ * @public
  */
 
-module.exports.returnById = async function (bookId, userId) {
+module.exports.returnById = function (bookId, userId) {
 
     // Getting the book
-    let book = await Repository.get(bookId);
-    if (book.err) return {err: config.errors.DOCUMENT_NOT_FOUND};
+    let book = Repository.get(bookId);
+    if (!book) return {err: config.errors.DOCUMENT_NOT_FOUND};
 
     // Finding the loaned book which is taken by the user
     let instance = book.instances.find(i => i.taker && i.taker.id === userId);
 
     if (!instance) return {err: config.errors.DOCUMENT_NOT_TAKEN};
 
-    instance.status = 'Available';
-    instance.taker = undefined;
-    instance.due_back = undefined;
-    instance.take_due = undefined;
+    const action = () => {
+        instance.status = 'Available';
+        delete instance.taker;
+        delete instance.due_back;
+        delete instance.take_due;
+    };
 
-    // TODO: update query for this book
-
-    return book;
+    try {
+        Repository.write(action);
+        return book
+    } catch (error) {
+        logger.error(error);
+        return {err: error.message}
+    }
 };
 
 /**

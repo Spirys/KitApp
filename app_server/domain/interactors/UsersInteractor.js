@@ -4,6 +4,7 @@
 
 'use strict';
 
+const config = require('../../util/config');
 /**
  * Module dependencies
  * @private
@@ -17,25 +18,15 @@ const UsersRepository = require('../../data/RepositoryProvider').UsersRepository
  * @public
  */
 
-module.exports.getById = async function (userId) {
-    return await UsersRepository.get(userId);
-};
+module.exports.getById = (userId) => UsersRepository.get(userId) || {err: config.errors.USER_NOT_FOUND};
 
-module.exports.getAll = async function (page, length) {
-    return await UsersRepository.getAll(page, length);
-};
+module.exports.getAll = (page, length) => UsersRepository.getAll(page, length);
 
-module.exports.login = async function (login, password) {
-    return await AuthenticationRepository.login(login, password);
-};
+module.exports.login = (login, password) => AuthenticationRepository.login(login, password);
 
-module.exports.logout = async function (session) {
-    return await AuthenticationRepository.logout(session);
-};
+module.exports.logout = (session) => AuthenticationRepository.logout(session);
 
-module.exports.createSession = async function (session, user) {
-    return await AuthenticationRepository.createSession(session, user);
-};
+module.exports.createSession = (session, user) => AuthenticationRepository.createSession(session, user);
 
 /**
  * Verifies the token.
@@ -45,9 +36,7 @@ module.exports.createSession = async function (session, user) {
  *      or {user} if authentication was successful
  */
 
-module.exports.verifyToken = async function (token) {
-    return await AuthenticationRepository.verifyToken(token);
-};
+module.exports.verifyToken = (token) => AuthenticationRepository.verifyToken(token);
 
 module.exports.new = async function (fields) {
     return await UsersRepository.create(fields);

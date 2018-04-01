@@ -31,11 +31,11 @@ const logger = require('../../util/Logger');
  * @private
  */
 
-async function getLogin(login) {
+function getLogin(login) {
     return realm.objectForPrimaryKey('Login', login);
 }
 
-async function getSession(token) {
+function getSession(token) {
     return realm.objectForPrimaryKey('Session', token);
 }
 
@@ -44,10 +44,10 @@ async function getSession(token) {
  * @private
  */
 
-async function login(login, password) {
+function login(login, password) {
     let response = {};
     try {
-        let _login = await getLogin(login);
+        let _login = getLogin(login);
 
         if (!_login) {
             // The user is absent in database
@@ -64,20 +64,21 @@ async function login(login, password) {
     return response;
 }
 
-async function logout(token) {
+function logout(token) {
     let response = {};
 
     try {
-        let session = await getSession(token);
+        let session = getSession(token);
 
         if (!session) {
             response = {err: config.errors.INVALID_TOKEN};
         } else {
+            let id = session.user.id;
             realm.write(() => {
                 realm.delete(session);
             });
 
-            response = {code: 'ok'};
+            response = {id};
         }
     } catch (err) {
         logger.error(err);
@@ -86,50 +87,51 @@ async function logout(token) {
     return response;
 }
 
-async function verifyToken(token) {
+function verifyToken(token) {
     let response = {};
 
     try {
-        let session = await getSession(token);
+        let session = getSession(token);
 
         if (!session) {
             response = {
                 err: config.errors.INVALID_TOKEN
-            };
+            }
         } else {
-            response = session.user || {err: config.errors.INVALID_TOKEN};
+            response = session.user || {err: config.errors.INVALID_TOKEN}
         }
     } catch (err) {
         logger.error(err);
-        response = {err: err.message};
+        response = {err: err.message}
     }
-    return response;
+    return response
 }
 
+// WARNING! Must be in write transaction
 async function createLogin(login, password, user) {
-    let _login = await getLogin(login);
+    let _login = getLogin(login);
 
     if (!_login) {
-        realm.write(() => {
+        // realm.write(() => {
             _login = realm.create('Login', {
                 login: login,
                 password: password,
                 user: user
             });
-        });
+        // });
     }
 
     return {
         login: _login.login,
         password: _login.password
-    };
+    }
 }
 
 function update() {
 
 }
 
-async function createSession(session, user) {
+function createSession(session, user) {
     let newSession = {
         user: user,
         token: session,

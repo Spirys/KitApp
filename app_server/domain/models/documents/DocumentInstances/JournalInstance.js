@@ -24,8 +24,8 @@ const JournalInstance = {
         status: {type: 'string', indexed: true},
         journal: {type: 'linkingObjects', objectType: 'Journal', property: 'instances'},
         taker: 'User',
-        due_back: 'date?',
-        take_due: 'date?'
+        due_back: 'string?',
+        take_due: 'string?'
     }
 };
 

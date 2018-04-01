@@ -6,19 +6,6 @@
 'use strict';
 
 /**
- * Module exports
- * @public
- */
-
-module.exports.create = create;
-module.exports.read = get;
-module.exports.get = get;
-module.exports.getAll = getAll;
-module.exports.update = update;
-module.exports.delete = remove;
-module.exports.remove = remove;
-
-/**
  * Module dependencies
  * @private
  */
@@ -27,7 +14,6 @@ const LoginRepo = require('./AuthenticationRepository');
 const errors = require('../../util/config').errors;
 
 const realm = require('../db').realm;
-const config = require('../../util/config');
 const User = require('../../domain/models/users/User');
 const Login = require('../../domain/models/auth/Login');
 
@@ -36,14 +22,10 @@ const Login = require('../../domain/models/auth/Login');
  * @private
  */
 
-async function get(id) {
-    let user = realm.objectForPrimaryKey('User', id);
-
-    return user || {err: errors.USER_NOT_FOUND};
-}
+const get = (id) => realm.objectForPrimaryKey('User', id);
 
 async function getAll(page, length) {
-    return realm.objects('User').slice((page - 1) * length + 1, length + 1);
+    return realm.objects('User').slice((page - 1) * length, length);
 }
 
 // TODO:
@@ -97,7 +79,7 @@ async function create(query) {
         LoginRepo.createLogin(query.email, query.password, user);
     });
 
-    return user;
+    return user
 }
 
 async function remove(id) {
@@ -118,9 +100,15 @@ async function remove(id) {
     return user;
 }
 
-module.exports = {
-    get,
-    create,
-    update,
-    remove
-};
+/**
+ * Module exports
+ * @public
+ */
+
+module.exports.create = create;
+module.exports.read = get;
+module.exports.get = get;
+module.exports.getAll = getAll;
+module.exports.update = update;
+module.exports.delete = remove;
+module.exports.remove = remove;

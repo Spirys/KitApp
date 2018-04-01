@@ -24,8 +24,8 @@ const BookInstance = {
         status: {type: 'string', indexed: true},
         book: {type: 'linkingObjects', objectType: 'Book', property: 'instances'},
         taker: 'User',
-        due_back: 'date?',
-        take_due: 'date?'
+        due_back: 'string?',
+        take_due: 'string?'
     }
 };
 
