@@ -15,7 +15,8 @@
 const Repository = require('../../data/RepositoryProvider').BooksRepository;
 const AuthorsRepository = require('../../data/RepositoryProvider').AuthorsRepository;
 const DocumentInstance = require('../models/documents/DocumentInstance.js');
-const config = require("../../util/config");
+const config = require('../../util/config');
+const logger = require('../../util/Logger');
 
 /**
  * Module functions
@@ -142,7 +143,12 @@ module.exports.new = function (query) {
      */
     if (books.length) {
         book = books[0];
-        Repository.write(addInstancesFunc(book, Repository.maxInstanceId(), available, reference, maintenance))
+        try {
+            Repository.write(addInstancesFunc(book, Repository.maxInstanceId(), available, reference, maintenance))
+        } catch (error) {
+            logger.error(error);
+            return {err: config.errors.INTERNAL}
+        }
     }
 
     /*
@@ -174,13 +180,26 @@ module.exports.new = function (query) {
         book.instances = [];
         addInstances(book, Repository.maxInstanceId(), available, reference, maintenance);
 
-        Repository.create(book);
+        try {
+            Repository.create(book);
+        } catch (error) {
+            logger.error(error);
+            return {err: config.errors.INTERNAL}
+        }
     }
 
     return book
 };
 
-module.exports.getById = (id) => Repository.get(id) || {err: errors.DOCUMENT_NOT_FOUND};
+module.exports.getById = (id) => {
+    try {
+        let book = Repository.get(id);
+        return book || {err: config.errors.DOCUMENT_NOT_FOUND}
+    } catch (error) {
+        logger.error(error);
+        return {err: config.errors.DOCUMENT_NOT_FOUND}
+    }
+};
 
 module.exports.updateById = async function (id, fields) {
     let book = Repository.get(id);
@@ -304,6 +323,8 @@ module.exports.getAllInstances = async function (book) {
 };
 
 module.exports.newInstance = async function (id, request) {
+
+    // TODO REFACTOR
     const inst = new DocumentInstance(request.status);
     inst.due_back = request.due_back;
     inst.taker = request.taker;

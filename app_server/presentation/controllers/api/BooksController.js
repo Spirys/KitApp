@@ -101,10 +101,16 @@ module.exports.new = async function (req, res) {
 };
 
 module.exports.getById = async function (req, res) {
-    const id = req.params.id;
     const locale = getLocale(req);
 
-    const book = await interactor.getById(id);
+    const id = val.number(req.params.id);
+    if (!id) {
+        let response = responseComposer.format(null, true, defaultFields, locale, config.errors.INVALID_ID);
+        sendJson(res, response);
+        return
+    }
+
+    const book = interactor.getById(id);
 
     let response = responseComposer.format(book, true, defaultFields, locale, book.err);
     sendJson(res, response);

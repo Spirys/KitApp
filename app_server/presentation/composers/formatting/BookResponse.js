@@ -43,7 +43,7 @@ function format(book, librarianAccess, fields, locale, err) {
             let sel;
 
             switch (field) {
-                case 'bestseller': sel = book.isBestseller; break;
+                case 'image': sel = book.image || config.DEFAULT_DOCUMENT_IMAGE; break;
                 case 'authors':
                     sel = authorsFormatter.formatMultiple(book.authors);
                     break;
@@ -53,7 +53,7 @@ function format(book, librarianAccess, fields, locale, err) {
                 default: sel = book[field];
             }
 
-            if (typeof sel !== 'undefined') response[field] = sel;
+            if (typeof sel !== 'undefined' && sel !== null) response[field] = sel;
         }
     }
     return response

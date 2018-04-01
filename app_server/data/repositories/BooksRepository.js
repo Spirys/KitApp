@@ -21,9 +21,7 @@ const BookInstance = require('../../domain/models/documents/DocumentInstance').b
  * @private
  */
 
-function get(id) {
-    return realm.objectForPrimaryKey('Book', id)
-}
+const get = (id) => realm.objectForPrimaryKey('Book', id);
 
 /**
  * Searches for the books which match the criterion

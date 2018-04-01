@@ -21,6 +21,7 @@ module.exports[msg.errors.ERROR2] = 'Error 2 occurred';
 module.exports[msg.errors.ERROR3] = 'Error 3 occurred';
 module.exports[msg.errors.WRONG_LOGIN_PASSWORD] = 'Wrong login/password';
 module.exports[msg.errors.INVALID_TOKEN] = 'Invalid token';
+module.exports[msg.errors.INVALID_ID] = 'Invalid id';
 module.exports[msg.errors.DOCUMENT_NOT_FOUND] = 'Requested document not found';
 module.exports[msg.errors.DOCUMENT_ALREADY_TAKEN] = 'Requested document is already taken by the user';
 module.exports[msg.errors.DOCUMENT_NOT_AVAILABLE] = 'Requested document is not available';

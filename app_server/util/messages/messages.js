@@ -22,6 +22,7 @@ module.exports = {
         'ERROR3' : 'ERR3',
         'WRONG_LOGIN_PASSWORD' : 'WLP',
         'INVALID_TOKEN' : 'INV_TOK',
+        'INVALID_ID': 'INVALID_ID',
         'DOCUMENT_NOT_FOUND' : 'DNF',
         'DOCUMENT_ALREADY_TAKEN' : 'DAT',
         'DOCUMENT_NOT_AVAILABLE' : 'DNA',

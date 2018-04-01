@@ -61,6 +61,11 @@ module.exports.stringOrDefault = (s, defaultValue) =>
         ? s
         : defaultValue;
 
+module.exports.number = (value) => {
+    let result = parseInt(value);
+    return (!Number.isNaN(result) && (result >= 0))? result : false
+};
+
 module.exports.numberOrDefault = (number, defaultValue, isPositive) =>
     number && typeof number === 'number'
     && !(isPositive && number < 0)

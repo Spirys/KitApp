@@ -122,6 +122,14 @@ module.exports.DEFAULT_MEDIA_RESPONSE_FIELDS = ['title', 'authors', 'cost', 'id'
 module.exports.DEFAULT_USER_RESPONSE_FIELDS = ['name', 'id', 'type', 'birth_date', 'email', 'occupation', 'address', 'about', 'telegram', 'avatar', 'phone'];
 
 /**
+ * Front-end parameters
+ * @public
+ */
+
+module.exports.DEFAULT_USER_IMAGE = '/images/user-no-image.jpg';
+module.exports.DEFAULT_DOCUMENT_IMAGE = '/images/document-no-image.png';
+
+/**
  * Database connection address
  * @public
  */
