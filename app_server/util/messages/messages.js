@@ -34,10 +34,19 @@ module.exports = {
         'LMS_DESCRIPTION_SHORT': 'LMS_DESCRIPTION_SHORT',
     },
     login: {
+        'LOGIN': 'LOGIN',
         'REMEMBER_ME': 'REMEMBER_ME',
         'SIGN_IN': 'SIGN_IN',
         'REGISTER': 'REGISTER',
         'FORGOT_PASSWORD': 'FORGOT_PASSWORD',
         'ISSUES': 'ISSUES',
+    },
+    user: {
+        'DASHBOARD': 'DASHBOARD',
+        'CATALOG': 'CATALOG',
+        'USER_CARD': 'USER_CARD',
+        'DATABASE': 'DATABASE',
+        'READERS': 'READERS',
+        'LOGOUT': 'LOGOUT'
     }
 };

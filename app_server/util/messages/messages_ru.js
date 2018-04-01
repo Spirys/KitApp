@@ -33,8 +33,17 @@ module.exports[msg.general.PASSWORD] = 'Пароль';
 module.exports[msg.general.LMS_DESCRIPTION_SHORT] = 'Библиотечная система Университета Иннополис';
 
 // Login page labels
+module.exports[msg.login.LOGIN] = 'Вход';
 module.exports[msg.login.REMEMBER_ME] = 'Запомнить меня';
 module.exports[msg.login.SIGN_IN] = 'Войти';
 module.exports[msg.login.REGISTER] = 'Регистрация';
 module.exports[msg.login.FORGOT_PASSWORD] = 'Забыли пароль?';
 module.exports[msg.login.ISSUES] = 'Не можете войти?';
+
+// User interface labels
+module.exports[msg.user.DASHBOARD] = 'Главная';
+module.exports[msg.user.CATALOG] = 'Каталог';
+module.exports[msg.user.USER_CARD] = 'Профиль';
+module.exports[msg.user.DATABASE] = 'База данных';
+module.exports[msg.user.READERS] = 'Читатели';
+module.exports[msg.user.LOGOUT] = 'Выход';

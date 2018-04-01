@@ -48,7 +48,13 @@ function format(book, librarianAccess, fields, locale, err) {
                     sel = authorsFormatter.formatMultiple(book.authors);
                     break;
                 case 'instances':
-                    sel = instancesFormatter.formatMultiple(book.instances, librarianAccess);
+                    if (!librarianAccess) {
+                        for (let i of book.instances) {
+                            response[i.status] = (response[i.status] || 0) + 1
+                        }
+                        sel = null;
+                    }
+                    else sel = instancesFormatter.formatMultiple(book.instances, librarianAccess);
                     break;
                 default: sel = book[field];
             }
@@ -63,6 +69,8 @@ function formatMultiple(books, librarianAccess, fields, page, length, locale, er
     if (err) {
         return error(err, locale)
     }
+
+    fields = fields || defaultFields;
 
     let response = {
         page,

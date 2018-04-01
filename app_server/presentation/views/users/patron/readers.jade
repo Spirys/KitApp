@@ -1,16 +1,16 @@
 include ../../mixins
 doctype html
 html
-    +head("Readers")
+    +head(messages.READERS)
     body
         .page
             // Main Navbar
-            +main-navbar()
+            +main-navbar(messages)
             .page-content.d-flex.align-items-stretch
                 // Side Navbar
                 nav.side-navbar
                     // Sidebar Header
-                    +sidebar("readers", user)
+                    +sidebar("readers", user, messages)
                 .content-inner
                     // Page Header
                     header.page-header

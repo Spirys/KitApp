@@ -34,8 +34,17 @@ module.exports[msg.general.PASSWORD] = 'Password';
 module.exports[msg.general.LMS_DESCRIPTION_SHORT] = 'Innopolis University Library Management System';
 
 // Login page labels
+module.exports[msg.login.LOGIN] = 'Login';
 module.exports[msg.login.REMEMBER_ME] = 'Remember me';
 module.exports[msg.login.SIGN_IN] = 'Sign In';
 module.exports[msg.login.REGISTER] = 'Sign Up';
 module.exports[msg.login.FORGOT_PASSWORD] = 'Forgot password';
 module.exports[msg.login.ISSUES] = 'Have issues?';
+
+// User interface labels
+module.exports[msg.user.DASHBOARD] = 'Dashboard';
+module.exports[msg.user.CATALOG] = 'Catalog';
+module.exports[msg.user.USER_CARD] = 'User Card';
+module.exports[msg.user.DATABASE] = 'Database';
+module.exports[msg.user.READERS] = 'Readers';
+module.exports[msg.user.LOGOUT] = 'Logout';

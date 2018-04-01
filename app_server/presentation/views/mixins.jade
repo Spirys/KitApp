@@ -1,6 +1,6 @@
 link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
 
-mixin sidebar(active_item, user)
+mixin sidebar(active_item, user, messages)
     nav.side-navbar
         // Sidebar Header
         .sidebar-header.d-flex.align-items-center
@@ -12,15 +12,15 @@ mixin sidebar(active_item, user)
                 p#sidebar-usertype=user.type
         br
         // Sidebar Navidation Menus
-        +sidebar_list(active_item)
+        +sidebar_list(active_item, messages)
 
-mixin sidebar_list(active_item)
+mixin sidebar_list(active_item, messages)
     ul.list-unstyled
-        +sidebar_list_item('dashboard', 'dashboard', active_item) Dashboard
-        +sidebar_list_item('catalog', 'book', active_item) Catalog
-        +sidebar_list_item('user-card', 'id-card', active_item) User Card
-        +sidebar_list_item('database', 'database', active_item) Database
-        +sidebar_list_item('readers', 'users', active_item) Readers
+        +sidebar_list_item('dashboard', 'dashboard', active_item)=messages.DASHBOARD
+        +sidebar_list_item('catalog', 'book', active_item)=messages.CATALOG
+        +sidebar_list_item('user-card', 'id-card', active_item)=messages.USER_CARD
+        +sidebar_list_item('database', 'database', active_item)=messages.DATABASE
+        +sidebar_list_item('readers', 'users', active_item)=messages.READERS
 
         
 
@@ -37,7 +37,7 @@ mixin sidebar_list_item(href, icon, active_item)
                 block
 
 
-mixin main-navbar()
+mixin main-navbar(messages)
             header.header
                 nav.navbar
                     .container-fluid
@@ -104,7 +104,7 @@ mixin main-navbar()
                                 // Logout
                                 li.nav-item
                                     a#logout.nav-link.logout(href='logout')
-                                        | Logout
+                                        | #{messages.LOGOUT}
                                         i.fa.fa-sign-out
 
 mixin head(page_title)
@@ -185,22 +185,21 @@ mixin catalog-document(config)
             .row
                 .col-lg-2
                     #doc-image.image.has-shadow
-                        img.img-fluid(src='images/#{config.image}', alt='...')
+                        img.img-fluid(src='#{config.image}', alt='...')
                 .col-lg-8.m-auto
-                    h2#title #{config.title}
+                    h2#title=config.title
                     for author in config.authors
                         h4#author #{author.first_name} #{author.last_name}
                     small#description #{config.description}
                     br
-                    button#document-type.btn.btn-sm.bg-blue(type='button') ##{config.type}
-                    if (config.available)
-                        button#availability.btn.btn-sm.bg-green(type='button') #available
+                    button#document-type.btn.btn-sm.bg-blue(type='button', style='margin:2px') ##{config.type}
+                    if (config.Available)
+                        button#availability.btn.btn-sm.bg-green(type='button', style='margin:2px') #available
                     else
-                        button#availability.btn.btn-sm.bg-green(type='button') #not_available
+                        button#availability.btn.btn-sm.bg-red(type='button', style='margin:2px') #not_available
                     if (config.bestseller)
-                        button#bestseller.btn.btn-sm.bg-orange(type='button') #bestseller
-                    else
-                        button#bestseller.btn.btn-sm.bg-orange(type='button') #not_bestseller
+                        button#bestseller.btn.btn-sm.bg-orange(type='button', style='margin:2px') #bestseller
+
                 .right-col.col-lg-2.m-auto
                     a(href="document.html")
                         button#details.btn.btn-secondary.book-btn(href="document.html" type='button') DETAILS

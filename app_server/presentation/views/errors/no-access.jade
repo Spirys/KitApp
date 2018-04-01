@@ -1,14 +1,14 @@
 include ../mixins
 doctype html
 html
-    +head("Dashboard")
+    +head(section)
     body
         .page
             // Main Navbar
-            +main-navbar()
+            +main-navbar(messages)
             .page-content.d-flex.align-items-stretch
                 // Side Navbar
-                +sidebar(section, user)
+                +sidebar(section, user, messages)
                 .content-inner
                     // Page Header
                     header.page-header

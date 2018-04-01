@@ -101,7 +101,7 @@ function addInstancesFunc(book, startId, available, reference, maintenance) {
  * Gets all books from the repository starting from (page - 1) * length till the length - 1
  * @param page
  * @param length
- * @return {Promise<Array<Book>>}
+ * @return {Array<Book>}
  */
 
 module.exports.getAll = function (page, length) {

@@ -1,14 +1,14 @@
 include ../../mixins
 doctype html
 html
-    +head("Catalog")
+    +head(messages.CATALOG)
     body
         .page
             // Main Navbar
-            +main-navbar()
+            +main-navbar(messages)
             .page-content.d-flex.align-items-stretch
                 // Side Navbar
-                +sidebar("catalog", user)
+                +sidebar("catalog", user, messages)
                 .content-inner
                     // Page Header
                     header.page-header
@@ -112,9 +112,7 @@ html
 
                     section.document
                         .container-fluid
-                            -documents_list = [{token: "librarianToken", title: "Touch of class", authors: [{first_name: "Bertrand", last_name: "Meyer"}], cost: 1000, edition: "Second revision", publisher: "INNO books", keywords: ["programming", "eiffel"], description: "From object technology pioneer and ETH Zurich professor Bertrand Meyer, winner of the Jolt award and the ACM Software System Award, a revolutionary textbook that makes learning programming fun and rewarding. Meyer builds his presentation on a rich object-oriented software system supporting graphics and multimedia, which students can use to produce impressive applications from day one, then understand inside out as they learn new programming techniques.", bestseller: true, available: 5, reference: 1, image: "book1.jpg", published: "01-03-2018", type: "book"}, {token: "librarianToken", title: "Introduction to Algorithms", authors: [{first_name: "Thomas", last_name: "H. Cormen"}], cost: 1000, edition: "Second revision", publisher: "INNO books", keywords: ["programming", "dsa"], description: 'Itroduction to Algorithms is a book by Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein. The first edition of the book was widely used as the textbook for algorithms courses at many universities and is commonly cited as a reference for algorithms in published papers, with over 10000 citations documented on CiteSeerX. The book sold half a million copies during its first 20 years. Its fame has led to the common use of the abbreviation "CLRS" (Cormen, Leiserson, Rivest, Stein), or, in the first edition, "CLR" (Cormen, Leiserson, Rivest).', bestseller: false, available: 5, reference: 1, image: "book2.jpeg", published: "01-03-2018", type: "book"}, {token: "librarianToken", title: "Kolobok", authors: [{first_name: "Folklor", last_name: "Folklor"}], cost: 1000, edition: "Second revision", publisher: "INNO books", keywords: ["stories", "fairy tale"], description: 'Kolobok (Cyrillic: колобо́к) is the main character of an East Slavic national fairy tale with the same name, represented as a small yellow spherical being. The fairy tale is prevalent in Slavic regions in a number of variations.', bestseller: false, available: 0, reference: 1, image: "book3.jpg", published: "01-03-2018", type: "book"}];
-
-                            for doc in documents_list
+                            for doc in books
                                 +catalog-document(doc)
                     // Page Footer
                     +footer()
