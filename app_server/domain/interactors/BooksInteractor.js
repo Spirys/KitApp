@@ -284,7 +284,7 @@ module.exports.reserveById = function (bookId, user) {
     }
 };
 
-module.exports.checkoutById = async function (bookId, user) {
+module.exports.checkoutById = function (bookId, user) {
 
     // Getting the book
     let book = Repository.get(bookId);
@@ -336,9 +336,49 @@ module.exports.returnById = function (bookId, userId) {
 
     const action = () => {
         instance.status = 'Available';
-        delete instance.taker;
-        delete instance.due_back;
-        delete instance.take_due;
+        instance.taker = undefined;
+        instance.due_back = undefined;
+        instance.take_due = undefined;
+        instance.renewed = false;
+    };
+
+    try {
+        Repository.write(action);
+        return book
+    } catch (error) {
+        logger.error(error);
+        return {err: error.message}
+    }
+};
+
+/**
+ * Renewing the book
+ * @param bookId {number} The id of the book
+ * @param user {User} The user
+ * @return {*}
+ */
+
+module.exports.renewById = function (bookId, user) {
+    // Getting the book
+    let book = Repository.get(bookId);
+    if (!book) return {err: config.errors.DOCUMENT_NOT_FOUND};
+
+    // Finding the loaned book which is taken by the user
+    let instance = book.instances.find(i => i.taker && i.taker.id === user.id);
+
+    if (!instance) return {err: config.errors.DOCUMENT_NOT_TAKEN};
+
+    // Was the instance renewed previously?
+    if (instance.renewed && !(user.type === config.userTypes.VISITING_PROFESSOR)) {
+        return {err: config.errors.DOCUMENT_ALREADY_RENEWED}
+    }
+
+    // Applying business logic
+    let dueBack = timeDue(user.type, book.bestseller);
+
+    const action = () => {
+        instance.due_back = dueBack;
+        instance.renewed = true;
     };
 
     try {

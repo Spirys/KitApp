@@ -150,7 +150,7 @@ module.exports.checkoutById = async function (req, res) {
     const bookId = val.number(req.params.id),
         locale = getLocale(req),
         token = req.body.token,
-        userId = req.body.user;
+        userId = val.number(req.body.user);
 
     // Checking permissions
     let user = usersInteractor.verifyToken(token);
@@ -161,7 +161,7 @@ module.exports.checkoutById = async function (req, res) {
     const isLibrarian = user.type === config.userTypes.LIBRARIAN;
 
     let book;
-    if (isLibrarian) {
+    if (isLibrarian && userId) {
         user = usersInteractor.getById(userId);
         if (user.err) {
             sendJson(res, error(user.err, locale));
@@ -192,7 +192,7 @@ module.exports.checkoutById = async function (req, res) {
  */
 
 module.exports.returnById = async function (req, res) {
-    const bookId = req.params.id,
+    const bookId = val.number(req.params.id),
         locale = getLocale(req),
         user = usersInteractor.verifyToken(req.body.token);
 
@@ -201,13 +201,54 @@ module.exports.returnById = async function (req, res) {
         return
     }
 
-    const book = interactor.returnById(bookId, req.body.user || user.id);
+    if (!bookId) {
+        sendJson(res, error(config.errors.INVALID_ID, locale));
+        return
+    }
+
+    const book = interactor.returnById(bookId, val.number(req.body.user) || user.id);
 
     let response = responseComposer.format(book,
         user.type === config.userTypes.LIBRARIAN,
         defaultFields,
         locale,
         book.err);
+    sendJson(res, response);
+};
+
+module.exports.renewById = async function (req, res) {
+    // Traversing request
+    const bookId = val.number(req.params.id),
+        locale = getLocale(req),
+        token = req.body.token,
+        userId = val.number(req.body.user);
+
+    // Checking permissions
+    let user = usersInteractor.verifyToken(token);
+    if (user.err) {
+        sendJson(res, error(user.err, locale));
+        return
+    }
+    const isLibrarian = user.type === config.userTypes.LIBRARIAN;
+
+    // Selecting the user
+    if (isLibrarian && userId) {
+        user = usersInteractor.getById(userId);
+        if (user.err) {
+            sendJson(res, error(user.err, locale));
+            return;
+        }
+    }
+
+    // Renewing the book
+    let book = interactor.renewById(bookId, user);
+
+    if (book.err) {
+        sendJson(res, error(book.err, locale));
+        return;
+    }
+
+    let response = responseComposer.format(book, isLibrarian, defaultFields);
     sendJson(res, response);
 };
 

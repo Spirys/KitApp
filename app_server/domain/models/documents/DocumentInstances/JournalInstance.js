@@ -25,7 +25,8 @@ const JournalInstance = {
         journal: {type: 'linkingObjects', objectType: 'Journal', property: 'instances'},
         taker: 'User',
         due_back: 'string?',
-        take_due: 'string?'
+        take_due: 'string?',
+        renewed: 'bool'
     }
 };
 

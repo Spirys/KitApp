@@ -48,15 +48,26 @@ async function init() {
 
     realm = await Realm.open({
         // sync: {
-        //     url: `realms://${realmSettings.url}/~/kitapp`,
+        //     url: `realms://${realmSettings.url}/~/lms`,
         //     user: Realm.Sync.User.current
         // },
         schema: [Author, User, Login, Session,
             Book, BookInstance,
             Journal, Article, JournalInstance,
             Media, MediaInstance],
-
-        deleteRealmIfMigrationNeeded: true
+        schemaVersion: 2,
+        migration: (oldRealm, newRealm) => {
+            if (oldRealm.schemaVersion < 2) {
+                const apply = (instance) => instance.renewed = false;
+                let instances = newRealm.objects('BookInstance');
+                instances.forEach(apply);
+                instances = newRealm.objects('JournalInstance');
+                instances.forEach(apply);
+                instances = newRealm.objects('MediaInstance');
+                instances.forEach(apply);
+            }
+        },
+        // deleteRealmIfMigrationNeeded: false
     });
 
     logger.info('Realm initialization completed');

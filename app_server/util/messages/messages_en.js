@@ -24,6 +24,7 @@ module.exports[msg.errors.INVALID_TOKEN] = 'Invalid token';
 module.exports[msg.errors.INVALID_ID] = 'Invalid id';
 module.exports[msg.errors.DOCUMENT_NOT_FOUND] = 'Requested document not found';
 module.exports[msg.errors.DOCUMENT_ALREADY_TAKEN] = 'Requested document is already taken by the user';
+module.exports[msg.errors.DOCUMENT_ALREADY_RENEWED] = 'Requested document is already renewed by the user';
 module.exports[msg.errors.DOCUMENT_NOT_AVAILABLE] = 'Requested document is not available';
 module.exports[msg.errors.DOCUMENT_NOT_TAKEN] = 'Requested document is not taken by the user';
 module.exports[msg.errors.USER_NOT_FOUND] = 'User was not found';

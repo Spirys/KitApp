@@ -12,14 +12,15 @@ const moment = require('moment');
  */
 
 const error = require('./ErrorResponse');
+const config = require("../../../util/config");
 
 /**
  * Constants
  * @private
  */
 
-const defaultFieldsPatron = ['status', 'id'];
-const defaultFieldsLibrarian = ['status', 'id', 'due_back', 'taker'];
+const defaultFieldsPatron = ['status', 'id', 'renewed'];
+const defaultFieldsLibrarian = ['status', 'id', 'due_back', 'take_due', 'taker', 'fine', 'renewed'];
 
 /**
  * Module functions
@@ -28,7 +29,7 @@ const defaultFieldsLibrarian = ['status', 'id', 'due_back', 'taker'];
 
 /**
  * Formats an instance
- * @param instance {DocumentInstance}
+ * @param instance {DocumentInstance|BookInstance|JournalInstance|MediaInstance}
  * @param fields {Array<string>}
  * @param librarian The boolean value indicating whether document must include librarian-only fields
  * @return {*}
@@ -50,15 +51,26 @@ function format(instance, librarian, fields) {
 
             switch (field) {
                 case 'taker':
-                    sel = instance.taker;
+                    sel = instance.taker ? {
+                        id: instance.taker.id,
+                        first_name: instance.taker.first_name,
+                        last_name: instance.taker.last_name,
+                        type: instance.taker.type
+                    } : undefined;
                     break;
                 case 'due_back':
-                    let due = moment(instance.dueBack);
-                    sel = due.isValid()? due.format('DD-MM-YYYY') : undefined;
+                    let due = moment(instance.due_back, config.DATE_FORMAT_EXT);
+                    sel = due.isValid() ? due.format(config.DATE_FORMAT_EXT) : undefined;
                     break;
                 case 'take_due':
-                    let take = moment(instance.takeDue);
-                    sel = take.isValid()? take.format('DD-MM-YYYY') : undefined;
+                    let take = moment(instance.take_due, config.DATE_FORMAT_EXT);
+                    sel = take.isValid() ? take.format(config.DATE_FORMAT_EXT) : undefined;
+                    break;
+                case 'fine':
+                    sel = instance.taker ? config.fine(instance) : undefined;
+                    break;
+                case 'renewed':
+                    sel = instance.taker ? instance.renewed : undefined;
                     break;
                 default:
                     sel = instance[field];

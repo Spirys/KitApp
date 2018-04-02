@@ -56,6 +56,10 @@ function format(book, librarianAccess, fields, locale, err) {
                     }
                     else sel = instancesFormatter.formatMultiple(book.instances, librarianAccess);
                     break;
+                case 'keywords':
+                    sel = [];
+                    for (let i of book.keywords) sel.push(i);
+                    break;
                 default: sel = book[field];
             }
 

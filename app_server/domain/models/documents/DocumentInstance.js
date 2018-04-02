@@ -10,7 +10,7 @@
  * @private
  */
 
-const validator = require('../../validation/SetterValidation');
+// const validator = require('../../validation/SetterValidation');
 const BookInstance = require('./DocumentInstances/BookInstance');
 const JournalInstance = require('./DocumentInstances/JournalInstance');
 const MediaInstance = require('./DocumentInstances/MediaInstance');

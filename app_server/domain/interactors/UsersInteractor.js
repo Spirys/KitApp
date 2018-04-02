@@ -32,7 +32,7 @@ module.exports.createSession = (session, user) => AuthenticationRepository.creat
  * Verifies the token.
  * @public
  * @param token
- * @return {Promise<err|user>} The function returns either {err} with description
+ * @return {{err}|User} The function returns either {err} with description
  *      or {user} if authentication was successful
  */
 
