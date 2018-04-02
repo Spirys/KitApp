@@ -27,6 +27,7 @@ module.exports = {
         'DOCUMENT_ALREADY_TAKEN' : 'DAT',
         'DOCUMENT_NOT_AVAILABLE' : 'DNA',
         'DOCUMENT_NOT_TAKEN' : 'DNT',
+        'DOCUMENT_ALREADY_RENEWED' : 'DAR',
         'USER_NOT_FOUND' : 'UNF',
     },
     general: {

@@ -184,6 +184,42 @@ module.exports.checkoutById = async function (req, res) {
     sendJson(res, response);
 };
 
+module.exports.renewById = async function (req, res) {
+
+    // Traversing request
+    const bookId = val.number(req.params.id),
+        locale = getLocale(req),
+        token = req.body.token,
+        userId = req.body.user;
+
+    // Checking permissions
+    let user = usersInteractor.verifyToken(token);
+    if (user.err) {
+        sendJson(res, error(user.err, locale));
+        return;
+    }
+    const isLibrarian = user.type === config.userTypes.LIBRARIAN;
+
+    let book;
+    if (isLibrarian) {
+        user = usersInteractor.getById(userId);
+        if (user.err) {
+            sendJson(res, error(user.err, locale));
+            return;
+        }
+    }
+
+    book = interactor.renewById(bookId, user);
+
+    if (book.err) {
+        sendJson(res, error(book.err, locale));
+        return;
+    }
+
+    let response = responseComposer.format(book, isLibrarian, defaultFields);
+    sendJson(res, response);
+};
+
 /**
  * Marks the book with given id as returned by user
  * @param req

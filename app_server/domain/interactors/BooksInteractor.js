@@ -318,6 +318,68 @@ module.exports.checkoutById = async function (bookId, user) {
     }
 };
 
+module.exports.renewById = async function (bookId, user) {
+    let book = Repository.get(bookId);
+    if (!book) return {err: config.errors.DOCUMENT_NOT_FOUND};
+
+    let instance = book.instances.find(i => i.taker && i.taker.id === user.id);
+    if (!instance) return {err: config.errors.DOCUMENT_NOT_TAKEN};
+
+    let take_due = moment(instance.take_due, config.DATE_FORMAT_EXT);
+    let due_back = moment(instance.due_back, config.DATE_FORMAT_EXT);
+    if (user.type === config.userTypes.STUDENT) {
+        let new_due_back = due_back.add((book.bestseller)
+            ? config.CHECKOUT_TIME_STUDENT_BESTSELLER :
+            config.CHECKOUT_TIME_STUDENT_NOT_BESTSELLER, 'ms');
+
+        if (take_due.diff(new_due_back, 'ms') > (book.bestseller
+            ? config.CHECKOUT_TIME_STUDENT_BESTSELLER
+            : config.CHECKOUT_TIME_STUDENT_NOT_BESTSELLER) * 2) {
+
+            return {err: config.errors.DOCUMENT_ALREADY_RENEWED};
+        } else {
+            instance.due_back = new_due_back.format(config.DATE_FORMAT_EXT);
+
+            return book;
+        }
+    } else {
+        let new_due_back = due_back.add(config.CHECKOUT_TIME_FACULTY, 'ms');
+
+        instance.due_back = new_due_back.format(config.DATE_FORMAT_EXT);
+
+        return book;
+    }
+};
+
+/**
+ * Returns all fines of all instances and users
+ * If there are no fines then returns empty array
+ * @param bookId
+ * @returns {Array<Object>}
+ */
+module.exports.fineById = function (bookId) {
+    let book = Repository.get(bookId);
+    if (!book) return {err: config.errors.DOCUMENT_NOT_FOUND};
+
+    let fines = [];
+    for (let instance of book.instances) {
+        if (instance.taker) {
+            let current_date = moment(),
+                due_back = moment(instance.due_back, config.DATE_FORMAT_EXT);
+            if (due_back < current_date) {
+                let fine = (current_date.diff(due_back, 'days', true) | 0) * config.FINE_FOR_DELAY;
+
+                fines.push({
+                    userId: instance.taker.id,
+                    fine: fine
+                });
+            }
+        }
+    }
+
+    return fines;
+};
+
 /**
  * Marks the book with given id as returned by user
  * @public

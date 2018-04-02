@@ -94,6 +94,7 @@ module.exports.DOCUMENT_RESERVATION_TIME = 3 * DAY;
 module.exports.CHECKOUT_TIME_STUDENT_NOT_BESTSELLER = 3 * WEEK;
 module.exports.CHECKOUT_TIME_STUDENT_BESTSELLER = 2 * WEEK;
 module.exports.CHECKOUT_TIME_FACULTY = 4 * WEEK;
+module.exports.FINE_FOR_DELAY = 100;
 
 /**
  * Short date format ('DD-MM-YYYY')
