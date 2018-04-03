@@ -31,7 +31,9 @@ const User = {
         about: 'string?',
         telegram: 'string?',
         avatar: 'string?',
-        address: 'string?'
+        address: 'string?',
+
+        notifications: 'Notification[]'
     }
 };
 

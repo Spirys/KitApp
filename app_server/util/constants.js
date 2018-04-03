@@ -69,5 +69,5 @@ module.exports.DEFAULT_USER_RESPONSE_FIELDS = ['name', 'id', 'type', 'birth_date
  */
 
 module.exports.COOKIE_NAME = '_sessionId';
-module.exports.COOKIE_HTTPS_ONLY = false; // todo change when in production!
+module.exports.COOKIE_HTTPS_ONLY = true; // todo change when in production!
 module.exports.COOKIE_EXPIRES = WEEK;

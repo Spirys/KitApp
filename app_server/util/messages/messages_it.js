@@ -17,7 +17,7 @@ const errors = require('./messages').errors;
  */
 
 module.exports[errors.INTERNAL] = 'Errore interno';
-module.exports[errors.ERROR2] = 'Errore 2 si è verificato';
+module.exports[errors.NO_ACCESS] = 'Errore 2 si è verificato';
 module.exports[errors.ERROR3] = 'Errore 3 si è verificato';
 module.exports[errors.WRONG_LOGIN_PASSWORD] = 'Accesso errato/password';
 module.exports[errors.INVALID_TOKEN] = 'Token non valido';

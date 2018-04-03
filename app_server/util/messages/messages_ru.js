@@ -17,7 +17,7 @@ const msg = require('./messages');
  */
 
 module.exports[msg.errors.INTERNAL] = 'Произошла внутренняя ошибка сервера';
-module.exports[msg.errors.ERROR2] = 'Произошла ошибка 2';
+module.exports[msg.errors.NO_ACCESS] = 'Доступ закрыт';
 module.exports[msg.errors.ERROR3] = 'Произошла ошибка 3';
 module.exports[msg.errors.WRONG_LOGIN_PASSWORD] = 'Неверная пара логин/пароль';
 module.exports[msg.errors.INVALID_TOKEN] = 'Неверный токен';
@@ -25,6 +25,7 @@ module.exports[msg.errors.INVALID_ID] = 'Неверный идентификат
 module.exports[msg.errors.DOCUMENT_NOT_FOUND] = 'Документ не найден';
 module.exports[msg.errors.DOCUMENT_ALREADY_TAKEN] = 'Документ уже есть у пользователя';
 module.exports[msg.errors.DOCUMENT_ALREADY_RENEWED] = 'Документ уже был продлён пользователем';
+module.exports[msg.errors.DOCUMENT_RENEWAL_UNAVAILABLE] = 'Запрашиваемый документ нельзя продлить';
 module.exports[msg.errors.DOCUMENT_NOT_AVAILABLE] = 'Запрашиваемый документ нельзя взять';
 module.exports[msg.errors.DOCUMENT_NOT_TAKEN] = 'Документ не взят данным пользователем';
 module.exports[msg.errors.USER_NOT_FOUND] = 'Пользователь не найден';

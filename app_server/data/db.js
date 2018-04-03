@@ -6,9 +6,9 @@
  */
 
 const Realm = require('realm');
-const config = require('../util/config');
+// const config = require('../util/config');
 const logger = require('../util/Logger');
-const realmSettings = config.realm;
+// const realmSettings = config.realm;
 const moment = require('moment');
 
 /*
@@ -16,6 +16,7 @@ const moment = require('moment');
  */
 
 const User = require('../domain/models/users/User');
+const Notification = require('../domain/models/users/Notification');
 const Login = require('../domain/models/auth/Login');
 const Session = require('../domain/models/auth/Session');
 
@@ -37,14 +38,14 @@ const MediaInstance = require('../domain/models/documents/DocumentInstances/Medi
 let realm;
 
 async function init() {
-    for (let uId in Realm.Sync.User.all) {
-        if (Realm.Sync.User.all.hasOwnProperty(uId)) {
-            Realm.Sync.User.all[uId].logout();
-        }
-    }
+    // for (let uId in Realm.Sync.User.all) {
+    //     if (Realm.Sync.User.all.hasOwnProperty(uId)) {
+    //         Realm.Sync.User.all[uId].logout();
+    //     }
+    // }
 
     // Realm.Sync.setFeatureToken(realmSettings.apiToken);
-    await Realm.Sync.User.login(`https://${realmSettings.url}`, realmSettings.user, realmSettings.password);
+    // await Realm.Sync.User.login(`https://${realmSettings.url}`, realmSettings.user, realmSettings.password);
 
     realm = await Realm.open({
         // sync: {
@@ -54,8 +55,8 @@ async function init() {
         schema: [Author, User, Login, Session,
             Book, BookInstance,
             Journal, Article, JournalInstance,
-            Media, MediaInstance],
-        schemaVersion: 2,
+            Media, MediaInstance, Notification],
+        schemaVersion: 4,
         migration: (oldRealm, newRealm) => {
             if (oldRealm.schemaVersion < 2) {
                 const apply = (instance) => instance.renewed = false;
@@ -65,6 +66,21 @@ async function init() {
                 instances.forEach(apply);
                 instances = newRealm.objects('MediaInstance');
                 instances.forEach(apply);
+            }
+
+            if (oldRealm.schemaVersion < 3) {
+                let books = newRealm.objects('Book');
+                books.forEach(book => {
+                    book.awaiting = [];
+                    book.outstanding_request = false
+                })
+            }
+
+            if (oldRealm.schemaVersion < 4) {
+                let users = newRealm.objects('User');
+                users.forEach(user => {
+                    user.notifications = [];
+                })
             }
         },
         // deleteRealmIfMigrationNeeded: false
@@ -116,7 +132,7 @@ process.once('SIGUSR2', function () {
  * @public
  */
 
-module.exports.url = realmSettings.url;
+// module.exports.url = realmSettings.url;
 
 module.exports.init = async function () {
     await init();
@@ -139,6 +155,7 @@ module.exports.init = async function () {
     //     'j_snow');
 };
 
+// noinspection JSUnusedLocalSymbols
 /**
  * Miscellaneous functions
  * @private
@@ -164,6 +181,7 @@ function wipe() {
     });
 }
 
+// noinspection JSUnusedLocalSymbols
 async function createUser(login, password, first_name, last_name, type, telegram) {
     const UserRepo = require('./RepositoryProvider').UsersRepository;
 

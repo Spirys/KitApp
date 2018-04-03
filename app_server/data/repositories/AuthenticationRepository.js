@@ -87,6 +87,8 @@ function logout(token) {
     return response;
 }
 
+
+// Todo place the logic inside interactor
 function verifyToken(token) {
     let response = {};
 

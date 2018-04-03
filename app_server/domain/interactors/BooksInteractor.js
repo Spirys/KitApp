@@ -16,6 +16,8 @@ const Repository = require('../../data/RepositoryProvider').BooksRepository;
 const AuthorsRepository = require('../../data/RepositoryProvider').AuthorsRepository;
 const DocumentInstance = require('../models/documents/DocumentInstance.js');
 
+const UsersInteractor = require('./UsersInteractor');
+
 const config = require('../../util/config');
 const logger = require('../../util/Logger');
 const moment = require('moment');
@@ -28,11 +30,14 @@ const moment = require('moment');
 /**
  * Finds the available copy of the book and also checks whether a user has a copy
  * @param book {Book}
- * @param [user] {User}
- * @return {*}
+ * @param user {User|{id: number}=} The user
+ * @param findReserved {boolean=} Should the 'Reserved' instances be found instead?
+ * @return {number|{err: string}|{queue: boolean}}
  */
 
-function findAvailable(book, user) {
+function findAvailable(book, user, findReserved) {
+    if (book.outstanding_request) return {err: config.errors.DOCUMENT_NOT_AVAILABLE};
+
     if (!user || !user.id) user = {id: -1}; // Do not consider user if not sent
 
     let indexAvailable = -1;
@@ -45,10 +50,17 @@ function findAvailable(book, user) {
             indexAvailable = i;
         }
 
-        if (instance.taker && instance.taker.id === user.id) return {err: config.errors.DOCUMENT_ALREADY_TAKEN};
+        // Checking whether user has already reserved or taken the document
+        if (instance.taker && instance.taker.id === user.id) {
+            if (findReserved && instance.status === config.statuses.RESERVED) {
+                indexAvailable = i;
+                break
+            }
+            return {err: config.errors.DOCUMENT_ALREADY_TAKEN};
+        }
     }
 
-    if (indexAvailable === -1) return {err: config.errors.DOCUMENT_NOT_AVAILABLE};
+    if (indexAvailable === -1) return {queue: true};
     return indexAvailable;
 }
 
@@ -76,19 +88,22 @@ function addInstancesFunc(book, startId, available, reference, maintenance) {
         for (let i = 0; i < available; i++) {
             book.instances.push({
                 id: ++startId,
-                status: config.statuses.AVAILABLE
+                status: config.statuses.AVAILABLE,
+                renewed: false
             })
         }
         for (let i = 0; i < reference; i++) {
             book.instances.push({
                 id: ++startId,
-                status: config.statuses.REFERENCE
+                status: config.statuses.REFERENCE,
+                renewed: false
             })
         }
         for (let i = 0; i < maintenance; i++) {
             book.instances.push({
                 id: ++startId,
-                status: config.statuses.MAINTENANCE
+                status: config.statuses.MAINTENANCE,
+                renewed: false
             })
         }
     }
@@ -109,6 +124,40 @@ function timeDue(userType, bestseller) {
                 : config.CHECKOUT_TIME_STUDENT_NOT_BESTSELLER
             : config.CHECKOUT_TIME_FACULTY, 'ms')
         .format(config.DATE_FORMAT_EXT)
+}
+
+/**
+ * Finds the first candidate for the newly available book
+ * @param book
+ * @return {User|undefined}
+ * @private
+ */
+
+function nextCandidate(book) {
+    function priority(user) {
+        switch (user.type) {
+            case config.userTypes.LIBRARIAN:
+                return 0;
+            case config.userTypes.STUDENT:
+                return 1;
+            case config.userTypes.FACULTY_INSTRUCTOR:
+                return 2;
+            case config.userTypes.FACULTY_TA:
+                return 3;
+            case config.userTypes.VISITING_PROFESSOR:
+                return 4;
+            case config.userTypes.FACULTY_PROFESSOR:
+                return 5;
+            default:
+                return 10000
+        }
+    }
+
+    let candidate = {}; // Dummy candidate
+    for (let user of book.awaiting) {
+        if (priority(user) < priority(candidate)) candidate = user
+    }
+    return (candidate.priority !== 10000) ? candidate : undefined
 }
 
 /**
@@ -177,6 +226,7 @@ module.exports.new = function (query) {
         book = Object.assign({}, query);
         book.id = id;
         book.authors = [];
+        book.outstanding_request = false;
 
         // Find the requested authors or create them
         for (let author of query.authors) {
@@ -246,34 +296,51 @@ module.exports.updateById = function (id, fields) {
 
 };
 
-module.exports.deleteById = async function (id) {
-    return await Repository.delete(id);
+module.exports.deleteById = function (id) {
+    let book = Repository.get(id);
+    if (!book) return {err: config.errors.DOCUMENT_NOT_FOUND};
+
+    try {
+        return Repository.delete(book)
+    } catch (err) {
+        logger.error(err);
+        return {err: config.errors.INTERNAL}
+    }
 };
 
 module.exports.reserveById = function (bookId, user) {
     let book = Repository.get(bookId);
     if (!book) return {err: config.errors.DOCUMENT_NOT_FOUND};
 
-    // Finding an available copy
+    // Finding an available instance
     let indexAvailable = findAvailable(book, user);
     if (indexAvailable.err) return {err: indexAvailable.err};
 
-    /*
-        Marking the instance as reserved
-    */
+    // Defining action to apply
+    let action;
 
-    let instance = book.instances[indexAvailable];
+    // If no available instances were found, put the user in the queue
+    if (indexAvailable.queue) {
+        action = () => {
+            if (!book.awaiting.indexOf(user) > -1) book.awaiting.push(user)
+        }
+    }
 
-    // Applying business logic
-    let dueBack = timeDue(user.type, book.bestseller);
+    // Else mark the instance as reserved
+    else {
+        let instance = book.instances[indexAvailable];
 
-    const action = () => {
-        instance.status = config.statuses.RESERVED;
-        instance.taker = user;
-        instance.take_due = moment().add(config.DOCUMENT_RESERVATION_TIME, 'ms').format(config.DATE_FORMAT_EXT);
+        // Applying business logic
+        let dueBack = timeDue(user.type, book.bestseller);
 
-        instance.due_back = dueBack;
-    };
+        action = () => {
+            instance.status = config.statuses.RESERVED;
+            instance.taker = user;
+            instance.take_due = moment().add(config.DOCUMENT_RESERVATION_TIME, 'ms').format(config.DATE_FORMAT_EXT);
+
+            instance.due_back = dueBack;
+        };
+    }
 
     try {
         Repository.write(action);
@@ -285,29 +352,37 @@ module.exports.reserveById = function (bookId, user) {
 };
 
 module.exports.checkoutById = function (bookId, user) {
-
     // Getting the book
     let book = Repository.get(bookId);
     if (!book) return {err: book.err};
 
     // Finding an available copy
-    let indexAvailable = findAvailable(book, user);
+    let indexAvailable = findAvailable(book, user, true);
     if (indexAvailable.err) return {err: indexAvailable.err};
 
-    /*
-        Marking the instance as loaned
-    */
+    // Defining an action
+    let action;
 
-    let instance = book.instances[indexAvailable];
+    // If no available instances were found, put the user in the queue
+    if (indexAvailable.queue) {
+        action = () => {
+            if (!book.awaiting.indexOf(user) > -1) book.awaiting.push(user)
+        }
+    }
 
-    // Applying business logic
-    let dueBack = timeDue(user.type, book.bestseller);
+    // Else mark the instance as loaned
+    else {
+        let instance = book.instances[indexAvailable];
 
-    const action = () => {
-        instance.status = config.statuses.LOANED;
-        instance.taker = user;
-        instance.due_back = dueBack;
-    };
+        // Applying business logic
+        let dueBack = timeDue(user.type, book.bestseller);
+
+        action = () => {
+            instance.status = config.statuses.LOANED;
+            instance.taker = user;
+            instance.due_back = dueBack;
+        };
+    }
 
     try {
         Repository.write(action);
@@ -325,6 +400,7 @@ module.exports.checkoutById = function (bookId, user) {
  * @deprecated
  * @returns {Array<Object>|{err}}
  */
+
 module.exports.fineById = function (bookId) {
     let book = Repository.get(bookId);
     if (!book) return {err: config.errors.DOCUMENT_NOT_FOUND};
@@ -364,16 +440,33 @@ module.exports.returnById = function (bookId, userId) {
 
     if (!instance) return {err: config.errors.DOCUMENT_NOT_TAKEN};
 
+    // Renewing the queue of awaiting people
+    const candidate = nextCandidate(book);
+    let index = -1;
+    if (candidate) index = book.awaiting.findIndex(user => user.id === candidate.id);
+
     const action = () => {
-        instance.status = 'Available';
-        instance.taker = undefined;
-        instance.due_back = undefined;
-        instance.take_due = undefined;
-        instance.renewed = false;
+        if (index > -1) {
+            book.awaiting.splice(index, 1);
+            instance.status = config.statuses.RESERVED;
+            instance.take_due = moment().add(config.DOCUMENT_RESERVATION_TIME, 'ms').format(config.DATE_FORMAT_EXT);
+            instance.taker = candidate;
+            instance.due_back = timeDue(candidate.type, book.bestseller);
+        } else {
+            instance.status = config.statuses.AVAILABLE;
+            instance.taker = undefined;
+            instance.due_back = undefined;
+            instance.take_due = undefined;
+            instance.renewed = false;
+        }
     };
 
     try {
         Repository.write(action);
+        if (candidate) UsersInteractor.notifyUser(candidate, {
+            level: 'BOOK_AVAILABLE',
+            book: book
+        });
         return book
     } catch (error) {
         logger.error(error);
@@ -395,7 +488,6 @@ module.exports.renewById = function (bookId, user) {
 
     // Finding the loaned book which is taken by the user
     let instance = book.instances.find(i => i.taker && i.taker.id === user.id);
-
     if (!instance) return {err: config.errors.DOCUMENT_NOT_TAKEN};
 
     // Was the instance renewed previously?
@@ -403,12 +495,41 @@ module.exports.renewById = function (bookId, user) {
         return {err: config.errors.DOCUMENT_ALREADY_RENEWED}
     }
 
+    // Is there outstanding request?
+    if (book.outstanding_request) return {err: config.errors.DOCUMENT_RENEWAL_UNAVAILABLE};
+
     // Applying business logic
     let dueBack = timeDue(user.type, book.bestseller);
 
     const action = () => {
         instance.due_back = dueBack;
         instance.renewed = true;
+    };
+
+    try {
+        Repository.write(action);
+        return book
+    } catch (error) {
+        logger.error(error);
+        return {err: error.message}
+    }
+};
+
+/**
+ * Outstanding request for the book
+ * @param bookId {number} The id of the book
+ * @param set {boolean} If true, outstanding request is posted, otherwise it is cancelled
+ * @return {*}
+ */
+
+module.exports.outstandingRequest = function (bookId, set) {
+    // Getting the book
+    let book = Repository.get(bookId);
+    if (!book) return {err: config.errors.DOCUMENT_NOT_FOUND};
+
+    const action = () => {
+        book.outstanding_request = set;
+        if (set) book.awaiting.clear()
     };
 
     try {

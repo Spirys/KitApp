@@ -112,3 +112,4 @@ module.exports.getAll = getAll;
 module.exports.update = update;
 module.exports.delete = remove;
 module.exports.remove = remove;
+module.exports.write = (action) => realm.write(action);

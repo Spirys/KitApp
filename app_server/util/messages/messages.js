@@ -18,17 +18,17 @@ module.exports = {
     errorCode: 'error',
     errors: {
         'INTERNAL' : 'INT',
-        'ERROR2' : 'ERR2', // Reserved errors
+        'NO_ACCESS' : 'NO_ACCESS',
         'ERROR3' : 'ERR3',
         'WRONG_LOGIN_PASSWORD' : 'WLP',
         'INVALID_TOKEN' : 'INV_TOK',
         'INVALID_ID': 'INVALID_ID',
         'DOCUMENT_NOT_FOUND' : 'DNF',
         'DOCUMENT_ALREADY_TAKEN' : 'DAT',
-        'DOCUMENT_ALREADY_RENEWED' : 'DAR',
+        'DOCUMENT_ALREADY_RENEWED' : 'DOCUMENT_ALREADY_RENEWED',
+        'DOCUMENT_RENEWAL_UNAVAILABLE' : 'DOCUMENT_RENEWAL_UNAVAILABLE',
         'DOCUMENT_NOT_AVAILABLE' : 'DNA',
         'DOCUMENT_NOT_TAKEN' : 'DNT',
-        'DOCUMENT_ALREADY_RENEWED' : 'DAR',
         'USER_NOT_FOUND' : 'UNF',
     },
     general: {

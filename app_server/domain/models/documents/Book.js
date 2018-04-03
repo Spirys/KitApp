@@ -29,7 +29,10 @@ const Book = {
         description: 'string?',
         image: 'string?',
         isbn: 'string?',
-        keywords: 'string?[]'
+        keywords: 'string?[]',
+
+        awaiting: 'User[]',
+        outstanding_request: 'bool'
     }
 };
 

@@ -22,7 +22,7 @@ const logger = require('../../../util/Logger');
 
 function setCookie(remember, session, response) {
     let cookie = {
-        // domain: '.kitapptatar.ru',// todo change when in production!
+        //domain: '.kitapptatar.ru',// todo change when in production!
     };
     if (config.COOKIE_HTTPS_ONLY) cookie.secure = true;
     if (remember) {

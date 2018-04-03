@@ -35,7 +35,8 @@ module.exports.docs = function (req, res) {
 };
 
 module.exports.landing = function (req, res) {
-    res.render('public/index', {messages: getMessages(req)})
+    res.redirect('dashboard')
+    // res.render('public/index', {messages: getMessages(req)})
 };
 
 module.exports.login = function (req, res) {

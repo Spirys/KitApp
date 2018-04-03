@@ -71,16 +71,15 @@ function create(book, update) {
     return realm.objectForPrimaryKey('Book', book.id);
 }
 
-async function remove(id) {
-    let book = await get(id);
-    if (book.err) return {err: book.err};
-
+function remove(book) {
     realm.write(() => {
-        realm.delete(book.instances);
-        realm.delete(book);
+        for (let i of book.instances) {
+            realm.delete(i)
+        }
+        realm.delete(book)
     });
 
-    return book;
+    return true
 }
 
 async function createInstance(status) {

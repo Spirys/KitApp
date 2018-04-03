@@ -28,6 +28,8 @@ router.delete('/books/:id', apiProvider.booksController.deleteById);
 router.post('/books/:id/checkout', apiProvider.booksController.checkoutById);
 router.post('/books/:id/return', apiProvider.booksController.returnById);
 router.post('/books/:id/renew', apiProvider.booksController.renewById);
+router.post('/books/:id/outstanding', apiProvider.booksController.outstandingRequest);
+router.post('/books/:id/outstanding/cancel', apiProvider.booksController.cancelOutstandingRequest);
 
 router.get('/books/:id/instances', apiProvider.booksController.getAll);
 router.post('/books/:id/instances', apiProvider.booksController.newInstance);

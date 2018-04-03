@@ -4,14 +4,17 @@
 
 'use strict';
 
-const config = require('../../util/config');
 /**
  * Module dependencies
  * @private
  */
 
+const config = require('../../util/config');
+const logger = require('../../util/Logger');
+
 const AuthenticationRepository = require('../../data/RepositoryProvider').AuthenticationRepository;
-const UsersRepository = require('../../data/RepositoryProvider').UsersRepository;
+const UsersRepository = require('../../data/repositories/UsersRepository');
+
 
 /**
  * Module exports
@@ -35,8 +38,10 @@ module.exports.createSession = (session, user) => AuthenticationRepository.creat
  * @return {{err}|User} The function returns either {err} with description
  *      or {user} if authentication was successful
  */
-
-module.exports.verifyToken = (token) => AuthenticationRepository.verifyToken(token);
+// Todo place the logic here
+module.exports.verifyToken = (token) => (!token)
+        ? {err: config.errors.INVALID_TOKEN}
+        : AuthenticationRepository.verifyToken(token);
 
 module.exports.new = async function (fields) {
     return await UsersRepository.create(fields);
@@ -64,4 +69,23 @@ module.exports.updateById = async function (id, fields) {
 
 module.exports.deleteById = async function (id) {
     return await UsersRepository.remove(id);
+};
+
+module.exports.notifyUser = (user, notification) => {
+    let action = () => {};
+    switch (notification.level) {
+        case 'BOOK_AVAILABLE':
+            action = () => user.notifications.push(notification);
+            break;
+        case 'BOOK_OUTSTANDING':
+            action = () => user.notifications.push(notification);
+            break;
+    }
+
+    try {
+        UsersRepository.write(action);
+    } catch (err) {
+        logger.error(err);
+        return {err: config.errors.INTERNAL}
+    }
 };
