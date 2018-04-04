@@ -1,28 +1,28 @@
 include ../../mixins
 doctype html
 html
-    +head("Readers")
+    +head(messages.READERS)
     body
         .page
             // Main Navbar
-            +main-navbar()
+            +main-navbar(messages)
             .page-content.d-flex.align-items-stretch
                 // Side Navbar
                 nav.side-navbar
                     // Sidebar Header
-                    +sidebar("readers", user)
+                    +sidebar("readers", user, messages)
                 .content-inner
                     // Page Header
                     header.page-header
                         .container-fluid
-                            h2.no-margin-bottom Readers
+                            h2.no-margin-bottom=messages.READERS
                     section.tables
                         .container-fluid
                             .row
                                 .col-lg-12
                                     .card
                                         .card-header.d-flex.align-items-center
-                                            h3.h4 Readers
+                                            h3.h4=messages.READERS
                                         .card-dropdown
                                             .dropdown
                                                 button#database-dropdown-menu.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')

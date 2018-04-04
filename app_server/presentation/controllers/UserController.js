@@ -61,7 +61,7 @@ module.exports.dashboard = async function (req, res) {
     let messages = getMessages(req);
 
     if (user.type === config.userTypes.LIBRARIAN) {
-        res.render('users/librarian/dashboard', {user, messages})
+        res.render('users/patron/dashboard', {user, messages})
     } else {
         res.render('users/patron/dashboard', {user, messages})
     }
@@ -96,7 +96,7 @@ module.exports.userCard = async function (req, res) {
     let messages = getMessages(req);
 
     if (user.type === config.userTypes.LIBRARIAN) {
-        res.render('users/librarian/user-card', {user, messages})
+        res.render('users/patron/user-card', {user, messages})
     } else {
         res.render('users/patron/user-card', {user, messages})
     }
