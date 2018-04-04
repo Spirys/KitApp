@@ -101,6 +101,20 @@ mixin main-navbar(messages)
                                         li
                                             a.dropdown-item.all-notifications.text-center(rel='nofollow', href='#')
                                                 strong view all notifications 
+                                                
+                                // Localization
+                                li.nav-item.dropdown
+                                    a#localization.nav-link(rel='nofollow', data-target='#', href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                                        i.fa.fa-language
+                                        span#current-language.badge.bg-red EN
+                                    ul.dropdown-menu(aria-labelledby='localization')
+                                        li
+                                            a#select-english.dropdown-item(rel='nofollow', href='')
+                                                | English
+                                        li
+                                            a#select-russian.dropdown-item(rel='nofollow', href='')
+                                                | Russian
+
                                 // Logout
                                 li.nav-item
                                     a#logout.nav-link.logout(href='logout')
