@@ -78,7 +78,7 @@ function onAddClick(){
             published: $('#published').val(),
             authors: $('#authors').split(', '),
             bestseller: $('#bestseller').prop('checked'),
-            image: "http://spiritualmilk.com/wp-content/uploads/2017/03/genericBookCover.jpg"
+            image: "https://spiritualmilk.com/wp-content/uploads/2017/03/genericBookCover.jpg"
 
         },
         success: callback
