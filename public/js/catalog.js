@@ -58,10 +58,36 @@ function onDetailsClick() {
 
     $.get( 'api/books/' + id, {token: getCookie()}, callback);
 }
+function onAddClick(){
+    $.ajax({
+        type: 'PUT',
+        url: `api/books/${bookId}`,
+        data: {
+            token: getCookie(),
+            title: $('#title').val(),
+            edition: $('#edition').val(),
+            publisher: $('#publisher').val(),
+            published: $('#published').val(),
+            description: $('#description').val(),
+            cost: $('#cost').val(),
+            type: $('#document-type option:selected').text(),
+            keywords: $('#keywords').val().split(', '),
+            available: $('#available-copies').val(),
+            reference: $('#reference-copies').val(),
+            maintenance: $('#maintenance-copies').val(),
+            published: $('#published').val(),
+            authors: $('#authors').split(', '),
+            bestseller: $('#bestseller').prop('checked'),
+            image: "https://www.bookopolis.com/img/no_book_cover.jpg"
 
+        },
+        success: callback
+    });
+}
 $(document).ready(function () {
     $('.btn-action').on('click', onActionClick);
     $('.btn-details').on('click', onDetailsClick);
+    $('#save-changes').on('click', onAddClick);
 });
 
 /**
