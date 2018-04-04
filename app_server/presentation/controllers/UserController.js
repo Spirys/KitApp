@@ -19,7 +19,7 @@ const logger = require('../../util/Logger');
  * @private
  */
 
-async function verifyToken(req, res) {
+function verifyToken(req, res) {
     let token = req.cookies[config.COOKIE_NAME];
 
     if (!token) {
@@ -27,7 +27,7 @@ async function verifyToken(req, res) {
         return false
     }
 
-    let user = await UsersInteractor.verifyToken(token);
+    let user = UsersInteractor.verifyToken(token);
     if (user.err) {
         res.redirect('login');
         return false
@@ -68,17 +68,23 @@ module.exports.dashboard = async function (req, res) {
 };
 
 module.exports.catalog = async function (req, res) {
-    const user = await verifyToken(req, res);
+    const user = verifyToken(req, res);
     if (!user) return;
 
     let messages = getMessages(req),
         isLibrarian = user.type === config.userTypes.LIBRARIAN,
         books = BooksInteractor.getAll(1, 25);
 
-    books = responseComposer.formatMultiple(books, isLibrarian).books;
+    books = responseComposer.formatMultiple(books,
+        isLibrarian,
+        null,
+        1, 25,
+        config.getLocale(req),
+        null,
+        user).books;
 
     if (isLibrarian) {
-        res.render('users/librarian/catalog', {user, messages, books})
+        res.render('users/patron/catalog', {user, messages, books})
     } else {
         res.render('users/patron/catalog', {user, messages, books})
     }

@@ -26,10 +26,10 @@ html
                                                 button#database-dropdown-menu.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
                                                     i.fa.fa-ellipsis-v
                                                 .dropdown-menu.dropdown-menu-right.has-shadow(aria-labelledby='database-dropdown-menu')
-                                                    a#add-new-entry.dropdown-item.remove(href='#', data-toggle='modal', data-target='#myModal')
+                                                    a#add-new-entry.dropdown-item.remove(href='#', data-toggle='modal', data-target='#newDocumentModal')
                                                         i.fa.fa-plus
                                                         | Add new document
-                                        #myModal.modal.fade
+                                        #newDocumentModal.modal.fade
                                             .modal-dialog(role='document')
                                                 .modal-content
                                                     .modal-header
@@ -97,7 +97,7 @@ html
                                                     label.col-sm-3.form-control-label Search by authors
                                                     .col-sm-6
                                                         label
-                                                        input.form-control(type='text', placeholder='Autors', required='')
+                                                        input.form-control(type='text', placeholder='Authors', required='')
                                                 .form-group.row
                                                     label.col-sm-3.form-control-label(for='search-by-type') Search by types
                                                     .col-sm-6
@@ -111,6 +111,39 @@ html
                                                         button#search.btn.btn-primary(type='submit') Search
 
                     section.document
+                        #documentDetailsModal.modal.fade
+                            .modal-dialog
+                                .modal-content
+                                    .modal-header
+                                        h3.modal-title Document details
+                                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                            span(aria-hidden='true') ×
+                                    .modal-body
+                                        #details-error.container.alert.alert-danger(hidden=true)
+                                        .container.form-row
+                                            b Title:&nbsp;
+                                            #details-title
+                                        .container.form-row
+                                            b Authors:&nbsp;
+                                            #details-author
+                                        .container.form-row
+                                            b Edition:&nbsp;
+                                            #details-edition
+                                        .container.form-row
+                                            b Publisher:&nbsp;
+                                            #details-publisher
+                                        .container.form-row
+                                            b Keywords:&nbsp;
+                                            #details-keywords
+                                        .container.form-row
+                                            b Description:&nbsp;
+                                            #details-description
+                                        .container.form-row
+                                            b Type:&nbsp;book
+                                            #details-type
+                                    .modal-footer
+                                        button#closeDetailsModal.btn.btn-secondary(type='button', data-dismiss='modal')
+                                            | Close
                         .container-fluid
                             for doc in books
                                 +catalog-document(doc)
@@ -118,4 +151,4 @@ html
                     +footer()
         // Javascript files
         +java-script()
-        
+        script(src='js/catalog.js')

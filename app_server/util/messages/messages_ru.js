@@ -49,3 +49,11 @@ module.exports[msg.user.USER_CARD] = 'Профиль';
 module.exports[msg.user.DATABASE] = 'База данных';
 module.exports[msg.user.READERS] = 'Читатели';
 module.exports[msg.user.LOGOUT] = 'Выход';
+
+// Actions
+module.exports[msg.actions.RESERVE_DOCUMENT] = 'Взять';
+module.exports[msg.actions.DOCUMENT_TAKEN] = 'Взят';
+module.exports[msg.actions.CHECKOUT_DOCUMENT] = 'Выдать';
+module.exports[msg.actions.RENEW_DOCUMENT] = 'Продлить';
+module.exports[msg.actions.RETURN_DOCUMENT] = 'Вернуть';
+module.exports[msg.actions.NO_ACTION] = 'NO_ACTION';

@@ -50,3 +50,11 @@ module.exports[msg.user.USER_CARD] = 'User Card';
 module.exports[msg.user.DATABASE] = 'Database';
 module.exports[msg.user.READERS] = 'Readers';
 module.exports[msg.user.LOGOUT] = 'Logout';
+
+// Actions
+module.exports[msg.actions.RESERVE_DOCUMENT] = 'Reserve';
+module.exports[msg.actions.CHECKOUT_DOCUMENT] = 'Check out';
+module.exports[msg.actions.DOCUMENT_TAKEN] = 'Taken';
+module.exports[msg.actions.RENEW_DOCUMENT] = 'Renew';
+module.exports[msg.actions.RETURN_DOCUMENT] = 'Return';
+module.exports[msg.actions.NO_ACTION] = 'NO_ACTION';

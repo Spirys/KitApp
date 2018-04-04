@@ -50,5 +50,13 @@ module.exports = {
         'DATABASE': 'DATABASE',
         'READERS': 'READERS',
         'LOGOUT': 'LOGOUT'
+    },
+    actions: {
+        'RESERVE_DOCUMENT': 'DOC_RESERVE',
+        'CHECKOUT_DOCUMENT': 'DOC_CHECKOUT',
+        'DOCUMENT_TAKEN': 'DOC_TAKEN',
+        'RENEW_DOCUMENT': 'DOC_RENEW',
+        'RETURN_DOCUMENT': 'DOC_RETURN',
+        'NO_ACTION': 'NO_ACTION',
     }
 };

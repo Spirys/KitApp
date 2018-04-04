@@ -200,10 +200,10 @@ mixin catalog-document(config)
                     if (config.bestseller)
                         button#bestseller.btn.btn-sm.bg-orange(type='button', style='margin:2px') #bestseller
 
-                .right-col.col-lg-2.m-auto
-                    a(href="document.html")
-                        button#details.btn.btn-secondary.book-btn(href="document.html" type='button') DETAILS
-                    button#reserve.btn.btn-info.book-btn(type='button') RESERVE
+                .right-col.col-lg-2.m-auto(data-id=config.id)
+                    button#details.btn-details.btn.btn-secondary.book-btn(type='button') DETAILS
+                    if (config.action !== 'NO_ACTION')
+                        button#reserve.btn-action.btn.btn-info.book-btn(type='button', data-action=config.action, disabled=(config.action==='DOC_TAKEN'))=config.action_msg
 
 mixin user-card-row(row_number, title, author, type, status)
     tr

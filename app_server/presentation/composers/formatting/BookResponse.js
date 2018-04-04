@@ -20,7 +20,6 @@ const instancesFormatter = require('./InstanceResponse');
  * @private
  */
 
-
 /**
  * Formats the single book
  * @param book {Book}
@@ -28,10 +27,11 @@ const instancesFormatter = require('./InstanceResponse');
  * @param fields {Array<string>}
  * @param locale {string=}
  * @param err {string=}
+ * @param user {User=}
  * @return {*}
  */
 
-function format(book, librarianAccess, fields, locale, err) {
+function format(book, librarianAccess, fields, locale, err, user) {
     if (err) {
         return error(err, locale)
     }
@@ -49,8 +49,27 @@ function format(book, librarianAccess, fields, locale, err) {
                     break;
                 case 'instances':
                     if (!librarianAccess) {
-                        for (let i of book.instances) {
-                            response[i.status] = (response[i.status] || 0) + 1
+                        if (user) {
+                            let renewed = false, taken = false;
+                            for (let i of book.instances) {
+                                response[i.status] = (response[i.status] || 0) + 1;
+                                if (!taken && i.taker && i.taker.id === user.id) {
+                                    taken = true;
+                                    renewed = i.renewed;
+                                }
+                            }
+                            response.action = (renewed)
+                                ? config.actions.DOCUMENT_TAKEN
+                                : (taken)
+                                    ? config.actions.RENEW_DOCUMENT
+                                    : response[config.statuses.AVAILABLE]
+                                        ? config.actions.RESERVE_DOCUMENT
+                                        : config.actions.NO_ACTION;
+                            response.action_msg = config.messages(locale)[response.action];
+                        } else {
+                            for (let i of book.instances) {
+                                response[i.status] = (response[i.status] || 0) + 1
+                            }
                         }
                         sel = null;
                     }
@@ -69,7 +88,7 @@ function format(book, librarianAccess, fields, locale, err) {
     return response
 }
 
-function formatMultiple(books, librarianAccess, fields, page, length, locale, err) {
+function formatMultiple(books, librarianAccess, fields, page, length, locale, err, user) {
     if (err) {
         return error(err, locale)
     }
@@ -83,7 +102,7 @@ function formatMultiple(books, librarianAccess, fields, page, length, locale, er
     };
 
     for (let i = 0; i < books.length; i++) {
-        response.books.push(format(books[i], librarianAccess, fields))
+        response.books.push(format(books[i], librarianAccess, fields, '', '', user))
     }
 
     return response

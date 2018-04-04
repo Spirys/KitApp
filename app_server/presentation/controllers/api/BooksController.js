@@ -52,7 +52,7 @@ function traverseRequest(req, res, needBookId, needLibrarianAccess) {
     // Traversing request
     const bookId = val.number(req.params.id),
         locale = getLocale(req),
-        token = req.body.token;
+        token = req.body.token || req.query.token;
 
     const response = {locale};
 
@@ -132,7 +132,11 @@ module.exports.new = async function (req, res) {
 
     const book = interactor.new(fields);
 
-    let response = responseComposer.format(book, true, defaultFields, r.locale, book.err);
+    let response = responseComposer.format(book,
+        true,
+        defaultFields,
+        r.locale,
+        book.err);
     sendJson(res, response);
 };
 
@@ -142,7 +146,11 @@ module.exports.getById = async function (req, res) {
 
     const book = interactor.getById(r.bookId);
 
-    let response = responseComposer.format(book, true, defaultFields, r.locale, book.err);
+    let response = responseComposer.format(book,
+        r.user.type === config.userTypes.LIBRARIAN,
+        defaultFields,
+        r.locale,
+        book.err);
     sendJson(res, response);
 };
 
