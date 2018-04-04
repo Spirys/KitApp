@@ -49,14 +49,17 @@ html
                                                                 label(for='edition') Edition
                                                                 input#edition.form-control(type='text' required)
                                                             .form-group
-                                                                label(for='year') Year
-                                                                input#year.form-control(type='number')      
+                                                                label(for='publisher') Publisher
+                                                                input#publisher.form-control(type='text' required)      
                                                             .form-group
                                                                 label(for='keywords') Keywords
-                                                                input#keywords.form-control(type='text')
+                                                                input#keywords.form-control(type='text' required)
                                                             .form-group
                                                                 label(for='description') Description
-                                                                textarea#description.form-control(rows='3')
+                                                                textarea#description.form-control(rows='3' required)
+                                                            .form-group
+                                                                label(for='cost') Cost
+                                                                textarea#cost.form-control(type='number' required)
                                                             .form-group
                                                                 label(for='document-type') Type
                                                                 select#document-type.form-control
