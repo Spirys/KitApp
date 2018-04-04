@@ -81,5 +81,6 @@ module.exports.logout = async function (req, res) {
 
     if (!response.err) logger.info(`User ${response.id} logged out. Session ${session} removed`);
 
+    res.clearCookie(config.COOKIE_NAME, {domain: '.kitapptatar.ru'});
     sendJson(res, responseComposer.format({}, locale, response.err));
 };
