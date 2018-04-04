@@ -167,3 +167,37 @@ module.exports.myBooks = async function (req, res) {
         r.user);
     sendJson(res, response)
 };
+
+// TODO
+module.exports.myJournals = async function (req, res) {
+    // const r = traverseRequest(req, res);
+    // if (!r) return;
+    //
+    // let journals = interactor.journalsOfUser(r.user, 1, 25);
+    //
+    // let response = JournalResponseComposer.formatMultiple(journals,
+    //     r.user.type === config.userTypes.LIBRARIAN,
+    //     null,
+    //     1, journals.length,
+    //     r.locale,
+    //     journals.err,
+    //     r.user);
+    // sendJson(res, response)
+};
+
+// TODO
+module.exports.myMedia = async function (req, res) {
+    // const r = traverseRequest(req, res);
+    // if (!r) return;
+    //
+    // let media = interactor.mediaOfUser(r.user, 1, 25);
+    //
+    // let response = MediaResponseComposer.formatMultiple(media,
+    //     r.user.type === config.userTypes.LIBRARIAN,
+    //     null,
+    //     1, media.length,
+    //     r.locale,
+    //     media.err,
+    //     r.user);
+    // sendJson(res, response)
+};

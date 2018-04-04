@@ -71,7 +71,15 @@ module.exports.deleteById = async function (id) {
 };
 
 module.exports.booksOfUser = function (user, page, length) {
+    return user.books.slice((page - 1) * length, length);
+};
 
+module.exports.journalsOfUser = function (user, page, length) {
+    return user.journals.slice((page - 1) * length, length);
+};
+
+module.exports.mediaOfUser = function (user, page, length) {
+    return user.media.slice((page - 1) * length, length);
 };
 
 module.exports.notifyUser = (user, notification) => {
