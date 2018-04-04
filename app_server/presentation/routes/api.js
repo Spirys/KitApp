@@ -81,6 +81,8 @@ router.get('/users/:id', apiProvider.usersController.getById);
 router.put('/users/:id', apiProvider.usersController.updateById);
 router.delete('/users/:id', apiProvider.usersController.deleteById);
 
+router.get('/me/books', apiProvider.usersController.myBooks);
+
 /**
  * Router configuration for images
  * @private

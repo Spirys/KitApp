@@ -9,12 +9,14 @@
  * @private
  */
 
-const responseComposer = require('../../composers/ResponseComposer').user;
+const ResponseComposer = require('../../composers/ResponseComposer').user;
+const BookResponseComposer = require('../../composers/ResponseComposer').book;
 const sendJson = require('../../composers/ResponseComposer').sendJson;
 const error = require('../../composers/ResponseComposer').error;
 const interactor = require('../../../domain/interactors/UsersInteractor');
 
 const config = require('../../../util/config');
+const val = require('../../../domain/validation/InputValidation');
 const defaultNumberOfUsers = config.DEFAULT_USERS_NUMBER;
 const defaultFields = config.DEFAULT_USER_RESPONSE_FIELDS;
 
@@ -26,7 +28,38 @@ const defaultFields = config.DEFAULT_USER_RESPONSE_FIELDS;
  */
 
 function getLocale(req) {
-    return req.cookies.locale || 'en';
+    return req.cookies.locale || req.body.locale || 'en';
+}
+
+/**
+ * Traversing the request
+ * @param req
+ * @param res
+ * @param needLibrarianAccess {boolean=} Is librarian access needed?
+ * @return {*}
+ */
+
+function traverseRequest(req, res, needLibrarianAccess) {
+    // Traversing request
+    const locale = getLocale(req),
+        token = req.body.token || req.query.token;
+
+    const response = {locale};
+
+    // Checking whether the session is correct
+    let user = interactor.verifyToken(token);
+    if (user.err) {
+        sendJson(res, error(user.err, locale));
+        return false
+    }
+
+    // Checking the permissions
+    if (needLibrarianAccess && user.type !== config.userTypes.LIBRARIAN) {
+        sendJson(res, error(config.errors.NO_ACCESS, locale));
+        return false
+    } else response.user = user;
+
+    return response
 }
 
 /**
@@ -46,7 +79,7 @@ module.exports.getAll = async function (req, res) {
     // Getting the users
     const users = await interactor.getAll(page, length);
 
-    let response = responseComposer.formatMultiple(users, true, fields, page, length, locale, users.err);
+    let response = ResponseComposer.formatMultiple(users, true, fields, page, length, locale, users.err);
 
     sendJson(res, response);
 };
@@ -76,7 +109,7 @@ module.exports.new = async function (req, res) {
 
     const user = await interactor.new(fields);
 
-    let response = responseComposer.format(user, true, defaultFields, locale, user.err);
+    let response = ResponseComposer.format(user, true, defaultFields, locale, user.err);
     sendJson(res, response);
 };
 
@@ -86,7 +119,7 @@ module.exports.getById = async function (req, res) {
 
     const user = await interactor.getById(id);
 
-    let response = responseComposer.format(user, true, defaultFields, locale, user.err);
+    let response = ResponseComposer.format(user, true, defaultFields, locale, user.err);
     sendJson(res, response);
 };
 
@@ -97,7 +130,7 @@ module.exports.updateById = async function (req, res) {
 
     const user = await interactor.updateById(id, fields);
 
-    let response = responseComposer.format(user, true, defaultFields, locale, user.err);
+    let response = ResponseComposer.format(user, true, defaultFields, locale, user.err);
     sendJson(res, response);
 
 };
@@ -108,6 +141,29 @@ module.exports.deleteById = async function (req, res) {
 
     const user = await interactor.deleteById(id);
 
-    let response = responseComposer.format(user, true, defaultFields, locale, user.err);
+    let response = ResponseComposer.format(user, true, defaultFields, locale, user.err);
     sendJson(res, response);
+};
+
+/**
+ * Books of the user
+ * @param req
+ * @param res
+ * @return {Promise<void>}
+ */
+
+module.exports.myBooks = async function (req, res) {
+    const r = traverseRequest(req, res);
+    if (!r) return;
+
+    let books = interactor.booksOfUser(r.user, 1, 25);
+
+    let response = BookResponseComposer.formatMultiple(books,
+        r.user.type === config.userTypes.LIBRARIAN,
+        null,
+        1, books.length,
+        r.locale,
+        books.err,
+        r.user);
+    sendJson(res, response)
 };

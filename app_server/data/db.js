@@ -68,7 +68,7 @@ async function init() {
                 instances.forEach(apply);
             }
 
-            if (oldRealm.schemaVersion < 3) {
+            if (oldRealm.schemaVersion <= 3) {
                 let books = newRealm.objects('Book');
                 books.forEach(book => {
                     book.awaiting = [];

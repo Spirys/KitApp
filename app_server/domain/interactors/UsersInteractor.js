@@ -15,7 +15,6 @@ const logger = require('../../util/Logger');
 const AuthenticationRepository = require('../../data/RepositoryProvider').AuthenticationRepository;
 const UsersRepository = require('../../data/repositories/UsersRepository');
 
-
 /**
  * Module exports
  * @public
@@ -69,6 +68,10 @@ module.exports.updateById = async function (id, fields) {
 
 module.exports.deleteById = async function (id) {
     return await UsersRepository.remove(id);
+};
+
+module.exports.booksOfUser = function (user, page, length) {
+
 };
 
 module.exports.notifyUser = (user, notification) => {
