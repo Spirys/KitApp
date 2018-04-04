@@ -71,7 +71,12 @@ module.exports.deleteById = async function (id) {
 };
 
 module.exports.booksOfUser = function (user, page, length) {
-    return user.books.slice((page - 1) * length, length);
+    const bookInstances = user.books.slice((page - 1) * length, length);
+    const response = [];
+    for (let instance of bookInstances) {
+        response.push(instance.book[0])
+    }
+    return response
 };
 
 module.exports.journalsOfUser = function (user, page, length) {

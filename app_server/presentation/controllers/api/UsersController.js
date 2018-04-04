@@ -165,6 +165,19 @@ module.exports.myBooks = async function (req, res) {
         r.locale,
         books.err,
         r.user);
+
+    for (let k = 0; k < books.length; k++) {
+        let book = books[k];
+        for (let i of book.instances) {
+            if (i.taker && i.taker.id === r.user.id) {
+                response.books[k].fine = config.fine(i);
+                if (i.take_due) response.books[k].take_due = i.take_due;
+                else if (i.due_back) response.books[k].due_back = i.due_back;
+                break
+            }
+        }
+    }
+
     sendJson(res, response)
 };
 

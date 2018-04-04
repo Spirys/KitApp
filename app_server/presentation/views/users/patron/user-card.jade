@@ -31,10 +31,12 @@ html
                                                             th#author-0 Author
                                                             th#type-0 Type
                                                             th#status-0 Status
-                                                    tbody
-                                                        +user-card-row("1", "Touch of Class", "Bertrand Meyer", "Book", "Due 06.03.2018")
-                                                        +user-card-row("2", "Captain's daughter", "Alexander S. Pushkin", "Book", "Due 06.03.2018")
-                                                        +user-card-row("3", "Kolobok", "Folklor", "Book", "Returned 01.01.2018")
+                                                            th#fine Fine
+                                                            th#Action Action
+                                                    tbody#my-documents
+                                                        //+user-card-row("1", "Touch of Class", "Bertrand Meyer", "Book", "Due 06.03.2018")
+                                                        //+user-card-row("2", "Captain's daughter", "Alexander S. Pushkin", "Book", "Due 06.03.2018")
+                                                        //+user-card-row("3", "Kolobok", "Folklor", "Book", "Returned 01.01.2018")
                     section.tables
                         .container-fluid
                             .card
@@ -126,3 +128,4 @@ html
                     +footer()
         // Javascript files
         +java-script()
+        script(src='js/user-card.js')
