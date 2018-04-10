@@ -79,6 +79,9 @@ function format(book, librarianAccess, fields, locale, err, user) {
                     sel = [];
                     for (let i of book.keywords) sel.push(i);
                     break;
+                case 'awaiting':
+                    sel = book.awaiting.length;
+                    break;
                 default: sel = book[field];
             }
 

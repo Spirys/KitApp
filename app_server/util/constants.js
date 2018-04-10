@@ -57,7 +57,7 @@ module.exports.DEFAULT_DOCUMENT_IMAGE = '/images/document-no-image.png';
 module.exports.DEFAULT_DOCS_NUMBER = 25;
 module.exports.DEFAULT_USERS_NUMBER = 25;
 module.exports.DEFAULT_BOOK_REQ_FIELDS = ['title', 'authors', 'cost', 'edition', 'id', 'publisher', 'isbn', 'keywords', 'description', 'available', 'loaned', 'reference'];
-module.exports.DEFAULT_BOOK_RESPONSE_FIELDS = ['id', 'authors', 'bestseller', 'cost', 'image', 'instances', 'title', 'edition', 'publisher', 'keywords', 'isbn', 'description'];
+module.exports.DEFAULT_BOOK_RESPONSE_FIELDS = ['id', 'authors', 'bestseller', 'cost', 'image', 'instances', 'title', 'edition', 'publisher', 'keywords', 'isbn', 'description', 'awaiting'];
 module.exports.DEFAULT_AUTHOR_RESPONSE_FIELDS = ['id', 'first_name', 'last_name', 'birth_date', 'death_date'];
 module.exports.DEFAULT_MEDIA_RESPONSE_FIELDS = ['title', 'authors', 'cost', 'id', 'keywords', 'description', 'available', 'loaned', 'reference'];
 // TODO: add some privacy

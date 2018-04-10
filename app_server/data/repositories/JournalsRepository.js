@@ -26,7 +26,6 @@ module.exports.remove = remove;
 
 const Journal = require('../../domain/models/documents/Journal');
 const Article = require('../../domain/models/documents/Article');
-const JournalInstance = require('../../domain/models/documents/DocumentInstance').journal;
 const AuthorRepo = require('./AuthorsRepository');
 
 /**

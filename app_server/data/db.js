@@ -147,12 +147,6 @@ module.exports.init = async function () {
     //     'Librarian',
     //     'i_am_librarian');
     //
-    // await createUser('test@kitapptatar.ru',
-    //     '5f4dcc3b5aa765d61d8327deb882cf99',
-    //     'John',
-    //     'Snow',
-    //     'Student',
-    //     'j_snow');
 };
 
 // noinspection JSUnusedLocalSymbols

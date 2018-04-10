@@ -31,7 +31,6 @@ const config = require('../../util/config');
 
 const realm = require('../db').realm;
 const Media = require('../../domain/models/documents/Media');
-const MediaInstance = require('../../domain/models/documents/DocumentInstance').media;
 const Author = require('../../domain/models/documents/Author');
 
 /**

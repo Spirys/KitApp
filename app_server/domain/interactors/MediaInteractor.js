@@ -13,7 +13,6 @@
  */
 
 const Repository = require('../../data/RepositoryProvider').MediaRepository;
-const DocumentInstance = require('../models/documents/DocumentInstance.js');
 const config = require("../../util/config");
 
 /**
@@ -194,15 +193,15 @@ module.exports.getAllInstances = async function (media) {
 };
 
 module.exports.newInstance = async function (id, request) {
-    const inst = new DocumentInstance(request.status);
-    inst.due_back = request.due_back;
-    inst.taker = request.taker;
-
-    let media = await Repository.get(id);
-    if (media.err) return {err: media.err};
-
-    media.addInstance(inst);
-    return media;
+    // const inst = new DocumentInstance(request.status);
+    // inst.due_back = request.due_back;
+    // inst.taker = request.taker;
+    //
+    // let media = await Repository.get(id);
+    // if (media.err) return {err: media.err};
+    //
+    // media.addInstance(inst);
+    // return media;
 };
 
 module.exports.getInstanceById = async function () {

@@ -14,7 +14,6 @@
 
 const Repository = require('../../data/RepositoryProvider').BooksRepository;
 const AuthorsRepository = require('../../data/RepositoryProvider').AuthorsRepository;
-const DocumentInstance = require('../models/documents/DocumentInstance.js');
 
 const UsersInteractor = require('./UsersInteractor');
 
@@ -366,7 +365,7 @@ module.exports.checkoutById = function (bookId, user) {
     // If no available instances were found, put the user in the queue
     if (indexAvailable.queue) {
         action = () => {
-            if (!book.awaiting.indexOf(user) > -1) book.awaiting.push(user)
+            if (book.awaiting.indexOf(user) === -1) book.awaiting.push(user)
         }
     }
 
@@ -553,15 +552,15 @@ module.exports.getAllInstances = async function (book) {
 module.exports.newInstance = async function (id, request) {
 
     // TODO REFACTOR
-    const inst = new DocumentInstance(request.status);
-    inst.due_back = request.due_back;
-    inst.taker = request.taker;
-
-    let book = await Repository.get(id);
-    if (book.err) return {err: book.err};
-
-    book.addInstance(inst);
-    return book;
+    // const inst = new DocumentInstance(request.status);
+    // inst.due_back = request.due_back;
+    // inst.taker = request.taker;
+    //
+    // let book = await Repository.get(id);
+    // if (book.err) return {err: book.err};
+    //
+    // book.addInstance(inst);
+    // return book;
 };
 
 module.exports.getInstanceById = async function () {

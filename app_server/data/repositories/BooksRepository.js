@@ -14,7 +14,6 @@ const defaultFields = require('../../util/config').DEFAULT_BOOK_REQ_FIELDS;
 
 const realm = require('../db').realm;
 const Book = require('../../domain/models/documents/Book');
-const BookInstance = require('../../domain/models/documents/DocumentInstance').book;
 
 /**
  * CRUD functions

@@ -1,23 +1,22 @@
-'use strict';
-
 function getCookie() {
-    // const matches = document.cookie.match(new RegExp(
+    // var matches = document.cookie.match(new RegExp(
     //     "(?:^|; )" + '_sessionId'.replace(/([.$?*|{}()\[\]\\\/+^])/g, '\\$1') + "=([^;]*)"
     // ));
-    const matches = document.cookie.match(new RegExp(
+    var matches = document.cookie.match(new RegExp(
         "(?:^|; )" + '_sessionId' + "=([^;]*)"
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
 function onActionClick() {
-    const button = $(this);
-    const bookId = button.parent().attr('data-id');
+    var button = $(this);
+    var bookId = button.parent().attr('data-id');
 
     function callback (data) {
         if (data.code) {
             alert(data.message)
         }
+        alert (`You are #${data.awaiting + 1} in the queue`);
         button.html('DONE');
     }
 
@@ -29,11 +28,11 @@ function onActionClick() {
 
 function onDetailsClick() {
     $('#documentDetailsModal').modal('show');
-    const id = $(this).parent().attr('data-id');
+    var id = $(this).parent().attr('data-id');
 
-    const callback = (data) => {
+    var callback = function (data) {
         if (data.code) {
-            const errorView = $('#details-error');
+            var errorView = $('#details-error');
             errorView.parent().children().hide();
             errorView.attr('hidden', false);
             errorView.fadeIn(100, function () {
@@ -42,9 +41,9 @@ function onDetailsClick() {
             return
         }
 
-        const authorsData = data.authors;
-        let authors = [];
-        for (let author of authorsData) {
+        var authorsData = data.authors;
+        var authors = [];
+        for (var author of authorsData) {
             authors.push(author.first_name + ' ' + author.last_name)
         }
 
