@@ -15,7 +15,6 @@
  * @public
  */
 
-
 /**
  * Action class to enumerate actions
  * Contents are unnecessary.

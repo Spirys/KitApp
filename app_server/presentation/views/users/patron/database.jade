@@ -1,0 +1,53 @@
+include ../../mixins
+doctype html
+html
+    +head(messages.DATABASE)
+    body
+        .page
+            // Main Navbar
+            +main-navbar(messages)
+            .page-content.d-flex.align-items-stretch
+                // Side Navbar
+                +sidebar("database", user, messages)
+                .content-inner
+                    // Page Header
+                    header.page-header
+                        .container-fluid
+                            h2.no-margin-bottom Database
+                    section.tables
+                        .container-fluid
+                            .row
+                                .col-lg-12
+                                    .card
+                                        //.card-dropdown
+                                            .dropdown
+                                                button#database-dropdown-menu.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                                                    i.fa.fa-ellipsis-v
+                                                .dropdown-menu.dropdown-menu-right.has-shadow(aria-labelledby='database-dropdown-menu')
+                                                    a#add-new-entry.dropdown-item.remove(href='#')
+                                                        i.fa.fa-plus
+                                                        | Add new entry
+                                        .card-header.d-flex.align-items-center
+                                            h3.h4 Database
+                                        .card-body
+                                            .table-responsive
+                                                table.table.table-striped.table-hover
+                                                    thead
+                                                        tr
+                                                            th#row-0 ID
+                                                            th#name-0 Name
+                                                            th#surname-0 Surname
+                                                            th#user-type-0 User Type
+                                                            th#document-0 Document
+                                                            th#status-0 Status
+                                                            th#actions-0 Actions
+                                                    tbody
+                                                        +database-row("124123", "Elon", "Musk", "Student", "Intoduction to algorithms", "Due 05.03")
+                                                        +database-row("224123", "Steve", "Jobs", "Student", "Intoduction to algorithms", "Due 05.03")
+                                                        +database-row("004123", "Charles", "Darwin", "Faculty", "Intoduction to algorithms", "Returned")
+                                                        +database-row("000125", "Elon", "Musk", "Student", "Introduction to algorithms", "Reserved")
+                    // Page Footer
+                    +footer()
+        // Javascript files
+        +java-script()
+        script(src='js/front.js')
