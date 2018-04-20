@@ -41,7 +41,11 @@ module.exports.userTypes = {
     FACULTY_TA: 'Teaching assistant',
     FACULTY_INSTRUCTOR: 'Instructor',
     FACULTY_PROFESSOR: 'Professor',
-    LIBRARIAN: 'Librarian'
+    LIBRARIAN: 'Librarian', // Deprecated
+    LIBRARIAN_1: 'Jr librarian',
+    LIBRARIAN_2: 'Middle librarian',
+    LIBRARIAN_3: 'Senior librarian',
+    ADMIN: 'Admin'
 };
 
 /**
