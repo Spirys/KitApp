@@ -57,7 +57,7 @@ function onDetailsClick() {
 
     $.get( 'api/books/' + id, {token: getCookie()}, callback);
 }
-function onAddClick(){
+function onAddClick(bookId, callback){
     $.ajax({
         type: 'PUT',
         url: `api/books/${bookId}`,
