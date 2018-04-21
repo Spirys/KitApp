@@ -24,7 +24,7 @@ module.exports.book = {
     publisher: 'NES',
     published: 'DATE',
 
-    keywords: 'NESArray?',
+    keywords: 'NESArray',
 
     bestseller: 'boolean?',
     description: 'NES?',

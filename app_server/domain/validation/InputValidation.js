@@ -41,22 +41,35 @@ function validate(value, rule) {
     }
 
     switch (rule) {
-        case 'NES': return typeof value === 'string' && value.length > 0;
-        case 'NESArray': return Array.isArray(value) && value.every(x => validate(x, 'NES'));
-        case 'NESArray+': return Array.isArray(value) && value.length && value.every(x => validate(x, 'NES'));
-        case 'number': return isInteger(value) && value >= 0;
-        case 'number+': return isInteger(value) && value > 0;
-        case 'DATE': return moment(value, ['YYYY', 'MM-YYYY', 'DD-MM-YYYY'], true).isValid();
-        case 'boolean': return typeof value === 'boolean';
+        case 'NES':
+            return typeof value === 'string' && value.length > 0;
+        case 'NESArray':
+            return Array.isArray(value) && value.every(x => validate(x, 'NES'));
+        case 'NESArray+':
+            return Array.isArray(value) && value.length && value.every(x => validate(x, 'NES'));
+        case 'number':
+            return isInteger(value) && value >= 0;
+        case 'number+':
+            return isInteger(value) && value > 0;
+        case 'DATE':
+            return moment(value, ['YYYY', 'MM-YYYY', 'DD-MM-YYYY'], true).isValid();
+        case 'boolean':
+            return typeof value === 'boolean';
 
-        case 'NES?': return typeof value === 'undefined' || value == null || validate(value, 'NES');
-        case 'NESArray?': return typeof value === 'undefined' || value == null || validate(value, 'NESArray');
-        case 'number?': return typeof value === 'undefined' || value == null || validate(value, 'number');
-        case 'number+?': return typeof value === 'undefined' || value == null || validate(value, 'number+');
+        case 'NES?':
+            return typeof value === 'undefined' || value == null || validate(value, 'NES');
+        case 'NESArray?':
+            return typeof value === 'undefined' || value == null || validate(value, 'NESArray');
+        case 'number?':
+            return typeof value === 'undefined' || value == null || validate(value, 'number');
+        case 'number+?':
+            return typeof value === 'undefined' || value == null || validate(value, 'number+');
         // case 'DATE?': return typeof value === 'undefined' || value == null || validate(value, 'DATE');
-        case 'boolean?': return typeof value === 'undefined' || value == null || validate(value, 'boolean');
+        case 'boolean?':
+            return typeof value === 'undefined' || value == null || validate(value, 'boolean');
 
-        default: return false
+        default:
+            return false
     }
 }
 
@@ -66,7 +79,7 @@ function validate(value, rule) {
  * @return {boolean}
  */
 
-function isInteger (nVal) {
+function isInteger(nVal) {
     return typeof nVal === 'number'
         && isFinite(nVal)
         && nVal > -9007199254740992
@@ -96,7 +109,7 @@ module.exports.stringOrDefault = (s, defaultValue) =>
 
 module.exports.number = (value) => {
     let result = parseInt(value);
-    return (!Number.isNaN(result) && (result >= 0))? result : false
+    return (!Number.isNaN(result) && (result >= 0)) ? result : false
 };
 
 module.exports.numberOrDefault = (number, defaultValue, isPositive) =>
@@ -109,18 +122,45 @@ module.exports.numberOrDefault = (number, defaultValue, isPositive) =>
  * Checks whether the fields correspond to given rules
  * @param fields {*} The actual fields to validate. For example, <code>{prop1: 1, prop2: 'two'}</code>
  * @param rules {*} The rules. For example, <code>{prop1: 'number+', prop2: 'NES'}</code>
- * @return {*}
+ * @return {{wrong: Array, extra: Array, missing: Array}}
  */
 
 module.exports.validate = function (fields, rules) {
-    let wrong = [];
+    let wrong = [],
+        missing = [],
+        extra = [];
 
-    for (let field in fields) {
-        if (fields.hasOwnProperty(field) && !validate(fields[field], rules[field]))
-            wrong.push(field)
+    for (let field in rules) {
+        if (rules.hasOwnProperty(field)) {
+            let rule = rules[field];
+
+            // Check if the required field is missing
+            if (typeof rule === 'string' && !rule.endsWith('?') && !fields.hasOwnProperty(field)) {
+                missing.push(field)
+            }
+
+            // Check if the field is valid
+            else if (!validate(fields[field], rules[field])) {
+                wrong.push(field)
+            }
+        }
     }
 
-    return wrong.length > 0 ? wrong : true
+    // Search for extra fields
+    if (!wrong.length) {
+        for (let field in fields) {
+            if (fields.hasOwnProperty(field) && !rules.hasOwnProperty(field))
+                extra.push(field)
+        }
+    }
+
+    return (missing.length || wrong.length || extra.length)
+        ? {
+            missing,
+            wrong,
+            extra
+        }
+        : true
 };
 
 module.exports.filterFields = filterFields;

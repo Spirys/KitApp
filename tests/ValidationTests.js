@@ -65,7 +65,7 @@ const test2 = val.validate({
 
 }, rules);
 
-console.log(`Result of test2: ${arrayEqual(test2, ['token']) ? 'PASS' : 'FAIL'}`);
+console.log(`Result of test2: ${arrayEqual(test2.extra, ['token']) ? 'PASS' : 'FAIL'}`);
 
 /**
  * Test on incorrect data
@@ -88,9 +88,29 @@ const test3 = val.validate({
 }, rules);
 
 console.log(`Result of test3: ${
-    arrayEqual(test3, ['title', 'authors', 'cost', 'edition',
-        'publisher', 'keywords', 'description',
-        'available', 'reference', 'image', 'published'])
+    arrayEqual(test3.wrong, ['title', 'authors', 'cost', 'edition',
+        'publisher', 'published', 'keywords', 'description',
+        'available', 'reference', 'image'])
         ? 'PASS'
         : 'FAIL'
+    }`);
+
+/**
+ * Test on extraneous data
+ * @private
+ */
+
+const test4 = val.validate({
+    authors: ['John Doe', 'Eva Adams'],
+    cost: 1000,
+    edition: 'Second revision',
+    publisher: 'INNO books',
+    description: 'Just an example book',
+    image: 'https://example.com/imgs/inno.png',
+    published: '01-03-2018'
+
+}, rules);
+
+console.log(`Result of test4: ${
+    arrayEqual(test4.missing, ['title', 'keywords']) ? 'PASS' : 'FAIL'
     }`);
