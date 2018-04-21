@@ -106,14 +106,14 @@ mixin main-navbar(messages)
                                 li.nav-item.dropdown
                                     a#localization.nav-link(rel='nofollow', data-target='#', href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
                                         i.fa.fa-language
-                                        span#current-language.badge.bg-red EN
+                                        span#current-language.badge.bg-red 
                                     ul.dropdown-menu(aria-labelledby='localization')
                                         li
-                                            a#select-english.dropdown-item(rel='nofollow', href='')
+                                            a.select-language.dropdown-item(rel='nofollow', href='', data-lang='en')
                                                 | English
                                         li
-                                            a#select-russian.dropdown-item(rel='nofollow', href='')
-                                                | Russian
+                                            a.select-language.dropdown-item(rel='nofollow', href='', data-lang='ru')
+                                                | Русский
 
                                 // Logout
                                 li.nav-item
@@ -180,6 +180,19 @@ mixin java-script()
     // Main File
     script(src='js/front.js')
 
+    script
+        | var matches = document.cookie.match(new RegExp('(?:^|; )' + 'locale' + '=([^;]*)'));
+        | var cookie = null;
+        | function setLocale (locale) {
+        |   var date = new Date(new Date().getTime() + 31536000000); // 1 year
+        |   document.cookie = 'locale=' + locale + '; path=/; expires=' + date.toUTCString();
+        | }
+        | if (matches) cookie = decodeURIComponent(matches[1]);
+        | else setLocale('EN');
+        | $('#current-language').html(cookie || 'EN');
+        | var lang = $('.select-language');
+        | lang.on('click', function() {setLocale($(this).attr('data-lang'))});
+
 
 mixin reader-row(config)
     tr
@@ -236,7 +249,7 @@ mixin database-row(id, name, surname, type, title, status)
         th#surname #{surname}
         td#user-type #{type}
         td
-            a#document(href='document.html') #{title}
+            a#document(href='document') #{title}
         td#status #{status}
         td
             if status==="Reserved"
