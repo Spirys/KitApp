@@ -17,9 +17,13 @@ const AuthorsRepository = require('../../data/RepositoryProvider').AuthorsReposi
 
 const UsersInteractor = require('./UsersInteractor');
 
+const filter = require('../validation/InputValidation').filterFields;
+const rules = require('../validation/Rules').book;
+
 const config = require('../../util/config');
 const logger = require('../../util/Logger');
 const moment = require('moment');
+
 
 /**
  * Module functions
@@ -160,6 +164,49 @@ function nextCandidate(book) {
 }
 
 /**
+ * Creates a new book
+ * @param query {*}
+ * @param available {number}
+ * @param reference {number}
+ * @param maintenance {number}
+ * @return {Book|{err:string}}
+ */
+
+function createNewBook(query, available, reference, maintenance) {
+    let id = Repository.maxId() + 1;
+
+    const book = Object.assign({}, query);
+    book.id = id;
+    book.authors = [];
+    book.outstanding_request = false;
+
+    // Find the requested authors or create them
+    for (let author of query.authors) {
+        book.authors.push(AuthorsRepository.findOrCreate({
+            first_name: author.first_name,
+            last_name: author.last_name
+            // middle_name: author.middle_name,
+            // birth_date: author.birth_date,
+            // death_date: author.death_date
+        }));
+    }
+
+    /*
+        Fill the instances
+     */
+
+    book.instances = [];
+    addInstances(book, Repository.maxInstanceId(), available, reference, maintenance);
+
+    try {
+        return Repository.create(book);
+    } catch (error) {
+        logger.error(error);
+        return {err: config.errors.INTERNAL}
+    }
+}
+
+/**
  * Module exports
  * @public
  */
@@ -183,9 +230,7 @@ module.exports.new = function (query) {
         Set defaults if instance parameters are missing
     */
 
-    let book,
-
-        available = (query.available)
+    const available = (query.available)
             ? typeof query.available === 'number' ? query.available : 0
             : (query.reference || query.maintenance) ? 0 : 1,
 
@@ -197,64 +242,34 @@ module.exports.new = function (query) {
             ? typeof query.maintenance === 'number' ? query.maintenance : 0
             : (available || reference) ? 0 : 1,
 
-        books = Repository.searchExact({
+        books = Repository.findExact({
             title: query.title,
             edition: query.edition,
             publisher: query.publisher
         });
 
-    /*
-        Update the existing book, add number of instances
-     */
     if (books.length) {
-        book = books[0];
+        // Update the existing book, add number of instances
+
+        const book = books[0];
+
         try {
             Repository.write(addInstancesFunc(book, Repository.maxInstanceId(), available, reference, maintenance))
         } catch (error) {
             logger.error(error);
             return {err: config.errors.INTERNAL}
         }
+
+        return book
+    } else {
+        // Filter the input data
+        const book = filter(query, rules);
+
+        if (book.err) return book;
+
+        // Create a new book from query
+        return createNewBook(book, available, reference, maintenance);
     }
-
-    /*
-        Create a new book
-     */
-    else {
-        let id = Repository.maxId() + 1;
-
-        book = Object.assign({}, query);
-        book.id = id;
-        book.authors = [];
-        book.outstanding_request = false;
-
-        // Find the requested authors or create them
-        for (let author of query.authors) {
-            // let [first_name, last_name] = author.trim().split(' ');
-            book.authors.push(AuthorsRepository.findOrCreate({
-                first_name: author.first_name,
-                last_name: author.last_name
-                // middle_name: author.middle_name,
-                // birth_date: author.birth_date,
-                // death_date: author.death_date
-            }));
-        }
-
-        /*
-            Fill the instances
-         */
-
-        book.instances = [];
-        addInstances(book, Repository.maxInstanceId(), available, reference, maintenance);
-
-        try {
-            Repository.create(book);
-        } catch (error) {
-            logger.error(error);
-            return {err: config.errors.INTERNAL}
-        }
-    }
-
-    return book
 };
 
 module.exports.getById = (id) => {

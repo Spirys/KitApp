@@ -61,6 +61,13 @@ function getAll(page, length) {
 // TODO
 const updateBook = (book) => create(book, true);
 
+/**
+ *
+ * @param book
+ * @param update
+ * @return {Book}
+ */
+
 function create(book, update) {
     realm.write(() => {
         if (update) realm.create('Book', book, true);
@@ -123,6 +130,7 @@ module.exports.updateInstance = updateInstance;
 module.exports.delete = remove;
 module.exports.remove = remove;
 module.exports.searchExact = searchExact;
+module.exports.findExact = searchExact;
 
 module.exports.write = (action) => realm.write(action);
 
