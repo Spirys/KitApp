@@ -96,7 +96,7 @@ console.log(`Result of test3: ${
     }`);
 
 /**
- * Test on extraneous data
+ * Test on missing data
  * @private
  */
 
