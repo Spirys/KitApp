@@ -40,36 +40,35 @@ html
                                                             span(aria-hidden='true') ×
                                                     .modal-body
                                                         p Please fill out the info about the new reader
+                                                        label(class="control-label required") Field with red star
+                                                        |  are required
                                                         form
                                                             .form-group
-                                                                label First name
-                                                                input#create_first_name.form-control(type='text', placeholder='First name')
+                                                                label(class="control-label required") First name
+                                                                input#create_first_name.form-control(type='text', placeholder='Eve' required)
                                                             .form-group
-                                                                label Last name
-                                                                input#create_last_name.form-control(type='text', placeholder='Last name')
+                                                                label(class="control-label required") Last name
+                                                                input#create_last_name.form-control(type='text', placeholder='Adams' required)
                                                             .form-group
-                                                                label Birth date
-                                                                input#create_birth_date.form-control(type='date', placeholder='Birth date')
+                                                                label(class="control-label required") Birth date
+                                                                input#create_birth_date.form-control(type='date', placeholder='01.01.1990' required)
                                                             .form-group
-                                                                label E-mail address
-                                                                input#create_email.form-control(type='email', aria-describedby='emailHelp', placeholder='Email', value='@innopolis.ru')
+                                                                label(class="control-label required") E-mail address
+                                                                input#create_email.form-control(type='email', aria-describedby='emailHelp', placeholder='e.adams@innopolis.ru', value='@innopolis.ru' required)
                                                                 small#new-email.form-text.text-muted
                                                                     | The password
                                                                     | and login will be sent to this email
                                                             .form-group
-                                                                label Address
-                                                                input#create_address.form-control(type='text', placeholder='Address')
-                                                            .form-group
-                                                                label Phone number
-                                                                input#create_phone.form-control(type='number', placeholder='Phone number')
+                                                                label(class="control-label required") Phone number
+                                                                input#create_phone.form-control(type='number', placeholder='89991234567' required)
                                                             .form-group
                                                                 label Occupation
-                                                                input#create_occupation.form-control(type='text', placeholder='Phone number', value='none')
+                                                                input#create_occupation.form-control(type='text', placeholder='Professor in the field of AI')
                                                             .form-group
                                                                 label Telegram alias
-                                                                input#create_telegram.form-control(type='tel', placeholder='Telegram alias')
+                                                                input#create_telegram.form-control(type='tel', placeholder='@e.adams')
                                                             .form-group
-                                                                label(for='user-type') Select type of user:
+                                                                label(for='user-type') Type of user:
                                                                 select#user-type.form-control
                                                                     option Student
                                                                     option Faculty

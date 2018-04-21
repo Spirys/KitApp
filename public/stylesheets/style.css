@@ -36,3 +36,9 @@ a {
     max-height: 80px;
     margin: 15px;
 }
+
+label.required:after
+{
+    color: red;
+    content: " *";
+}

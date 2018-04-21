@@ -38,39 +38,50 @@ html
                                                             span(aria-hidden='true') ×
                                                     .modal-body
                                                         p Please fill out the info about the new document
+                                                        label(class="control-label required") Field with red star
+                                                        |  are required
                                                         form
                                                             .form-group
-                                                                label(for='title') Title
-                                                                input#title.form-control(type='text' required)
+                                                                label(class="control-label required" for='title' ) Title
+                                                                input#title.form-control(type='text' placeholder='Introduction to algorithms' required)
                                                             .form-group
-                                                                label(for='authors') Authors
-                                                                input#authors.form-control(type='text' required)
+                                                                label(class="control-label required" for='authors') Authors
+                                                                input#authors.form-control(type='text' placeholder='John Smith, Eva Adams' required)
                                                             .form-group
-                                                                label(for='edition') Edition
-                                                                input#edition.form-control(type='text' required)
+                                                                label(class="control-label required" for='edition') Edition
+                                                                input#edition.form-control(type='text' placeholder='Second revised' required)
                                                             .form-group
-                                                                label(for='year') Year
-                                                                input#year.form-control(type='number')      
+                                                                label(class="control-label required" for='publisher') Publisher
+                                                                input#publisher.form-control(type='text' placeholder='EKSMO' required)
                                                             .form-group
-                                                                label(for='keywords') Keywords
-                                                                input#keywords.form-control(type='text')
+                                                                label(for='published') Published date
+                                                                input#published.form-control(type='date') 
+                                                            .form-group
+                                                                label(for='year') ISBN
+                                                                input#isbn.form-control(type='number' placeholder='1234567890123')              
+                                                            .form-group
+                                                                label(class="control-label required" for='keywords') Keywords
+                                                                input#keywords.form-control(type='text' placeholder='lorem, ipsum, dolor, sit, amet' required)
                                                             .form-group
                                                                 label(for='description') Description
-                                                                textarea#description.form-control(rows='3')
+                                                                textarea#description.form-control(type='This book is about blue butterflies' rows='3')
                                                             .form-group
-                                                                label(for='document-type') Type
+                                                                label(class="control-label required" for='document-type') Type
                                                                 select#document-type.form-control
                                                                     option Book
                                                                     option Media
                                                                     option Journal
                                                             .form-group
-                                                                label(for='available-copies') Avaliable copies
+                                                                label(class="control-label required" for='year') Cost (in RUB)
+                                                                input#cost.form-control(type='number' placeholder='1000' required)          
+                                                            .form-group
+                                                                label(class="control-label required" for='available-copies') Avaliable copies
                                                                 input#available-copies.form-control(type='number' value='1' required)
                                                             .form-group
-                                                                label(for='reference-copies') Reference copies
+                                                                label(class="control-label required" for='reference-copies') Reference copies
                                                                 input#reference-copies.form-control(type='number' value='0' required)
                                                             .form-group
-                                                                label(for='maintenance-copies') Maintenance copies
+                                                                label(class="control-label required" for='maintenance-copies') Maintenance copies
                                                                 input#maintenance-copies.form-control(type='number' value='0' required)
                                                             .form-check
                                                                 label.form-check-label
@@ -86,6 +97,7 @@ html
                                                             | Save changes
                                                         button#close.btn.btn-secondary(type='button', data-dismiss='modal')
                                                             | Close
+                                                            
                                         .card-body
                                             form.form-horizontal
                                                 .form-group.row
