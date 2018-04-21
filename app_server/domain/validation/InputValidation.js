@@ -10,6 +10,7 @@
  */
 
 const moment = require('moment');
+const config = require('../../util/messages/messages');
 
 /**
  * Module functions
@@ -74,58 +75,13 @@ function validate(value, rule) {
 }
 
 /**
- * Checks whether the value provided is an integer number
- * @param nVal
- * @return {boolean}
- */
-
-function isInteger(nVal) {
-    return typeof nVal === 'number'
-        && isFinite(nVal)
-        && nVal > -9007199254740992
-        && nVal < 9007199254740992
-        && Math.floor(nVal) === nVal;
-}
-
-/**
- * Filters and validates the input fields of the book
- * @param query
- * @param rules
- */
-
-function filterFields(query, rules) {
-
-}
-
-/**
- * Module exports
- * @public
- */
-
-module.exports.stringOrDefault = (s, defaultValue) =>
-    s && typeof s === 'string'
-        ? s
-        : defaultValue;
-
-module.exports.number = (value) => {
-    let result = parseInt(value);
-    return (!Number.isNaN(result) && (result >= 0)) ? result : false
-};
-
-module.exports.numberOrDefault = (number, defaultValue, isPositive) =>
-    number && typeof number === 'number'
-    && !(isPositive && number < 0)
-        ? number
-        : defaultValue;
-
-/**
  * Checks whether the fields correspond to given rules
  * @param fields {*} The actual fields to validate. For example, <code>{prop1: 1, prop2: 'two'}</code>
  * @param rules {*} The rules. For example, <code>{prop1: 'number+', prop2: 'NES'}</code>
  * @return {{wrong: Array, extra: Array, missing: Array}}
  */
 
-module.exports.validate = function (fields, rules) {
+function validateFields(fields, rules) {
     let wrong = [],
         missing = [],
         extra = [];
@@ -161,6 +117,79 @@ module.exports.validate = function (fields, rules) {
             extra
         }
         : true
+}
+
+/**
+ * Checks whether the value provided is an integer number
+ * @param nVal
+ * @return {boolean}
+ */
+
+function isInteger(nVal) {
+    return typeof nVal === 'number'
+        && isFinite(nVal)
+        && nVal > -9007199254740992
+        && nVal < 9007199254740992
+        && Math.floor(nVal) === nVal;
+}
+
+/**
+ * Filters and validates the input fields of the book
+ * Warning: all the extra fields would be removed!
+ * @param query
+ * @param rules
+ */
+
+function filterFields(query, rules) {
+    const valResults = validateFields(query, rules);
+
+    // Everything is OK
+    if (!valResults.wrong) return query;
+
+    // Some extra fields, remove them
+    for (let extra of valResults.extra.length) {
+        delete query[extra]
+    }
+    if (!valResults.missing.length && !valResults.wrong.length) return query;
+
+    // Something is missing
+    if (valResults.missing.length) {
+        return {
+            err: config.errors.REQUIRED_FIELDS_MISSING,
+            missing: valResults.missing
+        }
+    }
+
+    // Some input data doesn't follow required format
+    if (valResults.wrong.length) {
+        return {
+            err: config.errors.WRONG_INPUT,
+            wrong: valResults.wrong
+        }
+    }
+}
+
+/**
+ * Module exports
+ * @public
+ */
+
+module.exports.stringOrDefault = (s, defaultValue) =>
+    s && typeof s === 'string'
+        ? s
+        : defaultValue;
+
+module.exports.number = (value) => {
+    let result = parseInt(value);
+    return (!Number.isNaN(result) && (result >= 0)) ? result : false
 };
+
+module.exports.numberOrDefault = (number, defaultValue, isPositive) =>
+    number && typeof number === 'number'
+    && !(isPositive && number < 0)
+        ? number
+        : defaultValue;
+
+module.exports.validate = validateFields;
 
 module.exports.filterFields = filterFields;

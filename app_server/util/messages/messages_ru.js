@@ -30,6 +30,9 @@ module.exports[msg.errors.DOCUMENT_NOT_AVAILABLE] = 'Запрашиваемый 
 module.exports[msg.errors.DOCUMENT_NOT_TAKEN] = 'Документ не взят данным пользователем';
 module.exports[msg.errors.USER_NOT_FOUND] = 'Пользователь не найден';
 
+module.exports[msg.errors.REQUIRED_FIELDS_MISSING] = 'Обязательные поля не указаны';
+module.exports[msg.errors.WRONG_INPUT] = 'Неверный формат данных';
+
 // General messages
 module.exports[msg.general.PASSWORD] = 'Пароль';
 module.exports[msg.general.LMS_DESCRIPTION_SHORT] = 'Библиотечная система Университета Иннополис';

@@ -24,7 +24,6 @@ const config = require('../../util/config');
 const logger = require('../../util/Logger');
 const moment = require('moment');
 
-
 /**
  * Module functions
  * @private
@@ -224,6 +223,12 @@ module.exports.search = async function () {
 
 };
 
+/**
+ * Creates new book or adds instances to the existing
+ * @param query
+ * @return {*}
+ */
+
 module.exports.new = function (query) {
 
     /*
@@ -248,9 +253,8 @@ module.exports.new = function (query) {
             publisher: query.publisher
         });
 
+    // Update the existing book, add number of instances
     if (books.length) {
-        // Update the existing book, add number of instances
-
         const book = books[0];
 
         try {
@@ -261,16 +265,23 @@ module.exports.new = function (query) {
         }
 
         return book
-    } else {
+    }
+
+    // Or create a new
+    else {
         // Filter the input data
         const book = filter(query, rules);
-
         if (book.err) return book;
 
-        // Create a new book from query
         return createNewBook(book, available, reference, maintenance);
     }
 };
+
+/**
+ * Gets the book by id
+ * @param id {number}
+ * @return {*}
+ */
 
 module.exports.getById = (id) => {
     try {

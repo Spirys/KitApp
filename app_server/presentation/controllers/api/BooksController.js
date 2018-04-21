@@ -1,6 +1,7 @@
-/*
+/*!
  * Controller for the book requests.
- * Copyright (c) 2018 Marsel Shaihin
+ * Copyright (c) 2018 KitApp project
+ * Author: Marsel Shaihin
  */
 
 'use strict';
@@ -18,6 +19,7 @@ const interactor = require('../../../domain/interactors/BooksInteractor');
 const usersInteractor = require('../../../domain/interactors/UsersInteractor');
 
 const val = require('../../../domain/validation/InputValidation');
+const perm = require('../../../domain/permissions/Permissions');
 
 const config = require('../../../util/config');
 const defaultNumberOfBooks = config.DEFAULT_DOCS_NUMBER;
@@ -44,11 +46,11 @@ function getLocale(req) {
  * @param req
  * @param res
  * @param needBookId {boolean=} Is book id needed?
- * @param needLibrarianAccess {boolean=} Is librarian access needed?
+ * @param action {Action} What action is to be performed?
  * @return {*}
  */
 
-function traverseRequest(req, res, needBookId, needLibrarianAccess) {
+function traverseRequest(req, res, needBookId, action) {
     // Traversing request
     const bookId = val.number(req.params.id),
         locale = getLocale(req),
@@ -64,7 +66,7 @@ function traverseRequest(req, res, needBookId, needLibrarianAccess) {
     }
 
     // Checking the permissions
-    if (needLibrarianAccess && user.type !== config.userTypes.LIBRARIAN) {
+    if (action && !perm.hasAccess(user, action)) {
         sendJson(res, error(config.errors.NO_ACCESS, locale));
         return false
     } else response.user = user;
@@ -107,30 +109,10 @@ module.exports.search = async function (req, res) {
 };
 
 module.exports.new = async function (req, res) {
-    const r = traverseRequest(req, res, false, true);
+    const r = traverseRequest(req, res, false, perm.ADD_DOCUMENT);
     if (!r) return;
 
-    let query = req.body;
-
-    // Todo: write validation
-    const fields = {
-        title: query.title,
-        authors: query.authors,
-        cost: query.cost,
-        edition: query.edition,
-        publisher: query.publisher,
-        keywords: query.keywords,
-        bestseller: query.bestseller || false,
-        description: query.description,
-        isbn: query.isbn,
-        image: query.image,
-        published: query.published,
-        available: query.available,
-        reference: query.reference,
-        maintenance: query.maintenance,
-    };
-
-    const book = interactor.new(fields);
+    const book = interactor.new(req.body);
 
     let response = responseComposer.format(book,
         true,
@@ -141,7 +123,7 @@ module.exports.new = async function (req, res) {
 };
 
 module.exports.getById = async function (req, res) {
-    const r = traverseRequest(req, res, true);
+    const r = traverseRequest(req, res, true, perm.SEE_DOCUMENT);
     if (!r) return;
 
     const book = interactor.getById(r.bookId);
@@ -155,7 +137,7 @@ module.exports.getById = async function (req, res) {
 };
 
 module.exports.updateById = async function (req, res) {
-    const r = traverseRequest(req, res, true, true);
+    const r = traverseRequest(req, res, true, perm.MODIFY_DOCUMENT);
     if (!r) return;
 
     const fields = req.body;
@@ -166,7 +148,7 @@ module.exports.updateById = async function (req, res) {
 };
 
 module.exports.deleteById = async function (req, res) {
-    const r = traverseRequest(req, res, true, true);
+    const r = traverseRequest(req, res, true, perm.DELETE_DOCUMENT);
     if (!r) return;
 
     const book = interactor.deleteById(r.bookId);
@@ -183,7 +165,7 @@ module.exports.deleteById = async function (req, res) {
  */
 
 module.exports.checkoutById = async function (req, res) {
-    const r = traverseRequest(req, res, true);
+    const r = traverseRequest(req, res, true, perm.CHECKOUT_DOCUMENT);
     if (!r) return;
 
     const userId = val.number(req.body.user);
@@ -216,42 +198,6 @@ module.exports.checkoutById = async function (req, res) {
 };
 
 /**
- * Book renewal handler
- * @param req
- * @param res
- * @return {Promise<void>}
- */
-
-module.exports.renewById = async function (req, res) {
-    const r = traverseRequest(req, res, true);
-    if (!r) return;
-
-    const userId = req.body.user;
-
-    let user = r.user;
-    const isLibrarian = user.type === config.userTypes.LIBRARIAN;
-
-    let book;
-    if (isLibrarian && userId) {
-        user = usersInteractor.getById(userId);
-        if (user.err) {
-            sendJson(res, error(user.err, r.locale));
-            return;
-        }
-    }
-
-    book = interactor.renewById(r.bookId, user);
-
-    if (book.err) {
-        sendJson(res, error(book.err, r.locale));
-        return;
-    }
-
-    let response = responseComposer.format(book, isLibrarian, defaultFields);
-    sendJson(res, response);
-};
-
-/**
  * Marks the book with given id as returned by user
  * @param req
  * @param res
@@ -259,7 +205,7 @@ module.exports.renewById = async function (req, res) {
  */
 
 module.exports.returnById = async function (req, res) {
-    const r = traverseRequest(req, res, true, true);
+    const r = traverseRequest(req, res, true, perm.RETURN_DOCUMENT);
     if (!r) return;
 
     const book = interactor.returnById(r.bookId, val.number(req.body.user) || r.user.id);
@@ -272,8 +218,15 @@ module.exports.returnById = async function (req, res) {
     sendJson(res, response);
 };
 
+/**
+ * Handles the book renewal
+ * @param req
+ * @param res
+ * @return {Promise<void>}
+ */
+
 module.exports.renewById = async function (req, res) {
-    const r = traverseRequest(req, res, true);
+    const r = traverseRequest(req, res, true, perm.RENEW_DOCUMENT);
     if (!r) return;
     let user = r.user;
 
@@ -308,7 +261,7 @@ module.exports.renewById = async function (req, res) {
  */
 
 module.exports.outstandingRequest = async function (req, res) {
-    const r = traverseRequest(req, res, true, true);
+    const r = traverseRequest(req, res, true, perm.PLACE_OUTSTANDING);
     if (!r) return;
 
     // Posting request
@@ -330,7 +283,7 @@ module.exports.outstandingRequest = async function (req, res) {
  */
 
 module.exports.cancelOutstandingRequest = async function (req, res) {
-    const r = traverseRequest(req, res, true, true);
+    const r = traverseRequest(req, res, true, perm.CANCEL_OUTSTANDING);
     if (!r) return;
 
     // Cancelling request

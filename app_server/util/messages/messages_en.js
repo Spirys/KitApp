@@ -30,6 +30,9 @@ module.exports[msg.errors.DOCUMENT_NOT_AVAILABLE] = 'Requested document is not a
 module.exports[msg.errors.DOCUMENT_NOT_TAKEN] = 'Requested document is not taken by the user';
 module.exports[msg.errors.USER_NOT_FOUND] = 'User was not found';
 
+module.exports[msg.errors.REQUIRED_FIELDS_MISSING] = 'Some required fields are missing';
+module.exports[msg.errors.WRONG_INPUT] = 'Wrong data format';
+
 
 // General messages
 module.exports[msg.general.PASSWORD] = 'Password';

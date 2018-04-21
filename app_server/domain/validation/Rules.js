@@ -29,8 +29,7 @@ module.exports.book = {
     bestseller: 'boolean?',
     description: 'NES?',
 
-    available: 'number+?',
-
+    available: 'number?',
     reference: 'number?',
     maintenance: 'number?',
     isbn: (value) => {

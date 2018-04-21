@@ -50,6 +50,7 @@ const perm = {
     RETURN_DOCUMENT: new Action(),
 
     PLACE_OUTSTANDING: new Action(), // Place an outstanding request
+    CANCEL_OUTSTANDING: new Action(), // Cancel the outstanding request
 
     ADD_USER: new Action(),
     SEE_USER_INFO: new Action(),
@@ -100,7 +101,9 @@ const LIBRARIAN_1_RIGHTS = [
 const LIBRARIAN_2_RIGHTS = [
     ...LIBRARIAN_1_RIGHTS,
     perm.ADD_DOCUMENT,
-    perm.ADD_USER
+    perm.ADD_USER,
+    perm.PLACE_OUTSTANDING,
+    perm.CANCEL_OUTSTANDING
 ];
 
 /**

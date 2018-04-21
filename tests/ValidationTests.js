@@ -14,7 +14,6 @@ const rules = require('../app_server/domain/validation/Rules').book;
 /**
  * Utility functions
  * @private
- * @author user633183
  */
 
 const arrayEqual = ([x, ...xs], [y, ...ys]) =>
