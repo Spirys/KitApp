@@ -206,6 +206,19 @@ mixin reader-row(config)
         td#actions
             button.btn.btn-dark(type='button', data-toggle='modal', data-target='#myModal2') Edit
 
+mixin reader-row(config)
+    tr
+        th#id(scope='row')
+            a(href='user-card.html') #{config.id}
+        th#name #{config.first_name}
+        th#surname #{config.last_name}
+        td#type #{config.type}
+        td#e-mail #{config.email}
+        td#telegram #{config.telegram}
+        td#type #{config.priv}
+        td#actions
+            button.btn.btn-dark(type='button', data-toggle='modal', data-target='#myModal2') Edit
+
 mixin catalog-document(config)
     .card
         .card-body
@@ -308,3 +321,66 @@ mixin edit-reader()
                     button.btn.btn-danger(type='button') Delete user
                     button.btn.btn-primary(type='button') Save changes
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+
+mixin edit-librarian()
+    #myModal2.modal.fade
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5.modal-title Edit librarian
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') ×
+                .modal-body
+                    form
+                        .form-group
+                            label First name
+                            input#create_first_name.form-control(type='text', placeholder='First name', value="Elon")
+                        .form-group
+                            label Last name
+                            input#create_last_name.form-control(type='text', placeholder='Last name' value="Musk")
+                        .form-group
+                            label Birth date
+                            input#create_birth_date.form-control(type='date', placeholder='Birth date', value='1990-01-01')
+                        .form-group
+                            label E-mail address
+                            input#create_email.form-control(type='email', aria-describedby='emailHelp', placeholder='Email', value='qwe@innopolis.ru')
+                            small#new-email.form-text.text-muted
+                                | The password and login will be sent to this email
+                        .form-group
+                            label Address
+                            input#create_address.form-control(type='text', placeholder='Address', value="Universitetskaya str, 1")
+                        .form-group
+                            label Phone number
+                            input#create_phone.form-control(type='number', placeholder='Phone number', value='901234567')
+                        .form-group
+                            label Occupation
+                            input#create_occupation.form-control(type='text', placeholder='Phone number', value='none')
+                        .form-group
+                            label Telegram alias
+                            input#create_telegram.form-control(type='tel', placeholder='Telegram alias', value='@elonmusk')
+                        .form-group
+                            label(for='user-type') Select type of user:
+                            select#user-type.form-control
+                                option Priv1
+                                option Priv2
+                                option Priv3
+                .modal-footer
+                    button.btn.btn-danger(type='button') Delete user
+                    button.btn.btn-primary(type='button') Save changes
+                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+
+
+
+mixin message_modal(title, text)
+    #message_modal.modal.fade
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5.modal-title #{title}
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') ×
+                .modal-body
+                    text #{text}
+                .modal-footer
+                    button#ok.btn.btn-primary(type='button', data-dismiss='modal')
+                        | OK    

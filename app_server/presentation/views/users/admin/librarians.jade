@@ -35,11 +35,11 @@ html
                                             .modal-dialog(role='document')
                                                 .modal-content
                                                     .modal-header
-                                                        h5.modal-title Add new reader
+                                                        h5.modal-title Add new librarian
                                                         button.close(type='button', data-dismiss='modal', aria-label='Close')
                                                             span(aria-hidden='true') ×
                                                     .modal-body
-                                                        p Please fill out the info about the new reader
+                                                        p Please fill out the info about the new librarian
                                                         label(class="control-label required") Field with red star
                                                         |  are required
                                                         form
@@ -70,10 +70,9 @@ html
                                                             .form-group
                                                                 label(for='user-type') Type of user:
                                                                 select#user-type.form-control
-                                                                    option Student
-                                                                    option Faculty
-                                                                    option Visiting Professor
-                                                                    option Librarian
+                                                                    option Priv1
+                                                                    option Priv2
+                                                                    option Priv3
 
                                                     .modal-footer
                                                         button#save-changes.btn.btn-primary(type='button')
@@ -93,10 +92,10 @@ html
                                                             th#telegram-0 Telegram
                                                             th#actions-0 Actions
                                                     tbody
-                                                        -readers = [{id: 51015451, first_name: "Elon", last_name: "Musk", type: "student", birth_date: "11-11-2000", phone: 89191234567, occupation: "", about: "", email:"qwe@innopolis.ru", telegram: "@elonmusk", avatar: ""}, {id: 98756544, first_name: "Steve", last_name: "Jobs", type: "student", birth_date: "11-11-2000", phone: 89191234567, occupation: "", about: "", email:"qwe@innopolis.ru", telegram: "@sadsad", avatar: ""}, {id: 12345354, first_name: "Charles", last_name: "Darwin", type: "faculty", birth_date: "11-11-2000", phone: 89191234567, occupation: "", about: "", email:"qwe@innopolis.ru", telegram: "@sadsad", avatar: ""}];
-                                                        for reader in readers
-                                                            +reader-row(reader)
-                                                        +edit-reader()
+                                                        -librarians = [{id: 51015451, first_name: "Elon", last_name: "Musk", type: "student", birth_date: "11-11-2000", phone: 89191234567, occupation: "", about: "", email:"qwe@innopolis.ru", telegram: "@elonmusk", avatar: "", priv: 'Priv1'}, {id: 98756544, first_name: "Steve", last_name: "Jobs", type: "student", birth_date: "11-11-2000", phone: 89191234567, occupation: "", about: "", email:"qwe@innopolis.ru", telegram: "@sadsad", avatar: "", , priv: 'Priv2'}, {id: 12345354, first_name: "Charles", last_name: "Darwin", type: "faculty", birth_date: "11-11-2000", phone: 89191234567, occupation: "", about: "", email:"qwe@innopolis.ru", telegram: "@sadsad", avatar: "", , priv: 'Priv3'}];
+                                                        for librarian in librarians
+                                                            +librarian-row(librarian)
+                                                        +edit-librarian()
                     // Page Footer
                     +footer()
         // Javascript files
