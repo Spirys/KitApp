@@ -55,7 +55,7 @@ function searchExact(query) {
 }
 
 function getAll(page, length) {
-    return realm.objects('Book').slice((page - 1) * length, length);
+    return realm.objects('Book').slice((page - 1) * length, page * length);
 }
 
 // TODO
