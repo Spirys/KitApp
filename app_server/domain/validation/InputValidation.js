@@ -184,11 +184,14 @@ module.exports.number = (value) => {
     return (!Number.isNaN(result) && (result >= 0)) ? result : false
 };
 
-module.exports.numberOrDefault = (number, defaultValue, isPositive) =>
-    number && typeof number === 'number'
-    && !(isPositive && number < 0)
-        ? number
-        : defaultValue;
+module.exports.numberOrDefault = (number, defaultValue, isPositive) => {
+    const num = exports.number(number);
+    if (num !== false) {
+        return !(isPositive && num < 0)
+            ? num
+            : defaultValue
+    } else return defaultValue
+};
 
 module.exports.validate = validateFields;
 

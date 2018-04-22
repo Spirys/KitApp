@@ -61,3 +61,7 @@ module.exports[msg.actions.DOCUMENT_TAKEN] = 'Taken';
 module.exports[msg.actions.RENEW_DOCUMENT] = 'Renew';
 module.exports[msg.actions.RETURN_DOCUMENT] = 'Return';
 module.exports[msg.actions.NO_ACTION] = 'NO_ACTION';
+
+// Success messages
+module.exports[msg.success.DOCUMENT_CREATED] = 'Creation was successful';
+module.exports[msg.success.DOCUMENT_UPDATED] = 'Document was updated successfully';

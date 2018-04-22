@@ -27,7 +27,7 @@ const instancesFormatter = require('./InstanceResponse');
  * @param fields {Array<string>}
  * @param locale {string=}
  * @param err {string=}
- * @param user {User=}
+ * @param user {User=} The user. If sent, available actions would be added
  * @return {*}
  */
 
@@ -52,7 +52,8 @@ function format(book, librarianAccess, fields, locale, err, user) {
                         if (user) {
                             let renewed = false, taken = false;
                             for (let i of book.instances) {
-                                response[i.status] = (response[i.status] || 0) + 1;
+                                if (i.status !== config.statuses.MAINTENANCE && i.status !== config.statuses.RESERVED)
+                                    response[i.status] = (response[i.status] || 0) + 1;
                                 if (!taken && i.taker && i.taker.id === user.id) {
                                     taken = true;
                                     renewed = i.renewed;

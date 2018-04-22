@@ -63,5 +63,9 @@ module.exports = {
         'RENEW_DOCUMENT': 'DOC_RENEW',
         'RETURN_DOCUMENT': 'DOC_RETURN',
         'NO_ACTION': 'NO_ACTION',
+    },
+    success: {
+        'DOCUMENT_CREATED': 'DOC_CREATED',
+        'DOCUMENT_UPDATED': 'DOC_UPDATED'
     }
 };

@@ -90,7 +90,10 @@ const LIBRARIAN_1_RIGHTS = [
 
     perm.SEE_USER_INFO,
     perm.MODIFY_USER_INFO,
-    perm.MODIFY_USER_RIGHTS
+    perm.MODIFY_USER_RIGHTS,
+
+    perm.RESERVE_DOCUMENT,
+    perm.CHECKOUT_DOCUMENT
 ];
 
 /**

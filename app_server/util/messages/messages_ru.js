@@ -60,3 +60,7 @@ module.exports[msg.actions.CHECKOUT_DOCUMENT] = 'Выдать';
 module.exports[msg.actions.RENEW_DOCUMENT] = 'Продлить';
 module.exports[msg.actions.RETURN_DOCUMENT] = 'Вернуть';
 module.exports[msg.actions.NO_ACTION] = 'NO_ACTION';
+
+// Success messages
+module.exports[msg.success.DOCUMENT_CREATED] = 'Документ создан успешно';
+module.exports[msg.success.DOCUMENT_UPDATED] = 'Документ был обновлён успешно';
