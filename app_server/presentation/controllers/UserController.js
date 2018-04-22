@@ -72,21 +72,12 @@ module.exports.catalog = async function (req, res) {
     if (!user) return;
 
     let messages = getMessages(req),
-        isLibrarian = user.type === config.userTypes.LIBRARIAN,
-        books = BooksInteractor.getAll(1, 25);
-
-    books = responseComposer.formatMultiple(books,
-        isLibrarian,
-        null,
-        1, 25,
-        config.getLocale(req),
-        null,
-        user).books;
+        isLibrarian = user.type === config.userTypes.LIBRARIAN;
 
     if (isLibrarian) {
-        res.render('users/patron/catalog', {user, messages, books})
+        res.render('users/patron/catalog', {user, messages})
     } else {
-        res.render('users/patron/catalog', {user, messages, books})
+        res.render('users/patron/catalog', {user, messages})
     }
 };
 

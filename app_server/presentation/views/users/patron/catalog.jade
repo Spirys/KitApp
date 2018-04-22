@@ -161,9 +161,11 @@ html
                                     .modal-footer
                                         button#closeDetailsModal.btn.btn-secondary(type='button', data-dismiss='modal')
                                             | Close
-                        .container-fluid
-                            for doc in books
-                                +catalog-document(doc)
+                        #documents.container-fluid
+                            #loader
+                                .row.align-items-center.justify-content-center
+                                    img(src='images/loading.gif')
+                                h2.text-center Loading...
                     // Page Footer
                     +footer()
         // Javascript files

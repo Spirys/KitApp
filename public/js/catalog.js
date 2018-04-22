@@ -5,9 +5,48 @@ function getCookie() {
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
+function loadBooks() {
+    function callback(data) {
+        var books = data.books,
+            documentsView = $('#documents');
+
+        for (var i = 0; i < books.length; i++) {
+            documentsView.append(buildBook(books[i]))
+        }
+
+        // Set listeners
+        $('.btn-action').on('click', onActionClick);
+        $('.btn-details').on('click', onDetailsClick);
+
+        $('#loader').hide();
+    }
+
+    $.get('api/books/all', {token: getCookie()}, callback);
+}
+
+function buildBook(book) {
+    var authorsData = book.authors;
+    var authors = '';
+    for (var author of authorsData) {
+        authors += '<h4 id="author">' + author.first_name + ' ' + author.last_name + '</h4>'
+    }
+
+    var availableBoolean = !!book['Available'],
+        available = availableBoolean ? '#available' : '#not_available';
+
+    return '<div class="card" data-id="' + book.id + '"><div class="card-body"><div class="row"><div class="col-lg-2">'
+        + '<div id="doc-image" class="image has-shadow"><img src="' + book.image + '" alt="' + book.title + '" class="img-fluid"></div></div>'
+        + '<div class="col-lg-8 m-auto"><h2>' + book.title + '</h2>' + authors + '<small>' + book.description + '</small>'
+        + '<br/><button type="button" style="margin:2px" class="btn btn-sm bg-blue">#book</button>'
+        + '<button type="button" style="margin:2px" class="btn btn-sm ' + (availableBoolean ? 'bg-green' : 'bg-red') + '">' + available + '</button>'
+        + (book.bestseller ? '<button type="button" style="margin:2px" class="btn btn-sm bg-orange">#bestseller</button>' : '') + '</div>'
+        + '<div class="right-col col-lg-2 m-auto"><button type="button" class="btn-details btn btn-secondary book-btn">DETAILS</button>'
+        + ((book.action && book.action !== 'NO_ACTION') ? '<button type="button" class="btn-action btn btn-info book-btn" data-action="' + book.action + '">' + book.action_msg + '</button></div></div></div></div>' : '');
+}
+
 function onActionClick() {
     var button = $(this);
-    var bookId = button.parent().attr('data-id');
+    var bookId = button.parents('.card').attr('data-id');
 
     function callback(data) {
         if (data.code) {
@@ -29,7 +68,7 @@ function onActionClick() {
 
 function onDetailsClick() {
     $('#documentDetailsModal').modal('show');
-    var id = $(this).parent().attr('data-id');
+    var id = $(this).parents('.card').attr('data-id');
 
     var callback = function (data) {
         if (data.code) {
@@ -91,7 +130,7 @@ function onAddClick() {
         $('#details-description').html(data.description);
 
         $('#details-success').fadeIn(100, function () {
-            $(this).html('Creation was successful');
+            $(this).html(data.notification);
         });
 
         // noinspection JSJQueryEfficiency
@@ -124,8 +163,9 @@ function onAddClick() {
 }
 
 $(document).ready(function () {
-    $('.btn-action').on('click', onActionClick);
-    $('.btn-details').on('click', onDetailsClick);
+
+    loadBooks();
+
     $('#save-changes').on('click', onAddClick);
 
     $('#published').daterangepicker({

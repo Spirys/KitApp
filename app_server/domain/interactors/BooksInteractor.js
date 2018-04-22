@@ -264,6 +264,8 @@ module.exports.new = function (query) {
             return {err: config.errors.INTERNAL}
         }
 
+        book.new = false;
+
         return book
     }
 
@@ -279,7 +281,14 @@ module.exports.new = function (query) {
             book.authors[i] = {first_name: first, last_name: last}
         }
 
-        return createNewBook(book, available, reference, maintenance);
+        try {
+            const result = createNewBook(book, available, reference, maintenance);
+            result.new = true;
+            return result
+        } catch (error) {
+            logger.error(error);
+            return {err: config.errors.INTERNAL}
+        }
     }
 };
 

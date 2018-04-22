@@ -87,18 +87,27 @@ function traverseRequest(req, res, needBookId, action) {
 
 module.exports.getAll = async function (req, res) {
 
+    const r = traverseRequest(req, res, false, perm.SEE_DOCUMENT);
+    if (!r) return;
+
     // Traversing request
-    const page = val.numberOrDefault(req.query.page, 1);
-    const length = val.numberOrDefault(req.query.length, defaultNumberOfBooks);
+    const page = val.numberOrDefault(req.query.page, 1, true);
+    const length = val.numberOrDefault(req.query.length, defaultNumberOfBooks, true);
     const fields = (typeof req.query.fields === 'string')
         ? req.query.fields.split(',')
         : defaultFields;
-    const locale = getLocale(req);
 
     // Getting the books
     const books = interactor.getAll(page, length);
 
-    let response = responseComposer.formatMultiple(books, true, fields, page, length, locale, books.err);
+    let response = responseComposer.formatMultiple(
+        books,
+        perm.hasAccess(r.user, perm.SEE_DOCUMENT_EXT),
+        fields,
+        page, length,
+        r.locale,
+        books.err,
+        r.user);
 
     sendJson(res, response);
 };
@@ -119,6 +128,12 @@ module.exports.new = async function (req, res) {
         defaultFields,
         r.locale,
         book.err);
+
+    if (book.new === true)
+        response.notification = config.messages(r.locale)[config.success.DOCUMENT_CREATED]
+    else if (book.new === false)
+        response.notification = config.messages(r.locale)[config.success.DOCUMENT_UPDATED];
+
     sendJson(res, response);
 };
 
@@ -132,7 +147,8 @@ module.exports.getById = async function (req, res) {
         r.user.type === config.userTypes.LIBRARIAN,
         defaultFields,
         r.locale,
-        book.err);
+        book.err,
+        r.user);
     sendJson(res, response);
 };
 
@@ -165,7 +181,7 @@ module.exports.deleteById = async function (req, res) {
  */
 
 module.exports.checkoutById = async function (req, res) {
-    const r = traverseRequest(req, res, true, perm.CHECKOUT_DOCUMENT);
+    const r = traverseRequest(req, res, true, perm.RESERVE_DOCUMENT);
     if (!r) return;
 
     const userId = val.number(req.body.user);
