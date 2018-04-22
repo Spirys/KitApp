@@ -106,7 +106,7 @@ mixin main-navbar(messages)
                                 li.nav-item.dropdown
                                     a#localization.nav-link(rel='nofollow', data-target='#', href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
                                         i.fa.fa-language
-                                        span#current-language.badge.bg-red 
+                                        span#current-language.badge.bg-red
                                     ul.dropdown-menu(aria-labelledby='localization')
                                         li
                                             a.select-language.dropdown-item(rel='nofollow', href='', data-lang='en')
@@ -273,7 +273,7 @@ mixin database-row(id, name, surname, type, title, status)
                 button#returned.btn.btn-success(type='button') Return
                 button#outstanding-request.btn.btn-warning(type='button') Request
                 block
-            
+
 mixin edit-reader()
     #myModal2.modal.fade
         .modal-dialog(role='document')
@@ -368,8 +368,6 @@ mixin edit-librarian()
                     button.btn.btn-danger(type='button') Delete user
                     button.btn.btn-primary(type='button') Save changes
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Close
-
-
 
 mixin message_modal(title, text)
     #message_modal.modal.fade

@@ -53,7 +53,7 @@ function validate(value, rule) {
         case 'number+':
             return isInteger(value) && value > 0;
         case 'DATE':
-            return moment(value, ['YYYY', 'MM-YYYY', 'DD-MM-YYYY'], true).isValid();
+            return moment(value, ['YYYY', 'MM.YYYY', 'DD.MM.YYYY'], true).isValid();
         case 'boolean':
             return typeof value === 'boolean';
 
@@ -91,7 +91,7 @@ function validateFields(fields, rules) {
             let rule = rules[field];
 
             // Check if the required field is missing
-            if (typeof rule === 'string' && !rule.endsWith('?') && !fields.hasOwnProperty(field)) {
+            if (typeof rule === 'string' && !rule.endsWith('?') && !fields[field]) {
                 missing.push(field)
             }
 
@@ -147,7 +147,7 @@ function filterFields(query, rules) {
     if (!valResults.wrong) return query;
 
     // Some extra fields, remove them
-    for (let extra of valResults.extra.length) {
+    for (let extra of valResults.extra) {
         delete query[extra]
     }
     if (!valResults.missing.length && !valResults.wrong.length) return query;

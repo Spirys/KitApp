@@ -273,6 +273,12 @@ module.exports.new = function (query) {
         const book = filter(query, rules);
         if (book.err) return book;
 
+        // Unwrap authors
+        for (let i = 0; i < book.authors.length; i++) {
+            let [first, last] = book.authors[i].split(' ');
+            book.authors[i] = {first_name: first, last_name: last}
+        }
+
         return createNewBook(book, available, reference, maintenance);
     }
 };

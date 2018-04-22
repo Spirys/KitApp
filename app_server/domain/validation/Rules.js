@@ -18,7 +18,10 @@
 
 module.exports.book = {
     title: 'NES',
-    authors: 'NESArray+',
+    authors: (authors) =>
+        Array.isArray(authors)
+        && authors.length
+        && authors.every(s => typeof s === 'string' && s.length >= 3 && s.includes(' ')),
     cost: 'number',
     edition: 'NES',
     publisher: 'NES',
