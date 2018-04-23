@@ -220,7 +220,7 @@ function createNewBook(query, available, reference, maintenance) {
 module.exports.getAll = (page, length) => Repository.getAll(page, length);
 
 module.exports.search = async function (query, page, length) {
-    return Repository.searchExact(query, page, length);
+    return Repository.search(query, page, length);
 };
 
 /**

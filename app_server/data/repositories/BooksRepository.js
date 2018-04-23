@@ -32,7 +32,7 @@ const get = (id) => realm.objectForPrimaryKey('Book', id);
  * @return {Realm.Results<Book>}
  */
 
-function searchExact(query, page, length) {
+function searchLenient(query, page, length) {
     let searchFields = [], searchParams = [];
 
     // Validate fields
@@ -42,6 +42,7 @@ function searchExact(query, page, length) {
             searchParams.push(query[item]);
         }
     }
+
     if (searchFields.length) {
         let searchQuery = '';
         for (let i = 0; i < searchFields.length; i++) {
@@ -111,6 +112,38 @@ function searchExact(query, page, length) {
             .slice((page - 1) * length, page * length);
 
     } else return realm.objects('Book').slice((page - 1) * length, page * length);
+}
+
+/**
+ * Searches for the books which match the criterion
+ * @param query {*} A JSON. Every resulting object will contain the specified fields with specified values.<br>
+ *      E.g. passing <code>{publisher: 'Renowned publisher', cost: 1000}</code>
+ *      will result in all books which have 'Renowned publisher' as publisher and 100 as cost.
+ * @return {Realm.Results<Book>}
+ */
+
+function searchExact(query) {
+    let searchFields = [], searchParams = [];
+
+    // Validate fields
+    for (let item in query) {
+        if (query.hasOwnProperty(item) && defaultFields.includes(item)) {
+            searchFields.push(item);
+            searchParams.push(query[item])
+        }
+    }
+
+    if (searchFields.length) {
+        let searchQuery = searchFields[0] + ' == $0';
+
+        for (let i = 1; i < searchFields.length; i++) {
+            searchQuery += ' AND ' + searchFields[i] + '== $' + i
+        }
+
+        return realm.objects('Book')
+            .filtered(searchQuery, ...searchParams);
+
+    } else return realm.objects('Book');
 }
 
 function getAll(page, length) {
@@ -190,6 +223,7 @@ module.exports.delete = remove;
 module.exports.remove = remove;
 module.exports.searchExact = searchExact;
 module.exports.findExact = searchExact;
+module.exports.search = searchLenient;
 
 module.exports.write = (action) => realm.write(action);
 
