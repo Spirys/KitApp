@@ -14,6 +14,17 @@ function loadBooks() {
             documentsView.append(buildBook(books[i]))
         }
 
+        function buildAnimation(card) {
+            return function() {
+                card.attr('style', 'visibility:visible');
+                card.addClass('fadeInUp');
+            }
+        }
+
+        $('.card').each(function (index, element) {
+            setTimeout(buildAnimation($(this)), index * 500)
+        });
+
         // Set listeners
         $('.btn-action').on('click', onActionClick);
         $('.btn-details').on('click', onDetailsClick);
@@ -34,7 +45,7 @@ function buildBook(book) {
     var availableBoolean = !!book['Available'],
         available = availableBoolean ? '#available' : '#not_available';
 
-    return '<div class="card" data-id="' + book.id + '"><div class="card-body"><div class="row"><div class="col-lg-2">'
+    return '<div class="card animated" style="visibility: hidden" data-id="' + book.id + '"><div class="card-body"><div class="row"><div class="col-lg-2">'
         + '<div id="doc-image" class="image has-shadow"><img src="' + book.image + '" alt="' + book.title + '" class="img-fluid"></div></div>'
         + '<div class="col-lg-8 m-auto"><h2>' + book.title + '</h2>' + authors + '<small>' + book.description + '</small>'
         + '<br/><button type="button" style="margin:2px" class="btn btn-sm bg-blue">#book</button>'
