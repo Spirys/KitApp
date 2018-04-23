@@ -32,7 +32,7 @@ const moment = require('moment');
 /**
  * Finds the available copy of the book and also checks whether a user has a copy
  * @param book {Book}
- * @param user {User|{id: number}=} The user
+ * @param user {User|{id: number}=} The user, can be represented as an object containing field 'id'
  * @param findReserved {boolean=} Should the 'Reserved' instances be found instead?
  * @return {number|{err: string}|{queue: boolean}}
  */
@@ -348,6 +348,13 @@ module.exports.deleteById = function (id) {
     }
 };
 
+/**
+ *
+ * @param bookId {number} The ID of the book
+ * @param user {User|{id:number}=} The user. Can be represented as an object with 'id' field
+ * @return {Book|{err:string}}
+ */
+
 module.exports.reserveById = function (bookId, user) {
     let book = Repository.get(bookId);
     if (!book) return {err: config.errors.DOCUMENT_NOT_FOUND};
@@ -362,8 +369,8 @@ module.exports.reserveById = function (bookId, user) {
     // If no available instances were found, put the user in the queue
     if (indexAvailable.queue) {
         action = () => {
-            if (!book.awaiting.indexOf(user) > -1) book.awaiting.push(user)
-        }
+            if (!(book.awaiting.findIndex(o => o.id === user.id) > -1)) book.awaiting.push(user)
+        };
     }
 
     // Else mark the instance as reserved

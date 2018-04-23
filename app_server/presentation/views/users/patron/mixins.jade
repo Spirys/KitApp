@@ -198,16 +198,17 @@ mixin user-card-row(row_number, title, author, type, status)
         td#type #{type}
         td#status #{status}
 
-mixin message_modal(title, text)
-    #message_modal.modal.fade
+mixin message_modal()
+    #notificationModal.modal.fade
         .modal-dialog(role='document')
             .modal-content
                 .modal-header
-                    h5.modal-title #{title}
+                    h5#notification-title.modal-title
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
                         span(aria-hidden='true') ×
                 .modal-body
-                    text #{text}
+                    #notification-info.container.alert.alert-info(style='display: none;')
+                    #notification-success.container.alert.alert-success(style='display: none;')
                 .modal-footer
-                    button#ok.btn.btn-primary(type='button', data-dismiss='modal')
-                        | OK    
+                    button#notification-ok.btn.btn-primary(type='button', data-dismiss='modal')
+                        | OK

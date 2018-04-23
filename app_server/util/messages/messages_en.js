@@ -53,6 +53,7 @@ module.exports[msg.user.USER_CARD] = 'User Card';
 module.exports[msg.user.DATABASE] = 'Database';
 module.exports[msg.user.READERS] = 'Readers';
 module.exports[msg.user.LOGOUT] = 'Logout';
+module.exports[msg.user.DOCUMENT_QUEUE_NUMBER] = 'You are #$0 in the queue';
 
 module.exports[msg.front_catalog.SEARCH] = 'Search preferences';
 module.exports[msg.front_catalog.SEARCH_BY_TITLE] = 'By title';
@@ -63,6 +64,7 @@ module.exports[msg.front_catalog.NEW_DOCUMENT] = 'Add new document';
 
 // Actions
 module.exports[msg.actions.RESERVE_DOCUMENT] = 'Reserve';
+module.exports[msg.actions.QUEUE_DOCUMENT] = 'Queue';
 module.exports[msg.actions.CHECKOUT_DOCUMENT] = 'Check out';
 module.exports[msg.actions.DOCUMENT_TAKEN] = 'Taken';
 module.exports[msg.actions.RENEW_DOCUMENT] = 'Renew';

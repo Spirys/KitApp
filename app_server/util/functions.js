@@ -24,6 +24,8 @@ const MESSAGES_KO = require('./messages/messages_ko');
 const MESSAGES_PT = require('./messages/messages_pt');
 const MESSAGES_ZH = require('./messages/messages_zh');
 
+let userTypes;
+
 /**
  * Module exports
  * @public
@@ -78,3 +80,24 @@ module.exports.fine = (instance) => {
     }
     return 0
 };
+
+module.exports.userTypeToNumber = (user) => {
+    switch(user.type) {
+        case userTypes.STUDENT:
+            return 5;
+        case userTypes.FACULTY_INSTRUCTOR:
+            return 4;
+        case userTypes.FACULTY_TA:
+            return 3;
+        case userTypes.VISITING_PROFESSOR:
+            return 2;
+        case userTypes.FACULTY_PROFESSOR:
+            return 1;
+        case userTypes.LIBRARIAN_1:
+        case userTypes.LIBRARIAN_2:
+        case userTypes.LIBRARIAN_3:
+            return 0;
+    }
+};
+
+module.exports.setUserTypes = (types) => userTypes = types;

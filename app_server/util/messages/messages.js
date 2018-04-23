@@ -54,8 +54,9 @@ module.exports = {
         'USER_CARD': 'USER_CARD',
         'DATABASE': 'DATABASE',
         'READERS': 'READERS',
-        'LOGOUT': 'LOGOUT'
-    },
+        'LOGOUT': 'LOGOUT',
+        'DOCUMENT_QUEUE_NUMBER': 'DOCUMENT_QUEUE_NUMBER',
+},
     front_catalog: {
         'SEARCH': 'SEARCH',
         'SEARCH_BY_TITLE': 'SEARCH_BY_TITLE',
@@ -66,6 +67,7 @@ module.exports = {
     },
     actions: {
         'RESERVE_DOCUMENT': 'DOC_RESERVE',
+        'QUEUE_DOCUMENT': 'DOC_QUEUE',
         'CHECKOUT_DOCUMENT': 'DOC_CHECKOUT',
         'DOCUMENT_TAKEN': 'DOC_TAKEN',
         'RENEW_DOCUMENT': 'DOC_RENEW',

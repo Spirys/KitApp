@@ -50,7 +50,7 @@ function format(book, librarianAccess, fields, locale, err, user) {
                 case 'instances':
                     if (!librarianAccess) {
                         if (user) {
-                            let renewed = false, taken = false;
+                            let renewed = false, taken = false, canQueue = false;
                             for (let i of book.instances) {
                                 if (i.status !== config.statuses.MAINTENANCE && i.status !== config.statuses.RESERVED)
                                     response[i.status] = (response[i.status] || 0) + 1;
@@ -58,14 +58,23 @@ function format(book, librarianAccess, fields, locale, err, user) {
                                     taken = true;
                                     renewed = i.renewed;
                                 }
+                                canQueue = canQueue || (i.status !== config.statuses.MAINTENANCE && i.status !== config.statuses.REFERENCE);
                             }
+
+                            // Generating possible action to apply
+                            canQueue = !book.outstanding_request && canQueue;
                             response.action = (renewed)
-                                ? config.actions.DOCUMENT_TAKEN
+                                ? (user.type === config.userTypes.VISITING_PROFESSOR)
+                                    ? config.actions.RENEW_DOCUMENT
+                                    : config.actions.DOCUMENT_TAKEN
                                 : (taken)
                                     ? config.actions.RENEW_DOCUMENT
                                     : response[config.statuses.AVAILABLE]
                                         ? config.actions.RESERVE_DOCUMENT
-                                        : config.actions.NO_ACTION;
+                                        : canQueue
+                                            ? config.actions.QUEUE_DOCUMENT
+                                            : config.actions.NO_ACTION;
+
                             response.action_msg = config.messages(locale)[response.action];
                         } else {
                             for (let i of book.instances) {
@@ -106,7 +115,7 @@ function formatMultiple(books, librarianAccess, fields, page, length, locale, er
     };
 
     for (let i = 0; i < books.length; i++) {
-        response.books.push(format(books[i], librarianAccess, fields, '', '', user))
+        response.books.push(format(books[i], librarianAccess, fields, locale, '', user))
     }
 
     return response

@@ -1,4 +1,4 @@
-include ../../mixins
+include ./mixins
 doctype html
 html
     +head(messages.USER_CARD)
@@ -13,14 +13,14 @@ html
                     // Page Header
                     header.page-header
                         .container-fluid
-                            h2.no-margin-bottom User Card
+                            h2.no-margin-bottom=messages.USER_CARD
                     section.tables
                         .container-fluid
                             .row
                                 .col-lg-12
                                     .card
                                         .card-header.d-flex.align-items-center
-                                            h3.h4 Documents
+                                            h3.h4 My documents
                                         .card-body
                                             .table-responsive
                                                 table.table.table-striped.table-hover

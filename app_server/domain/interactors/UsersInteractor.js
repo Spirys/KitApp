@@ -91,10 +91,16 @@ module.exports.notifyUser = (user, notification) => {
     let action = () => {};
     switch (notification.level) {
         case 'BOOK_AVAILABLE':
-            action = () => user.notifications.push(notification);
+            action = () => {
+                if (!user.notifications) user.notifications = [];
+                user.notifications.push(notification);
+            };
             break;
         case 'BOOK_OUTSTANDING':
-            action = () => user.notifications.push(notification);
+            action = () => {
+                if (!user.notifications) user.notifications = [];
+                user.notifications.push(notification);
+            };
             break;
     }
 

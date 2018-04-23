@@ -1,7 +1,7 @@
-include ../../mixins
+include ./mixins
 doctype html
 html
-    +head("User Card")
+    +head(messages.USER_CARD)
     body
         .page
             // Main Navbar
@@ -13,7 +13,7 @@ html
                     // Page Header
                     header.page-header
                         .container-fluid
-                            h2.no-margin-bottom User Card
+                            h2.no-margin-bottom=messages.USER_CARD
                     section.tables
                         .container-fluid
                             .row

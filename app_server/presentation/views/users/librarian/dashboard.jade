@@ -1,7 +1,7 @@
-include ../../mixins
+include ./mixins
 doctype html
 html
-    +head("Dashboard")
+    +head(messages.DASHBOARD)
     body
         .page
             // Main Navbar
@@ -13,7 +13,7 @@ html
                     // Page Header
                     header.page-header
                         .container-fluid
-                            h2.no-margin-bottom Dashboard
+                            h2.no-margin-bottom=messages.DASHBOARD
                     section.welcome
                         .container-fluid
                             .card

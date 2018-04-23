@@ -1,4 +1,4 @@
-include ../../mixins
+include ./mixins
 doctype html
 html
     +head(messages.DATABASE)
@@ -13,7 +13,7 @@ html
                     // Page Header
                     header.page-header
                         .container-fluid
-                            h2.no-margin-bottom Database
+                            h2.no-margin-bottom=messages.DATABASE
                     section.tables
                         .container-fluid
                             .row

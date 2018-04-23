@@ -61,10 +61,23 @@ function onActionClick() {
 
     function callback(data) {
         if (data.code) {
-            alert(data.message)
+            alert(data.message);
+            return
         }
-        //alert (`You are #${data.awaiting + 1} in the queue`);
+
         button.html('DONE');
+    }
+
+    function queueCallback(data) {
+        if (data.code) {
+            alert(data.message)
+        } else {
+            if (data.notification) {
+                $('#notificationModal').modal('show');
+                $('#notification-info').html(data.notification).show();
+            }
+            button.html('DONE');
+        }
     }
 
     switch (button.attr('data-action')) {
@@ -73,6 +86,9 @@ function onActionClick() {
             break;
         case 'DOC_RESERVE':
             reserveBook(bookId, callback);
+            break;
+        case 'DOC_QUEUE':
+            reserveBook(bookId, queueCallback);
             break;
     }
 }

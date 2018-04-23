@@ -24,6 +24,7 @@ const functions = require('./functions');
  * @type {{okCode: string, errorCode: string, errors: {INTERNAL: string, ERROR2: string, ERROR3: string, WRONG_LOGIN_PASSWORD: string, INVALID_TOKEN: string, INVALID_ID: string, DOCUMENT_NOT_FOUND: string, DOCUMENT_ALREADY_TAKEN: string, DOCUMENT_NOT_AVAILABLE: string, DOCUMENT_NOT_TAKEN: string, USER_NOT_FOUND: string}, general: {PASSWORD: string, LMS_DESCRIPTION_SHORT: string}, login: {LOGIN: string, REMEMBER_ME: string, SIGN_IN: string, REGISTER: string, FORGOT_PASSWORD: string, ISSUES: string}, user: {DASHBOARD: string, CATALOG: string, USER_CARD: string, DATABASE: string, READERS: string, LOGOUT: string}} & {NEWCNS: Array<String>}}
  * @public
  */
+
 module.exports = Object.assign({}, MESSAGES, cns);
 
 module.exports.statuses = {
@@ -48,6 +49,8 @@ module.exports.userTypes = {
     ADMIN: 'Admin'
 };
 
+functions.setUserTypes(module.exports.userTypes);
+
 /**
  * Calculates fine for a document
  * @param instance
@@ -71,6 +74,15 @@ module.exports.getLocale = functions.getLocale;
  */
 
 module.exports.messages = functions.messages;
+
+/**
+ * Utility function. Converts a user type to the number.
+ * @param {User} Actual user. Only 'userType' field is used.
+ * @return {number} The number which corresponds to the user type.
+ * @public
+ */
+
+module.exports.userTypeToNumber = functions.userTypeToNumber;
 
 /**
  * Database connection address

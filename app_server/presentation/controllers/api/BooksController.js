@@ -22,8 +22,10 @@ const val = require('../../../domain/validation/InputValidation');
 const perm = require('../../../domain/permissions/Permissions');
 
 const config = require('../../../util/config');
-const defaultNumberOfBooks = config.DEFAULT_DOCS_NUMBER;
-const defaultFields = config.DEFAULT_BOOK_RESPONSE_FIELDS;
+
+const defaultNumberOfBooks = config.DEFAULT_DOCS_NUMBER; /** @namespace config.DEFAULT_DOCS_NUMBER*/
+const defaultFields = config.DEFAULT_BOOK_RESPONSE_FIELDS; /** @namespace config.DEFAULT_BOOK_RESPONSE_FIELDS */
+
 
 /**
  * Module functions
@@ -151,7 +153,7 @@ module.exports.new = async function (req, res) {
         book.err);
 
     if (book.new === true)
-        response.notification = config.messages(r.locale)[config.success.DOCUMENT_CREATED]
+        response.notification = config.messages(r.locale)[config.success.DOCUMENT_CREATED];
     else if (book.new === false)
         response.notification = config.messages(r.locale)[config.success.DOCUMENT_UPDATED];
 
@@ -208,9 +210,9 @@ module.exports.checkoutById = async function (req, res) {
     const userId = val.number(req.body.user);
 
     let user = r.user;
-    const isLibrarian = user.type === config.userTypes.LIBRARIAN;
+    const isLibrarian = perm.hasAccess(user, perm.SEE_DOCUMENT_EXT);
 
-    let book;
+    let book, response;
     if (isLibrarian && userId) {
         user = usersInteractor.getById(userId);
         if (user.err) {
@@ -230,7 +232,17 @@ module.exports.checkoutById = async function (req, res) {
         return;
     }
 
-    let response = responseComposer.format(book, isLibrarian, defaultFields);
+    response = responseComposer.format(book, isLibrarian, defaultFields);
+
+    // Determining whether the user is now in queue
+    if (book.awaiting.indexOf(user) > -1) {
+        const awaiting = Array.from(book.awaiting);
+        awaiting.sort((user1, user2) => config.userTypeToNumber(user2) - config.userTypeToNumber(user1));
+        response.notification = config.messages(r.locale)
+            [config.user.DOCUMENT_QUEUE_NUMBER]
+            .replace('$0', awaiting.findIndex(o => o.id === user.id) + 1)
+    }
+
     sendJson(res, response);
 };
 
