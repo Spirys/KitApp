@@ -219,8 +219,8 @@ function createNewBook(query, available, reference, maintenance) {
 
 module.exports.getAll = (page, length) => Repository.getAll(page, length);
 
-module.exports.search = async function () {
-
+module.exports.search = async function (query, page, length) {
+    return Repository.searchExact(query, page, length);
 };
 
 /**
@@ -236,8 +236,8 @@ module.exports.new = function (query) {
     */
 
     const available = (query.available)
-            ? typeof query.available === 'number' ? query.available : 0
-            : (query.reference || query.maintenance) ? 0 : 1,
+        ? typeof query.available === 'number' ? query.available : 0
+        : (query.reference || query.maintenance) ? 0 : 1,
 
         reference = (query.reference)
             ? typeof query.reference === 'number' ? query.reference : 0

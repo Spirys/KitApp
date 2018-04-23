@@ -27,31 +27,90 @@ const get = (id) => realm.objectForPrimaryKey('Book', id);
  * @param query {*} A JSON. Every resulting object will contain the specified fields with specified values.<br>
  *      E.g. passing <code>{publisher: 'Renowned publisher', cost: 1000}</code>
  *      will result in all books which have 'Renowned publisher' as publisher and 100 as cost.
+ * @param page
+ * @param length
  * @return {Realm.Results<Book>}
  */
 
-function searchExact(query) {
+function searchExact(query, page, length) {
     let searchFields = [], searchParams = [];
 
     // Validate fields
     for (let item in query) {
-        if (query.hasOwnProperty(item) && defaultFields.includes(item)) {
+        if (query.hasOwnProperty(item)) {
             searchFields.push(item);
-            searchParams.push(query[item])
+            searchParams.push(query[item]);
         }
     }
-
     if (searchFields.length) {
-        let searchQuery = searchFields[0] + ' == $0';
+        let searchQuery = '';
+        for (let i = 0; i < searchFields.length; i++) {
+            switch (searchFields[i]) {
+                case 'title':
+                case 'edition':
+                case 'publisher':
+                case 'description':
+                    if (searchQuery) {
+                        searchQuery += ' OR ';
+                    }
+                    searchQuery += searchFields[i] + ' CONTAINS[c] $' + i;
+                    break;
 
-        for (let i = 1; i < searchFields.length; i++) {
-            searchQuery += ' AND ' + searchFields[i] + '== $' + i
+                case 'published':
+                case 'bestseller':
+                case 'cost':
+                case 'isbn':
+                    if (searchQuery) {
+                        searchQuery += ' OR ';
+                    }
+                    searchQuery += searchFields[i] + ' == $' + i;
+                    break;
+
+                case 'available':
+                case 'loaned':
+                case 'reference':
+                    if (searchQuery) {
+                        searchQuery += ' OR ';
+                    }
+                    searchQuery += searchFields[i] + ' >= $' + i;
+                    break;
+
+                // FIXME: PRIMITIVE LISTS ARE NOT SUPPORTED (e.g. 'strings[]')
+                case 'keywords':
+                    break;
+                    if (searchQuery) {
+                        searchQuery += ' OR ';
+                    }
+                    searchQuery += 'keywords ==[c] $' + i;
+                    break;
+
+                case 'author':
+                    if (searchQuery) {
+                        searchQuery += ' OR ';
+                    }
+                    if (searchParams[i].indexOf(' ') > -1) {
+                        let tmp = searchParams[i].split(' ');
+                        searchParams[i] = tmp[0];
+
+                        // just a crutch
+                        searchParams.splice(i + 1, 0, tmp[1]);
+                        searchFields.splice(i + 1, 0, 'tmp');
+                    } else {
+                        searchParams.splice(i + 1, 0, searchParams[i]);
+                        searchFields.splice(i + 1, 0, 'tmp');
+                    }
+                    searchQuery += 'authors.first_name CONTAINS[c] $' + i + ' OR authors.first_name CONTAINS[c] $' + (i + 1)
+                        + ' OR authors.last_name CONTAINS[c] $' + (i + 1) + ' OR authors.last_name CONTAINS[c] $' + i;
+                    i++;
+                    break;
+            }
         }
 
         return realm.objects('Book')
-            .filtered(searchQuery, ...searchParams);
+            .filtered(searchQuery, ...searchParams)
+            .slice((page - 1) * length, page * length);
 
-    } else return realm.objects('Book');
+    } else return realm.objects('Book').slice((page - 1) * length, page * length);
 }
 
 function getAll(page, length) {

@@ -112,9 +112,30 @@ module.exports.getAll = async function (req, res) {
     sendJson(res, response);
 };
 
-// TODO
 module.exports.search = async function (req, res) {
+    const r = traverseRequest(req, res, false, perm.SEE_DOCUMENT);
+    if (!r) return;
 
+    // Traversing request
+    let {length, page, fields, ...query} = req.query;
+    length = val.numberOrDefault(length, 1, true);
+    page = val.numberOrDefault(page, defaultNumberOfBooks, true);
+    fields = (typeof fields === 'string')
+        ? fields.split(',')
+        : defaultFields;
+
+    let books = interactor.search(query, page, length);
+
+    let response = responseComposer.formatMultiple(
+        books,
+        perm.hasAccess(r.user, perm.SEE_DOCUMENT_EXT),
+        fields,
+        page, length,
+        r.locale,
+        books.err,
+        r.user);
+
+    sendJson(res, response);
 };
 
 module.exports.new = async function (req, res) {
