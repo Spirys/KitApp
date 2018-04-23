@@ -76,13 +76,25 @@ function searchLenient(query, page, length) {
                     searchQuery += searchFields[i] + ' >= $' + i;
                     break;
 
-                // FIXME: PRIMITIVE LISTS ARE NOT SUPPORTED (e.g. 'strings[]')
                 case 'keywords':
-                    break;
                     if (searchQuery) {
                         searchQuery += ' OR ';
                     }
-                    searchQuery += 'keywords ==[c] $' + i;
+
+                    if (searchParams[i].indexOf(',') > -1) {
+                        let keys = searchParams[i].split(',');
+                        searchParams[i] = keys[0];
+                        searchQuery += 'keywords.key ==[c] $' + i;
+
+                        for (let j = 1; j < keys.length; j++) {
+                            searchQuery += ' OR keywords.key ==[c] $' + (i + 1);
+                            searchParams.splice(i + 1, 0, keys[j]);
+                            searchFields.splice(i + 1, 0, 'key' + j);
+                            i++;
+                        }
+                    } else {
+                        searchQuery += 'keywords.key ==[c] $' + i;
+                    }
                     break;
 
                 case 'author':
@@ -95,10 +107,10 @@ function searchLenient(query, page, length) {
 
                         // just a crutch
                         searchParams.splice(i + 1, 0, tmp[1]);
-                        searchFields.splice(i + 1, 0, 'tmp');
+                        searchFields.splice(i + 1, 0, 'author1');
                     } else {
                         searchParams.splice(i + 1, 0, searchParams[i]);
-                        searchFields.splice(i + 1, 0, 'tmp');
+                        searchFields.splice(i + 1, 0, 'author1');
                     }
                     searchQuery += 'authors.first_name CONTAINS[c] $' + i + ' OR authors.first_name CONTAINS[c] $' + (i + 1)
                         + ' OR authors.last_name CONTAINS[c] $' + (i + 1) + ' OR authors.last_name CONTAINS[c] $' + i;

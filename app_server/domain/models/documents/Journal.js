@@ -29,7 +29,7 @@ const Journal = {
         issn: 'string?',
         description: 'string?',
         image: 'string?',
-        keywords: 'string?[]'
+        keywords: 'Keyword[]'
     }
 };
 

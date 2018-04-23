@@ -29,6 +29,7 @@ const Media = require('../domain/models/documents/Media');
 const BookInstance = require('../domain/models/documents/DocumentInstances/BookInstance');
 const JournalInstance = require('../domain/models/documents/DocumentInstances/JournalInstance');
 const MediaInstance = require('../domain/models/documents/DocumentInstances/MediaInstance');
+const Keyword = require('../domain/models/service/Keyword');
 
 /**
  * Module functions
@@ -55,8 +56,9 @@ async function init() {
         schema: [Author, User, Login, Session,
             Book, BookInstance,
             Journal, Article, JournalInstance,
-            Media, MediaInstance, Notification],
-        schemaVersion: 4,
+            Media, MediaInstance, Notification,
+            Keyword],
+        schemaVersion: 5,
         migration: (oldRealm, newRealm) => {
             if (oldRealm.schemaVersion < 2) {
                 const apply = (instance) => instance.renewed = false;
@@ -81,6 +83,26 @@ async function init() {
                 users.forEach(user => {
                     user.notifications = [];
                 })
+            }
+
+            if (oldRealm.schemaVersion < 5) {
+                let newBooks = newRealm.objects('Book');
+                let oldBooks = oldRealm.objects('Book');
+                for (let i = 0; i < newBooks.length; i++) {
+                    newBooks[i].keywords = oldBooks[i].keywords.map(curr => ({key: curr}));
+                }
+
+                let newJournal = newRealm.objects('Journal');
+                let oldJournal = oldRealm.objects('Journal');
+                for (let i = 0; i < newJournal.length; i++) {
+                    newJournal[i].keywords = oldJournal[i].keywords.map(curr => ({key: curr}));
+                }
+
+                let newMedia = newRealm.objects('Media');
+                let oldMedia = oldRealm.objects('Media');
+                for (let i = 0; i < newMedia.length; i++) {
+                    newMedia[i].keywords = oldMedia[i].keywords.map(curr => ({key: curr}));
+                }
             }
         },
         // deleteRealmIfMigrationNeeded: false

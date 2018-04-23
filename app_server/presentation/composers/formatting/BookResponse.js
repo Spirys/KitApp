@@ -87,7 +87,7 @@ function format(book, librarianAccess, fields, locale, err, user) {
                     break;
                 case 'keywords':
                     sel = [];
-                    for (let i of book.keywords) sel.push(i);
+                    for (let i of book.keywords) sel.push(i.key);
                     break;
                 case 'awaiting':
                     sel = book.awaiting.length;

@@ -80,7 +80,7 @@ async function update(id, query) {
     if (query.cost) journal.cost = query.cost;
     if (query.publisher) journal.publisher = query.publisher;
     if (query.issn) journal.issn = query.issn;
-    if (query.keywords) journal.keywords = query.keywords;
+    if (query.keywords) journal.keywords = query.keywords.map(curr => ({key: curr}));
     if (query.description) journal.description = query.description;
     if (query.image) journal.image = query.image;
 
@@ -146,7 +146,7 @@ async function create(query) {
             instances: [],
             cost: query.cost,
             publisher: query.publisher,
-            keywords: query.keywords,
+            keywords: query.keywords.map(curr => ({key: curr})),
             bestseller: query.bestseller,
             description: query.description,
             issn: query.isbn,
