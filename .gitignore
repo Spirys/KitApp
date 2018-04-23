@@ -61,3 +61,5 @@ typings/
 
 # realm local resources
 realm-object-server
+*.realm
+*.realm.lock

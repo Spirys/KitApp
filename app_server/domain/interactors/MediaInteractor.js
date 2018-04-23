@@ -83,7 +83,7 @@ module.exports.updateById = async function (id, fields) {
     if (fields.title) media.title = fields.title;
     if (fields.cost) media.cost = fields.cost;
     if (typeof fields.bestseller === 'boolean') media.bestseller = fields.bestseller;
-    if (fields.keywords) media.keywords = fields.keywords;
+    if (fields.keywords) media.keywords = fields.keywords.map(curr => ({key: curr}));
     if (fields.description) media.description = fields.description;
     if (fields.image) media.image = fields.image;
     if (fields.published) media.published = fields.published;

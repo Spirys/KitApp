@@ -29,7 +29,7 @@ const Book = {
         description: 'string?',
         image: 'string?',
         isbn: 'string?',
-        keywords: 'string?[]',
+        keywords: 'Keyword[]',
 
         awaiting: 'User[]',
         outstanding_request: 'bool'

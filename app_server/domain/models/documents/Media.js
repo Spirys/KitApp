@@ -24,7 +24,7 @@ const Media = {
         description: 'string?',
         image: 'string?',
         published: 'string?',
-        keywords: 'string?[]'
+        keywords: 'Keyword[]'
     }
 };
 

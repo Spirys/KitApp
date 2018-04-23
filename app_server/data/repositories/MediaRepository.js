@@ -115,7 +115,7 @@ async function create(query) {
                 // authors: [],
                 // instances: [],
                 cost: query.cost,
-                keywords: query.keywords,
+                keywords: query.keywords.map(curr => ({key: curr})),
                 bestseller: query.bestseller,
                 description: query.description,
                 image: query.image,
@@ -237,7 +237,8 @@ async function remove(id) {
     return media;
 }
 
-async function createInstance(status) {await check_init();
+async function createInstance(status) {
+    await check_init();
     let instance;
     realm.write(() => {
         instance = realm.create('MediaInstance', {

@@ -320,7 +320,7 @@ module.exports.updateById = function (id, fields) {
         if (fields.isbn) book.isbn = fields.isbn;
         if (typeof fields.bestseller === 'boolean') book.bestseller = fields.bestseller;
         if (fields.publisher) book.publisher = fields.publisher;
-        if (fields.keywords) book.keywords = fields.keywords;
+        if (fields.keywords) book.keywords = fields.keywords.map(curr => ({key: curr}));
         if (fields.description) book.description = fields.description;
         if (fields.image) book.image = fields.image;
         if (fields.published) book.published = fields.published;
