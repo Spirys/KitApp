@@ -15,7 +15,7 @@ function loadBooks() {
         }
 
         function buildAnimation(card) {
-            return function() {
+            return function () {
                 card.attr('style', 'visibility:visible');
                 card.addClass('fadeInUp');
             }
@@ -231,15 +231,15 @@ function renewBook(bookId, callback) {
     });
 }
 
-function searchBook(){
+function searchBook() {
     $.ajax({
-        type: 'GET' ,
-        url: api/books/search,
-        data:{  //TODO: change to a query
-             title:,
-             author:,
-             //type:
+        type: 'GET',
+        url: 'api/books/search',
+        data: {  //TODO: change to a query
+            //title:,
+            //author:,
+            //type:
         },
-        
-           }); 
+
+    });
 }
