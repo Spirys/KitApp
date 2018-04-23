@@ -214,3 +214,16 @@ function renewBook(bookId, callback) {
         success: callback
     });
 }
+
+function searchBook(){
+    $.ajax({
+        type: 'GET' ,
+        url: api/books/search,
+        data:{  //TODO: change to a query
+             title:,
+             author:,
+             //type:
+        },
+        
+           }); 
+}
