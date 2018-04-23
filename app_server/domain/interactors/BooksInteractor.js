@@ -178,6 +178,9 @@ function createNewBook(query, available, reference, maintenance) {
     book.id = id;
     book.authors = [];
     book.outstanding_request = false;
+    if (book.keywords) {
+        book.keywords = book.keywords.map(curr => ({key: curr}));
+    }
 
     // Find the requested authors or create them
     for (let author of query.authors) {
