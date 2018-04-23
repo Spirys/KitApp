@@ -1,111 +1,120 @@
-include ../../mixins
+include ./mixins
 doctype html
 html
-    +head("Catalog")
+    +head(messages.CATALOG)
+    link(rel="stylesheet", type='text/css', href='https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css')
     body
         .page
             // Main Navbar
-            +main-navbar()
+            +main-navbar(messages)
             .page-content.d-flex.align-items-stretch
                 // Side Navbar
-                +sidebar("catalog", user)
+                +sidebar("catalog", user, messages)
                 .content-inner
                     // Page Header
                     header.page-header
                         .container-fluid
-                            h2.no-margin-bottom Catalog
+                            h2.no-margin-bottom=messages.CATALOG
                     section.preferences
                         .container-fluid
                             .row
                                 .col-lg-12
                                     .card
                                         .card-header.d-flex.align-items-center
-                                            h3.h4 Preferences
+                                            h3.h4=messages.SEARCH
                                         .card-dropdown
                                             .dropdown
                                                 button#database-dropdown-menu.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
                                                     i.fa.fa-ellipsis-v
                                                 .dropdown-menu.dropdown-menu-right.has-shadow(aria-labelledby='database-dropdown-menu')
-                                                    a#add-new-entry.dropdown-item.remove(href='#', data-toggle='modal', data-target='#myModal')
+                                                    a#add-new-entry.dropdown-item.remove(href='#', data-toggle='modal', data-target='#newDocumentModal')
                                                         i.fa.fa-plus
-                                                        | Add new document
-                                        #myModal.modal.fade
+                                                        | #{messages.NEW_DOCUMENT}
+                                        #newDocumentModal.modal.fade
                                             .modal-dialog(role='document')
                                                 .modal-content
                                                     .modal-header
-                                                        h5.modal-title Add new document
+                                                        h5.modal-title=messages.NEW_DOCUMENT
                                                         button.close(type='button', data-dismiss='modal', aria-label='Close')
                                                             span(aria-hidden='true') ×
                                                     .modal-body
-                                                        p Please fill out the info about the new document
-                                                        form
-                                                            .form-group
-                                                                label(for='title') Title
-                                                                input#title.form-control(type='text' required)
-                                                            .form-group
-                                                                label(for='authors') Authors
-                                                                input#authors.form-control(type='text' required)
-                                                            .form-group
-                                                                label(for='edition') Edition
-                                                                input#edition.form-control(type='text' required)
-                                                            .form-group
-                                                                label(for='publisher') Publisher
-                                                                input#publisher.form-control(type='text' required)  
-                                                            .form-group
-                                                                label(for='published') Published
-                                                                input#published.form-control(type='date' required)  
-                                                            .form-group
-                                                                label(for='keywords') Keywords
-                                                                input#keywords.form-control(type='text')
-                                                            .form-group
-                                                                label(for='description') Description
-                                                                textarea#description.form-control(rows='3' required)
-                                                            .form-group
-                                                                label(for='cost') Cost
-                                                                textarea#cost.form-control(type='number' required)
-                                                            .form-group
-                                                                label(for='document-type') Type
-                                                                select#document-type.form-control
-                                                                    option Book
-                                                                    option Media
-                                                                    option Journal
-                                                            .form-group
-                                                                label(for='available-copies') Avaliable copies
-                                                                input#available-copies.form-control(type='number' value='1' required)
-                                                            .form-group
-                                                                label(for='reference-copies') Reference copies
-                                                                input#reference-copies.form-control(type='number' value='0' required)
-                                                            .form-group
-                                                                label(for='maintenance-copies') Maintenance copies
-                                                                input#maintenance-copies.form-control(type='number' value='0' required)
-                                                            .form-check
-                                                                label.form-check-label
-                                                                    input#bestseller.form-check-input(type='checkbox')
-                                                                    | Bestseller
-                                                            div(style='position:relative;')
-                                                                a.btn.btn-primary(href='javascript:')
-                                                                    | Add image...
-                                                                    input#add-image(type='file', style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;', name='file_source', size='40', onchange='$("#upload-file-info").html($(this).val());')
-                                                                span#upload-file-info.label.label-info
+                                                        #new-fields
+                                                            p Please fill out the info about the new document
+                                                            label(class="control-label required") Fields with red star
+                                                            |  are required
+                                                            form
+                                                                .form-group
+                                                                    label(class="control-label required" for='title') Title
+                                                                    input#title.form-control(type='text' placeholder='Introduction to algorithms' required)
+                                                                .form-group
+                                                                    label(class="control-label required" for='authors') Authors
+                                                                    input#authors.form-control(type='text' placeholder='John Smith, Eva Adams' required)
+                                                                .form-group
+                                                                    label(class="control-label required" for='edition') Edition
+                                                                    input#edition.form-control(type='text' placeholder='Second revised' required)
+                                                                .form-group
+                                                                    label(class="control-label required" for='publisher') Publisher
+                                                                    input#publisher.form-control(type='text' placeholder='EKSMO' required)
+                                                                .form-group
+                                                                    label(for='published') Published date
+                                                                    input#published.form-control(type='text')
+                                                                .form-group
+                                                                    label(for='isbn') ISBN
+                                                                    input#isbn.form-control(type='number' placeholder='1234567890123')
+                                                                .form-group
+                                                                    label(class="control-label required" for='keywords') Keywords
+                                                                    input#keywords.form-control(type='text' placeholder='lorem, ipsum, dolor, sit, amet' required)
+                                                                .form-group
+                                                                    label(for='description') Description
+                                                                    textarea#description.form-control(placeholder='This book is about blue butterflies' rows='3')
+                                                                .form-group
+                                                                    label(class="control-label required" for='document-type') Type
+                                                                    select#document-type.form-control
+                                                                        option Book
+                                                                        option Media
+                                                                        option Journal
+                                                                .form-group
+                                                                    label(class="control-label required" for='cost') Cost (in RUB)
+                                                                    input#cost.form-control(type='number' placeholder='1000' required)
+                                                                .form-group
+                                                                    label(class="control-label required" for='available-copies') Avaliable copies
+                                                                    input#available-copies.form-control(type='number' value='1' required)
+                                                                .form-group
+                                                                    label(class="control-label required" for='reference-copies') Reference copies
+                                                                    input#reference-copies.form-control(type='number' value='0' required)
+                                                                .form-group
+                                                                    label(class="control-label required" for='maintenance-copies') Maintenance copies
+                                                                    input#maintenance-copies.form-control(type='number' value='0' required)
+                                                                .form-check
+                                                                    label.form-check-label
+                                                                        input#bestseller.form-check-input(type='checkbox')
+                                                                        | Bestseller
+                                                                div(style='position:relative;')
+                                                                    a.btn.btn-primary(href='javascript:')
+                                                                        | Add image...
+                                                                        input#add-image(type='file', style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;', name='file_source', size='40', onchange='$("#upload-file-info").html($(this).val());')
+                                                                    span#upload-file-info.label.label-info
+                                                        #new-error.container.alert.alert-danger(style='display: none;')
                                                     .modal-footer
                                                         button#save-changes.btn.btn-primary(type='button')
                                                             | Save changes
                                                         button#close.btn.btn-secondary(type='button', data-dismiss='modal')
                                                             | Close
+
                                         .card-body
                                             form.form-horizontal
                                                 .form-group.row
-                                                    label.col-sm-3.form-control-label Search by title
+                                                    label.col-sm-3.form-control-label=messages.SEARCH_BY_TITLE
                                                     .col-sm-6
                                                         label
-                                                        input.form-control(type='text', placeholder='Title', required='')
+                                                        input.form-control(type='text', placeholder='Introduction to algorithms', required='')
                                                 .form-group.row
-                                                    label.col-sm-3.form-control-label Search by authors
+                                                    label.col-sm-3.form-control-label=messages.SEARCH_BY_AUTHORS
                                                     .col-sm-6
                                                         label
-                                                        input.form-control(type='text', placeholder='Autors', required='')
+                                                        input.form-control(type='text', placeholder='Bob Smith, Eva Adams', required='')
                                                 .form-group.row
-                                                    label.col-sm-3.form-control-label(for='search-by-type') Search by types
+                                                    label.col-sm-3.form-control-label(for='search-by-type')=messages.FILTER_TYPES
                                                     .col-sm-6
                                                         select#search-by-type.form-control
                                                             option All
@@ -114,16 +123,53 @@ html
                                                             option Audio-Video material
                                                 .form-group.row
                                                     .col-sm-2
-                                                        button#search.btn.btn-primary(type='submit') Search
+                                                        button#search.btn.btn-primary(type='submit')=messages.FIND
 
                     section.document
-                        .container-fluid
-                            -documents_list = [{token: "librarianToken", title: "Touch of class", authors: [{first_name: "Bertrand", last_name: "Meyer"}], cost: 1000, edition: "Second revision", publisher: "INNO books", keywords: ["programming", "eiffel"], description: "From object technology pioneer and ETH Zurich professor Bertrand Meyer, winner of the Jolt award and the ACM Software System Award, a revolutionary textbook that makes learning programming fun and rewarding. Meyer builds his presentation on a rich object-oriented software system supporting graphics and multimedia, which students can use to produce impressive applications from day one, then understand inside out as they learn new programming techniques.", bestseller: true, available: 5, reference: 1, image: "book1.jpg", published: "01-03-2018", type: "book"}, {token: "librarianToken", title: "Introduction to Algorithms", authors: [{first_name: "Thomas", last_name: "H. Cormen"}], cost: 1000, edition: "Second revision", publisher: "INNO books", keywords: ["programming", "dsa"], description: 'Itroduction to Algorithms is a book by Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein. The first edition of the book was widely used as the textbook for algorithms courses at many universities and is commonly cited as a reference for algorithms in published papers, with over 10000 citations documented on CiteSeerX. The book sold half a million copies during its first 20 years. Its fame has led to the common use of the abbreviation "CLRS" (Cormen, Leiserson, Rivest, Stein), or, in the first edition, "CLR" (Cormen, Leiserson, Rivest).', bestseller: false, available: 5, reference: 1, image: "book2.jpeg", published: "01-03-2018", type: "book"}, {token: "librarianToken", title: "Kolobok", authors: [{first_name: "Folklor", last_name: "Folklor"}], cost: 1000, edition: "Second revision", publisher: "INNO books", keywords: ["stories", "fairy tale"], description: 'Kolobok (Cyrillic: колобо́к) is the main character of an East Slavic national fairy tale with the same name, represented as a small yellow spherical being. The fairy tale is prevalent in Slavic regions in a number of variations.', bestseller: false, available: 0, reference: 1, image: "book3.jpg", published: "01-03-2018", type: "book"}];
-
-                            for doc in documents_list
-                                +catalog-document(doc)
+                        #documentDetailsModal.modal.fade
+                            .modal-dialog
+                                .modal-content
+                                    .modal-header
+                                        h3.modal-title Document details
+                                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                            span(aria-hidden='true') ×
+                                    .modal-body
+                                        #details-error.container.alert.alert-danger(style='display: none;')
+                                        #details-success.container.alert.alert-success(style='display: none;')
+                                        #details-body
+                                            .container.form-row
+                                                b Title:&nbsp;
+                                                #details-title
+                                            .container.form-row
+                                                b Authors:&nbsp;
+                                                #details-author
+                                            .container.form-row
+                                                b Edition:&nbsp;
+                                                #details-edition
+                                            .container.form-row
+                                                b Publisher:&nbsp;
+                                                #details-publisher
+                                            .container.form-row
+                                                b Keywords:&nbsp;
+                                                #details-keywords
+                                            .container.form-row
+                                                b Description:&nbsp;
+                                                #details-description
+                                            .container.form-row
+                                                b Type:&nbsp;book
+                                                #details-type
+                                    .modal-footer
+                                        button#closeDetailsModal.btn.btn-secondary(type='button', data-dismiss='modal')
+                                            | Close
+                        #documents.container-fluid
+                            #loader
+                                .row.align-items-center.justify-content-center
+                                    img(src='images/loading.gif')
+                                h2.text-center Loading...
                     // Page Footer
                     +footer()
         // Javascript files
         +java-script()
-        
+        script(src='//cdn.jsdelivr.net/momentjs/latest/moment.min.js')
+        script(src='//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js')
+        script(src='js/catalog.js')

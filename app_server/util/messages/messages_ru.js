@@ -53,6 +53,13 @@ module.exports[msg.user.DATABASE] = 'База данных';
 module.exports[msg.user.READERS] = 'Читатели';
 module.exports[msg.user.LOGOUT] = 'Выход';
 
+module.exports[msg.front_catalog.SEARCH] = 'Поиск';
+module.exports[msg.front_catalog.SEARCH_BY_TITLE] = 'По названию';
+module.exports[msg.front_catalog.SEARCH_BY_AUTHORS] = 'По авторам';
+module.exports[msg.front_catalog.FILTER_TYPES] = 'Фильтр по типу';
+module.exports[msg.front_catalog.FIND] = 'Найти';
+module.exports[msg.front_catalog.NEW_DOCUMENT] = 'Новый документ';
+
 // Actions
 module.exports[msg.actions.RESERVE_DOCUMENT] = 'Взять';
 module.exports[msg.actions.DOCUMENT_TAKEN] = 'Взят';

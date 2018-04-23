@@ -19,10 +19,6 @@ mixin sidebar_list(active_item, messages)
         +sidebar_list_item('dashboard', 'dashboard', active_item)=messages.DASHBOARD
         +sidebar_list_item('catalog', 'book', active_item)=messages.CATALOG
         +sidebar_list_item('user-card', 'id-card', active_item)=messages.USER_CARD
-        +sidebar_list_item('database', 'database', active_item)=messages.DATABASE
-        +sidebar_list_item('readers', 'users', active_item)=messages.READERS
-
-        
 
 mixin sidebar_list_item(href, icon, active_item)
     if active_item === href
@@ -193,32 +189,6 @@ mixin java-script()
         | var lang = $('.select-language');
         | lang.on('click', function() {setLocale($(this).attr('data-lang'))});
 
-
-mixin reader-row(config)
-    tr
-        th#id(scope='row')
-            a(href='user-card.html') #{config.id}
-        th#name #{config.first_name}
-        th#surname #{config.last_name}
-        td#type #{config.type}
-        td#e-mail #{config.email}
-        td#telegram #{config.telegram}
-        td#actions
-            button.btn.btn-dark(type='button', data-toggle='modal', data-target='#myModal2') Edit
-
-mixin reader-row(config)
-    tr
-        th#id(scope='row')
-            a(href='user-card.html') #{config.id}
-        th#name #{config.first_name}
-        th#surname #{config.last_name}
-        td#type #{config.type}
-        td#e-mail #{config.email}
-        td#telegram #{config.telegram}
-        td#type #{config.priv}
-        td#actions
-            button.btn.btn-dark(type='button', data-toggle='modal', data-target='#myModal2') Edit
-
 mixin user-card-row(row_number, title, author, type, status)
     tr
         th#row-number(scope='row') #{row_number}
@@ -227,121 +197,6 @@ mixin user-card-row(row_number, title, author, type, status)
         td#author #{author}
         td#type #{type}
         td#status #{status}
-
-mixin database-row(id, name, surname, type, title, status)
-    tr
-        th#row(scope='row')
-            a(href='user-card.html') #{id}
-        th#name #{name}
-        th#surname #{surname}
-        td#user-type #{type}
-        td
-            a#document(href='document') #{title}
-        td#status #{status}
-        td
-            if status==="Reserved"
-                button#give-out.btn.btn-dark(type='button') Give out
-            else if status==="Returned"
-
-            else
-                button#returned.btn.btn-success(type='button') Return
-                button#outstanding-request.btn.btn-warning(type='button') Request
-                block
-
-mixin edit-reader()
-    #myModal2.modal.fade
-        .modal-dialog(role='document')
-            .modal-content
-                .modal-header
-                    h5.modal-title Edit reader
-                    button.close(type='button', data-dismiss='modal', aria-label='Close')
-                        span(aria-hidden='true') ×
-                .modal-body
-                    p Please edit the info about the new reader
-                    form
-                        .form-group
-                            label First name
-                            input#create_first_name.form-control(type='text', placeholder='First name', value="Elon")
-                        .form-group
-                            label Last name
-                            input#create_last_name.form-control(type='text', placeholder='Last name' value="Musk")
-                        .form-group
-                            label Birth date
-                            input#create_birth_date.form-control(type='date', placeholder='Birth date', value='1990-01-01')
-                        .form-group
-                            label E-mail address
-                            input#create_email.form-control(type='email', aria-describedby='emailHelp', placeholder='Email', value='qwe@innopolis.ru')
-                            small#new-email.form-text.text-muted
-                                | The password and login will be sent to this email
-                        .form-group
-                            label Address
-                            input#create_address.form-control(type='text', placeholder='Address', value="Universitetskaya str, 1")
-                        .form-group
-                            label Phone number
-                            input#create_phone.form-control(type='number', placeholder='Phone number', value='901234567')
-                        .form-group
-                            label Occupation
-                            input#create_occupation.form-control(type='text', placeholder='Phone number', value='none')
-                        .form-group
-                            label Telegram alias
-                            input#create_telegram.form-control(type='tel', placeholder='Telegram alias', value='@elonmusk')
-                        .form-group
-                            label(for='user-type') Select type of user:
-                            select#user-type.form-control
-                                option Student
-                                option Faculty
-                                option Librarian
-                .modal-footer
-                    button.btn.btn-danger(type='button') Delete user
-                    button.btn.btn-primary(type='button') Save changes
-                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
-
-mixin edit-librarian()
-    #myModal2.modal.fade
-        .modal-dialog(role='document')
-            .modal-content
-                .modal-header
-                    h5.modal-title Edit librarian
-                    button.close(type='button', data-dismiss='modal', aria-label='Close')
-                        span(aria-hidden='true') ×
-                .modal-body
-                    form
-                        .form-group
-                            label First name
-                            input#create_first_name.form-control(type='text', placeholder='First name', value="Elon")
-                        .form-group
-                            label Last name
-                            input#create_last_name.form-control(type='text', placeholder='Last name' value="Musk")
-                        .form-group
-                            label Birth date
-                            input#create_birth_date.form-control(type='date', placeholder='Birth date', value='1990-01-01')
-                        .form-group
-                            label E-mail address
-                            input#create_email.form-control(type='email', aria-describedby='emailHelp', placeholder='Email', value='qwe@innopolis.ru')
-                            small#new-email.form-text.text-muted
-                                | The password and login will be sent to this email
-                        .form-group
-                            label Address
-                            input#create_address.form-control(type='text', placeholder='Address', value="Universitetskaya str, 1")
-                        .form-group
-                            label Phone number
-                            input#create_phone.form-control(type='number', placeholder='Phone number', value='901234567')
-                        .form-group
-                            label Occupation
-                            input#create_occupation.form-control(type='text', placeholder='Phone number', value='none')
-                        .form-group
-                            label Telegram alias
-                            input#create_telegram.form-control(type='tel', placeholder='Telegram alias', value='@elonmusk')
-                        .form-group
-                            label(for='user-type') Select type of user:
-                            select#user-type.form-control
-                                option Priv1
-                                option Priv2
-                                option Priv3
-                .modal-footer
-                    button.btn.btn-danger(type='button') Delete user
-                    button.btn.btn-primary(type='button') Save changes
-                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
 
 mixin message_modal(title, text)
     #message_modal.modal.fade

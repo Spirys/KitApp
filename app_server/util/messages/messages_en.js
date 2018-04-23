@@ -54,6 +54,13 @@ module.exports[msg.user.DATABASE] = 'Database';
 module.exports[msg.user.READERS] = 'Readers';
 module.exports[msg.user.LOGOUT] = 'Logout';
 
+module.exports[msg.front_catalog.SEARCH] = 'Search preferences';
+module.exports[msg.front_catalog.SEARCH_BY_TITLE] = 'By title';
+module.exports[msg.front_catalog.SEARCH_BY_AUTHORS] = 'By authors';
+module.exports[msg.front_catalog.FILTER_TYPES] = 'Filter types';
+module.exports[msg.front_catalog.FIND] = 'Search';
+module.exports[msg.front_catalog.NEW_DOCUMENT] = 'Add new document';
+
 // Actions
 module.exports[msg.actions.RESERVE_DOCUMENT] = 'Reserve';
 module.exports[msg.actions.CHECKOUT_DOCUMENT] = 'Check out';

@@ -1,4 +1,4 @@
-link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
+//link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
 
 mixin sidebar(active_item, user, messages)
     nav.side-navbar
@@ -132,13 +132,17 @@ mixin head(page_title)
         // Bootstrap CSS
         link(rel='stylesheet', href='css/bootstrap.min.css')
         // Font Awesome CSS
-        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css', media='none', onload='if(media!="all") media="all"')
+        noscript
+            link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
         // Animate CSS
         link(rel='stylesheet', href='css/animate.css')
         // Fontastic Custom icon font
         link(rel='stylesheet', href='css/fontastic.css')
         // Google fonts - Poppins
-        link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Poppins:300,400,700')
+        link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Poppins:300,400,700', media='none', onload='if(media!="all") media="all"')
+        noscript
+            link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Poppins:300,400,700')
         // theme stylesheet
         link#theme-blue(rel='stylesheet', href='css/style.default.css')
         // Custom stylesheet - for your changes
@@ -203,19 +207,6 @@ mixin reader-row(config)
         td#type #{config.type}
         td#e-mail #{config.email}
         td#telegram #{config.telegram}
-        td#actions
-            button.btn.btn-dark(type='button', data-toggle='modal', data-target='#myModal2') Edit
-
-mixin reader-row(config)
-    tr
-        th#id(scope='row')
-            a(href='user-card.html') #{config.id}
-        th#name #{config.first_name}
-        th#surname #{config.last_name}
-        td#type #{config.type}
-        td#e-mail #{config.email}
-        td#telegram #{config.telegram}
-        td#type #{config.priv}
         td#actions
             button.btn.btn-dark(type='button', data-toggle='modal', data-target='#myModal2') Edit
 
