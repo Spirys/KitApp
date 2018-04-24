@@ -58,6 +58,7 @@ module.exports[msg.user.DOCUMENT_QUEUE_NUMBER] = 'You are #$0 in the queue';
 module.exports[msg.front_catalog.SEARCH] = 'Search preferences';
 module.exports[msg.front_catalog.SEARCH_BY_TITLE] = 'By title';
 module.exports[msg.front_catalog.SEARCH_BY_AUTHORS] = 'By authors';
+module.exports[msg.front_catalog.SEARCH_BY_KEYWORDS] = 'By keywords';
 module.exports[msg.front_catalog.FILTER_TYPES] = 'Filter types';
 module.exports[msg.front_catalog.FIND] = 'Search';
 module.exports[msg.front_catalog.NEW_DOCUMENT] = 'Add new document';

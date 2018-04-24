@@ -120,11 +120,14 @@ module.exports.search = async function (req, res) {
 
     // Traversing request
     let {length, page, fields, ...query} = req.query;
-    length = val.numberOrDefault(length, 1, true);
-    page = val.numberOrDefault(page, defaultNumberOfBooks, true);
+    length = val.numberOrDefault(length, defaultNumberOfBooks, true);
+    page = val.numberOrDefault(page, 1, true);
     fields = (typeof fields === 'string')
         ? fields.split(',')
         : defaultFields;
+
+    // Primary unwrapping
+    if (query.keywords) query.keywords = query.keywords.split(',');
 
     let books = interactor.search(query, page, length);
 

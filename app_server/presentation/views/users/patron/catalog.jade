@@ -29,12 +29,17 @@ html
                                                     label.col-sm-3.form-control-label=messages.SEARCH_BY_TITLE
                                                     .col-sm-6
                                                         label
-                                                        input.form-control(type='text', placeholder='Introduction to algorithms', required='')
+                                                        input#searchTitle.form-control(type='text', placeholder='Introduction to algorithms')
                                                 .form-group.row
                                                     label.col-sm-3.form-control-label=messages.SEARCH_BY_AUTHORS
                                                     .col-sm-6
                                                         label
-                                                        input.form-control(type='text', placeholder='Bob Smith, Eva Adams', required='')
+                                                        input#searchAuthors.form-control(type='text', placeholder='Bob Smith, Eva Adams')
+                                                .form-group.row
+                                                    label.col-sm-3.form-control-label=messages.SEARCH_BY_KEYWORDS
+                                                    .col-sm-6
+                                                        label
+                                                        input#searchKeywords.form-control(type='text', placeholder='programming,learning')
                                                 .form-group.row
                                                     label.col-sm-3.form-control-label(for='search-by-type')=messages.FILTER_TYPES
                                                     .col-sm-6
@@ -45,7 +50,7 @@ html
                                                             option Audio-Video material
                                                 .form-group.row
                                                     .col-sm-2
-                                                        button#search.btn.btn-primary(type='submit')=messages.FIND
+                                                        button#searchBtn.btn.btn-primary(type='submit')=messages.FIND
 
                     section.document
                         #documentDetailsModal.modal.fade

@@ -19,6 +19,7 @@ const UsersInteractor = require('./UsersInteractor');
 
 const filter = require('../validation/InputValidation').filterFields;
 const rules = require('../validation/Rules').book;
+const searchRules = require('../validation/Rules').bookSearch;
 
 const config = require('../../util/config');
 const logger = require('../../util/Logger');
@@ -222,8 +223,16 @@ function createNewBook(query, available, reference, maintenance) {
 
 module.exports.getAll = (page, length) => Repository.getAll(page, length);
 
-module.exports.search = async function (query, page, length) {
-    return Repository.search(query, page, length);
+module.exports.search = function (query, page, length) {
+    const searchQuery = filter(query, searchRules);
+    if (searchQuery.err) return searchQuery;
+
+    try {
+        return Repository.search(searchQuery, page, length);
+    } catch (error) {
+        logger.error(error);
+        return {err: config.errors.WRONG_INPUT}
+    }
 };
 
 /**

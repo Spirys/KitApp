@@ -29,7 +29,7 @@ const get = (id) => realm.objectForPrimaryKey('Book', id);
  *      will result in all books which have 'Renowned publisher' as publisher and 100 as cost.
  * @param page
  * @param length
- * @return {Realm.Results<Book>}
+ * @return {Array<Book>}
  */
 
 function searchLenient(query, page, length) {
@@ -81,20 +81,17 @@ function searchLenient(query, page, length) {
                         searchQuery += ' OR ';
                     }
 
-                    if (searchParams[i].indexOf(',') > -1) {
-                        let keys = searchParams[i].split(',');
-                        searchParams[i] = keys[0];
-                        searchQuery += 'keywords.key ==[c] $' + i;
+                    let keys = searchParams[i];
+                    searchParams[i] = keys[0];
+                    searchQuery += 'keywords.key ==[c] $' + i;
 
-                        for (let j = 1; j < keys.length; j++) {
-                            searchQuery += ' OR keywords.key ==[c] $' + (i + 1);
-                            searchParams.splice(i + 1, 0, keys[j]);
-                            searchFields.splice(i + 1, 0, 'key' + j);
-                            i++;
-                        }
-                    } else {
-                        searchQuery += 'keywords.key ==[c] $' + i;
+                    for (let j = 1; j < keys.length; j++) {
+                        searchQuery += ' OR keywords.key ==[c] $' + (i + 1);
+                        searchParams.splice(i + 1, 0, keys[j]);
+                        searchFields.splice(i + 1, 0, 'key' + j);
+                        i++;
                     }
+
                     break;
 
                 case 'author':

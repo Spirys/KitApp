@@ -61,6 +61,7 @@ module.exports = {
         'SEARCH': 'SEARCH',
         'SEARCH_BY_TITLE': 'SEARCH_BY_TITLE',
         'SEARCH_BY_AUTHORS': 'SEARCH_BY_AUTHORS',
+        'SEARCH_BY_KEYWORDS': 'SEARCH_BY_KEYWORDS',
         'FILTER_TYPES': 'FILTER_TYPES',
         'FIND': 'FIND',
         'NEW_DOCUMENT': 'NEW_DOCUMENT',

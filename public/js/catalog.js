@@ -5,33 +5,35 @@ function getCookie() {
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-function loadBooks() {
-    function callback(data) {
-        var books = data.books,
-            documentsView = $('#documents');
+function showBooks(books) {
+    var documentsView = $('#documents');
 
-        for (var i = 0; i < books.length; i++) {
-            documentsView.append(buildBook(books[i]))
-        }
-
-        function buildAnimation(card) {
-            return function () {
-                card.attr('style', 'visibility:visible');
-                card.addClass('fadeInUp');
-            }
-        }
-
-        $('.card').each(function (index, element) {
-            setTimeout(buildAnimation($(this)), index * 500)
-        });
-
-        // Set listeners
-        $('.btn-action').on('click', onActionClick);
-        $('.btn-details').on('click', onDetailsClick);
-
-        $('#loader').hide();
+    for (var i = 0; i < books.length; i++) {
+        documentsView.append(buildBook(books[i]))
     }
 
+    function buildAnimation(card) {
+        return function () {
+            card.attr('style', 'visibility:visible');
+            card.addClass('fadeInUp');
+        }
+    }
+
+    $('.card').each(function (index, element) {
+        setTimeout(buildAnimation($(this)), index * 500)
+    });
+
+    // Set listeners
+    $('.btn-action').on('click', onActionClick);
+    $('.btn-details').on('click', onDetailsClick);
+
+    $('#loader').hide();
+}
+
+function loadBooks() {
+    function callback(data) {
+        showBooks(data.books)
+    }
     $.get('api/books/all', {token: getCookie()}, callback);
 }
 
@@ -189,20 +191,6 @@ function onAddClick() {
     });
 }
 
-$(document).ready(function () {
-
-    loadBooks();
-
-    $('#save-changes').on('click', onAddClick);
-
-    $('#published').daterangepicker({
-        singleDatePicker: true,
-        locale: {
-            format: 'DD.MM.YYYY'
-        }
-    });
-});
-
 /**
  * Reserves the book
  * @param bookId {number}
@@ -231,15 +219,42 @@ function renewBook(bookId, callback) {
     });
 }
 
-function searchBook() {
-    $.ajax({
-        type: 'GET',
-        url: 'api/books/search',
-        data: {  //TODO: change to a query
-            //title:,
-            //author:,
-            //type:
-        },
+function searchBooks(event) {
+    event.preventDefault();
 
-    });
+    var documentsView = $('#documents'),
+        loader = $('#loader');
+
+    documentsView.html(loader);
+    loader.show();
+
+    function callback(data) {
+        showBooks(data.books)
+    }
+
+    var query = {token: getCookie()},
+        title = $('#searchTitle').val(),
+        authors = $('#searchAuthors').val(),
+        keywords = $('#searchKeywords').val();
+
+    if (title) query.title = title;
+    if (authors) query.authors = authors;
+    if (keywords) query.keywords = keywords;
+
+    $.get('api/books/search', query, callback);
 }
+
+$(document).ready(function () {
+    loadBooks();
+
+    $('#save-changes').on('click', onAddClick);
+
+    $('#published').daterangepicker({
+        singleDatePicker: true,
+        locale: {
+            format: 'DD.MM.YYYY'
+        }
+    });
+
+    $('#searchBtn').on('click', searchBooks)
+});

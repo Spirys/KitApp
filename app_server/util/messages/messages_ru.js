@@ -57,6 +57,7 @@ module.exports[msg.user.DOCUMENT_QUEUE_NUMBER] = 'Вы $0-й в очереди';
 module.exports[msg.front_catalog.SEARCH] = 'Поиск';
 module.exports[msg.front_catalog.SEARCH_BY_TITLE] = 'По названию';
 module.exports[msg.front_catalog.SEARCH_BY_AUTHORS] = 'По авторам';
+module.exports[msg.front_catalog.SEARCH_BY_KEYWORDS] = 'По ключевым словам';
 module.exports[msg.front_catalog.FILTER_TYPES] = 'Фильтр по типу';
 module.exports[msg.front_catalog.FIND] = 'Найти';
 module.exports[msg.front_catalog.NEW_DOCUMENT] = 'Новый документ';

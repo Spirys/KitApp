@@ -16,6 +16,12 @@
  * @public
  */
 
+/**
+ * Rules for the book creation
+ * @type {{title: string, authors: function(*=), cost: string, edition: string, publisher: string, published: string, keywords: string, bestseller: string, description: string, available: string, reference: string, maintenance: string, isbn: function(*=), image: function(*=)}}
+ * @public
+ */
+
 module.exports.book = {
     title: 'NES',
     authors: (authors) =>
@@ -53,4 +59,14 @@ module.exports.book = {
                 && value.length > 0
                 && value.startsWith('https://'))
     }
+};
+
+/**
+ * Rules for searching the book. Filters out all extra fields
+ * @public
+ */
+
+module.exports.bookSearch = {
+    title: 'NES?',
+    keywords: 'NESArray?'
 };
