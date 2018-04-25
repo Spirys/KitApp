@@ -211,32 +211,32 @@ function createNewBook(query, available, reference, maintenance) {
 
 /**
  * Find and delete all expired reserved instances of a book
- * @param book
- * @returns {Book|{err:string}}
+ * @returns {Array<Book>|{err:string}}
  */
-function deleteExpiredReservedInstances(book) {
-    if (!book || book.err) return {err: config.errors.DOCUMENT_NOT_FOUND};
-
-    let instances = book.instances;
+function deleteExpiredReservedInstances() {
+    let books = Repository.searchExact({});
     let now = moment();
 
     try {
-        for (let instance of instances) {
-            if (instance.taker) {
-                let take_due = moment(instance.take_due, config.DATE_FORMAT_EXT);
+        for (let book of books) {
+            let instances = book.instances;
 
-                if (instance.status === config.statuses.RESERVED && now > take_due) {
-                    instance.status = config.statuses.AVAILABLE;
-                    instance.taker = undefined;
-                    instance.take_due = undefined;
-                    instance.due_back = undefined;
-                    instance.renewed = false;
+            for (let instance of instances) {
+                if (instance.taker) {
+                    let take_due = moment(instance.take_due, config.DATE_FORMAT_EXT);
+
+                    if (instance.status === config.statuses.RESERVED && now > take_due) {
+                        instance.status = config.statuses.AVAILABLE;
+                        instance.taker = undefined;
+                        instance.take_due = undefined;
+                        instance.due_back = undefined;
+                        instance.renewed = false;
+                    }
                 }
             }
         }
 
-        return book;
-
+        return books;
     } catch (error) {
         logger.error(error);
         return {err: config.errors.INTERNAL};
