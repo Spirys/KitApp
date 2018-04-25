@@ -6,10 +6,7 @@
  */
 
 const Realm = require('realm');
-// const config = require('../util/config');
 const logger = require('../util/Logger');
-// const realmSettings = config.realm;
-const moment = require('moment');
 
 /*
     Schemas

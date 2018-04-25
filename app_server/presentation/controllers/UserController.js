@@ -66,8 +66,8 @@ module.exports.dashboard = async function (req, res) {
     if (!user) return;
     let messages = getMessages(req);
 
-    if (user.type === config.userTypes.LIBRARIAN) {
-        res.render('users/patron/dashboard', {user, messages})
+    if (isLibrarian(user)) {
+        res.render('users/librarian/dashboard', {user, messages})
     } else {
         res.render('users/patron/dashboard', {user, messages})
     }
@@ -91,8 +91,8 @@ module.exports.userCard = async function (req, res) {
     if (!user) return;
     let messages = getMessages(req);
 
-    if (user.type === config.userTypes.LIBRARIAN) {
-        res.render('users/patron/user-card', {user, messages})
+    if (isLibrarian(user)) {
+        res.render('users/librarian/user-card', {user, messages})
     } else {
         res.render('users/patron/user-card', {user, messages})
     }
@@ -108,7 +108,7 @@ module.exports.database = async function (req, res) {
     if (!user) return;
     let messages = getMessages(req);
 
-    if (user.type === config.userTypes.LIBRARIAN) {
+    if (isLibrarian(user)) {
         res.render('users/librarian/database', {user, messages})
     } else {
         res.render('errors/no-access', {user, section: 'database', messages})
@@ -125,7 +125,7 @@ module.exports.readers = async function (req, res) {
     if (!user) return;
     let messages = getMessages(req);
 
-    if (user.type === config.userTypes.LIBRARIAN) {
+    if (isLibrarian(user)) {
         res.render('users/librarian/readers', {user, messages})
     } else {
         res.render('errors/no-access', {user, section: 'readers', messages})

@@ -34,20 +34,17 @@ html
                                                 table.table.table-striped.table-hover
                                                     thead
                                                         tr
-                                                            th#row-0 ID
+                                                            th#row-0 Book ID
                                                             th#name-0 Name
                                                             th#surname-0 Surname
                                                             th#user-type-0 User Type
                                                             th#document-0 Document
                                                             th#status-0 Status
                                                             th#actions-0 Actions
-                                                    tbody
-                                                        +database-row("124123", "Elon", "Musk", "Student", "Intoduction to algorithms", "Due 05.03")
-                                                        +database-row("224123", "Steve", "Jobs", "Student", "Intoduction to algorithms", "Due 05.03")
-                                                        +database-row("004123", "Charles", "Darwin", "Faculty", "Intoduction to algorithms", "Returned")
-                                                        +database-row("000125", "Elon", "Musk", "Student", "Introduction to algorithms", "Reserved")
+                                                    tbody#database-table
                     // Page Footer
                     +footer()
         // Javascript files
         +java-script()
         script(src='js/front.js')
+        script(src='js/database.js')

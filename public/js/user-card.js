@@ -1,26 +1,9 @@
 /*
  * Copyright (c) 2018 KitApp project
+ * Author: Marsel Shaihin
  */
 
-// tr
-// th#row-number(scope='row') #{row_number}
-// th#title
-// a(href='document.html') #{title}
-// td#author #{author}
-// td#type #{type}
-// td#status #{status}
-
 'use strict';
-
-function getCookie() {
-    // var matches = document.cookie.match(new RegExp(
-    //     "(?:^|; )" + '_sessionId'.replace(/([.$?*|{}()\[\]\\\/+^])/g, '\\$1') + "=([^;]*)"
-    // ));
-    var matches = document.cookie.match(new RegExp(
-        "(?:^|; )" + '_sessionId' + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-}
 
 function loadData(next) {
     var table = $('#my-documents');
@@ -55,6 +38,9 @@ function loadData(next) {
 
             toAppend += '</tr>';
             table.append(toAppend)
+        }
+        if (!data.books.length) {
+            table.append('<tr><th colspan="7" class="text-center text-muted">' + msg(getLocale(), 'TABLE_EMPTY') + '</th></tr>')
         }
         next()
     };

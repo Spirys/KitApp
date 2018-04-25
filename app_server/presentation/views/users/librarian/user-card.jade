@@ -5,10 +5,10 @@ html
     body
         .page
             // Main Navbar
-            +main-navbar()
+            +main-navbar(messages)
             .page-content.d-flex.align-items-stretch
                 // Side Navbar
-                +sidebar("user-card", user)
+                +sidebar("user-card", user, messages)
                 .content-inner
                     // Page Header
                     header.page-header
@@ -20,7 +20,7 @@ html
                                 .col-lg-12
                                     .card
                                         .card-header.d-flex.align-items-center
-                                            h3.h4 Documents
+                                            h3.h4 My documents
                                         .card-body
                                             .table-responsive
                                                 table.table.table-striped.table-hover
@@ -31,10 +31,9 @@ html
                                                             th#author-0 Author
                                                             th#type-0 Type
                                                             th#status-0 Status
-                                                    tbody
-                                                        +user-card-row("1", "Touch of Class", "Bertrand Meyer", "Book", "Due 06.03.2018")
-                                                        +user-card-row("2", "Captain's daughter", "Alexander S. Pushkin", "Book", "Due 06.03.2018")
-                                                        +user-card-row("3", "Kolobok", "Folklor", "Book", "Returned 01.01.2018")
+                                                            th#fine Fine
+                                                            th#Action Action
+                                                    tbody#my-documents
                     section.tables
                         .container-fluid
                             .card
@@ -97,7 +96,7 @@ html
                                         .form-group.row
                                             label.col-sm-3.form-control-label Telegram alias
                                             .col-sm-3
-                                               .form-group
+                                                .form-group
                                                     .input-group
                                                         .input-group-prepend
                                                             span.input-group-text @
@@ -126,3 +125,4 @@ html
                     +footer()
         // Javascript files
         +java-script()
+        script(src='js/user-card.js')

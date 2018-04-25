@@ -93,6 +93,8 @@ const LIBRARIAN_1_RIGHTS = [
     perm.MODIFY_USER_RIGHTS,
 
     perm.RESERVE_DOCUMENT,
+    perm.RENEW_DOCUMENT,
+    perm.RETURN_DOCUMENT,
     perm.CHECKOUT_DOCUMENT
 ];
 

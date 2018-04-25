@@ -20,8 +20,8 @@ html
                             .row
                                 .col-lg-12
                                     .card
-                                        .card-header.d-flex.align-items-center
-                                            h3.h4=messages.SEARCH
+                                        .card-header.d-flex.align-items-center(onclick='$("#searchForm").slideToggle(600)')
+                                            h3.h4.lead=messages.SEARCH
                                         .card-dropdown
                                             .dropdown
                                                 button#database-dropdown-menu.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
@@ -101,29 +101,31 @@ html
                                                         button#close.btn.btn-secondary(type='button', data-dismiss='modal')
                                                             | Close
 
-                                        .card-body
+                                        .card-body#searchForm(style='display: none;')
                                             form.form-horizontal
                                                 .form-group.row
-                                                    label.col-sm-3.form-control-label=messages.SEARCH_BY_TITLE
-                                                    .col-sm-6
-                                                        label
-                                                        input.form-control(type='text', placeholder='Introduction to algorithms', required='')
+                                                    label.text-lg-right.col-sm-2.form-control-label=messages.SEARCH_BY_TITLE
+                                                    .col-sm-7
+                                                        input#searchTitle.form-control(type='text', placeholder='Introduction to algorithms')
                                                 .form-group.row
-                                                    label.col-sm-3.form-control-label=messages.SEARCH_BY_AUTHORS
-                                                    .col-sm-6
-                                                        label
-                                                        input.form-control(type='text', placeholder='Bob Smith, Eva Adams', required='')
+                                                    label.text-lg-right.col-sm-2.form-control-label=messages.SEARCH_BY_AUTHORS
+                                                    .col-sm-7
+                                                        input#searchAuthors.form-control(type='text', placeholder='Bob Smith, Eva Adams')
                                                 .form-group.row
-                                                    label.col-sm-3.form-control-label(for='search-by-type')=messages.FILTER_TYPES
-                                                    .col-sm-6
+                                                    label.text-lg-right.col-sm-2.form-control-label=messages.SEARCH_BY_KEYWORDS
+                                                    .col-sm-7
+                                                        input#searchKeywords.form-control(type='text', placeholder='programming,learning')
+                                                .form-group.row
+                                                    label.text-lg-right.col-sm-2.form-control-label(for='search-by-type')=messages.FILTER_TYPES
+                                                    .col-sm-7
                                                         select#search-by-type.form-control
                                                             option All
                                                             option Books
                                                             option Articles
                                                             option Audio-Video material
                                                 .form-group.row
-                                                    .col-sm-2
-                                                        button#search.btn.btn-primary(type='submit')=messages.FIND
+                                                    .offset-sm-1.col-sm-2
+                                                        button#searchBtn.btn.btn-primary(type='submit')=messages.FIND
 
                     section.document
                         #documentDetailsModal.modal.fade
@@ -161,6 +163,7 @@ html
                                     .modal-footer
                                         button#closeDetailsModal.btn.btn-secondary(type='button', data-dismiss='modal')
                                             | Close
+                        +message_modal()
                         #documents.container-fluid
                             #loader
                                 .row.align-items-center.justify-content-center
@@ -170,6 +173,6 @@ html
                     +footer()
         // Javascript files
         +java-script()
-        script(src='//cdn.jsdelivr.net/momentjs/latest/moment.min.js')
-        script(src='//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js')
+        script(src='https://cdn.jsdelivr.net/momentjs/latest/moment.min.js')
+        script(src='https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js')
         script(src='js/catalog.js')

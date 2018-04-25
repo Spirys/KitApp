@@ -1,10 +1,3 @@
-function getCookie() {
-    var matches = document.cookie.match(new RegExp(
-        '(?:^|; )' + '_sessionId' + '=([^;]*)'
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-}
-
 function showBooks(books) {
     var documentsView = $('#documents');
 

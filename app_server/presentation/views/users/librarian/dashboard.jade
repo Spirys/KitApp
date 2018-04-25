@@ -5,10 +5,10 @@ html
     body
         .page
             // Main Navbar
-            +main-navbar()
+            +main-navbar(messages)
             .page-content.d-flex.align-items-stretch
                 // Side Navbar
-                +sidebar('dashboard', user)
+                +sidebar('dashboard', user, messages)
                 .content-inner
                     // Page Header
                     header.page-header

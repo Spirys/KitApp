@@ -211,13 +211,14 @@ function createNewBook(query, available, reference, maintenance) {
 
 /**
  * Find and delete all expired reserved instances of a book
- * @returns {Array<Book>|{err:string}}
+ * @private
  */
+
 function deleteExpiredReservedInstances() {
     let books = Repository.searchExact({});
     let now = moment();
 
-    try {
+    function action() {
         for (let book of books) {
             let instances = book.instances;
 
@@ -235,13 +236,20 @@ function deleteExpiredReservedInstances() {
                 }
             }
         }
+    }
 
-        return books;
+    try {
+        Repository.write(action);
+        logger.info('BooksInteractor: All expired reservations were cleared');
     } catch (error) {
         logger.error(error);
         return {err: config.errors.INTERNAL};
     }
 }
+
+// FIXME Delegate calls to another structures
+// Clears out reserved books every hour
+setInterval(deleteExpiredReservedInstances, 3600000);
 
 /**
  * Module exports
@@ -447,7 +455,7 @@ module.exports.reserveById = function (bookId, user) {
 module.exports.checkoutById = function (bookId, user) {
     // Getting the book
     let book = Repository.get(bookId);
-    if (!book) return {err: book.err};
+    if (!book) return {err: config.errors.DOCUMENT_NOT_FOUND};
 
     // Finding an available copy
     let indexAvailable = findAvailable(book, user, true);
